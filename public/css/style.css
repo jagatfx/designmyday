@@ -129,7 +129,7 @@ header[role=banner]::after {
     -ms-transform: translateY(0);
     -o-transform: translateY(0);
     transform: translateY(0);
-    line-height: 80px;
+    line-height: 40px;
   }
   .main-nav ul.is-visible {
     -webkit-transform: translateY(0);
@@ -485,3 +485,17 @@ div#login-buttons {
   text-align: center;
 }
 
+img#layout-back {
+  height: 600px;
+  width: auto;
+  margin: 0 auto;
+}
+
+div#layout {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
