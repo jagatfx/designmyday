@@ -338,7 +338,7 @@ xsigin/signup popup
 .cd-form input[type=submit] {
   padding: 16px 0;
   cursor: pointer;
-  background: #75c9bc;
+  background: #edbe26;
   color: #FFF;
   font-weight: bold;
   border: none;
@@ -349,7 +349,7 @@ xsigin/signup popup
   appearance: none;
 }
 .no-touch .cd-form input[type=submit]:hover, .no-touch .cd-form input[type=submit]:focus {
-  background: #3599ae;
+  background: #9B7600;
   outline: none;
 }
 .cd-form .hide-password {
