@@ -6,8 +6,9 @@ var Account = new Schema({
   email: String,
   username: String,
   password: String,
-  age: String,
-  location: String
+  city: String,
+  country: String,
+  yearborn: { type: Number, default: -1 }
 });
 
 Account.plugin(passportLocalMongoose);

@@ -16,9 +16,9 @@ jQuery(document).ready(function($){
   });
 
   //open sign-up form
-  mainNav.on('click', '.cd-signup', signup_selected);
+  mainNav.on('click', '#signup', signup_selected);
   //open login-form form
-  mainNav.on('click', '.cd-signin', login_selected);
+  mainNav.on('click', '#signin', login_selected);
 
   //close modal
   formModal.on('click', function(event){

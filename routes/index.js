@@ -14,9 +14,16 @@ router.get('/register', function(req, res) {
 
 router.post('/register', function(req, res) {
   console.log('got /register POST');
-  Account.register(new Account({ username : req.body.username, email: req.body.email }), req.body.password, function(err, account) {
+  Account.register(new Account({
+    username : req.body.username,
+    email: req.body.email,
+    city: req.body.city,
+    country: req.body.country,
+    yearborn: req.body.yearborn
+  }), req.body.password, function(err, account) {
     if (err) {
-      return res.render('register', { account : account });
+      console.error(err);
+      return res.redirect('/');
     }
 
     passport.authenticate('local')(req, res, function () {

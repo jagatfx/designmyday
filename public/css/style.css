@@ -79,14 +79,14 @@ header[role=banner]::after {
   clear: both;
 }
 
-.main-nav {
+/*.main-nav {*/
   /*float: right;*/
   /*margin-right: 5%;*/
-  width: 44px;
-  height: 100%;
+  /*width: 44px;*/
+  /*height: 100%;*/
   /*background: url("../img/cd-icon-menu.svg") no-repeat center center;*/
-  cursor: pointer;
-}
+  /*cursor: pointer;*/
+/*}*/
 .main-nav ul {
   position: absolute;
   top: 0;
@@ -105,21 +105,24 @@ header[role=banner]::after {
   -o-transform: translateY(50px);
   transform: translateY(50px);
 }
-.main-nav a {
-  display: block;
-  height: 50px;
-  line-height: 50px;
-  /*padding-left: 5%;*/
-  background: #75c9bc;
-  border-top: 1px solid #3b3d4b;
-  color: #FFF;
+a.cd-signin, a.cd-signup {
+  color: #fff;
 }
+/*.main-nav a {*/
+  /*display: block;*/
+  /*height: 50px;*/
+  /*line-height: 50px;*/
+  /*padding-left: 5%;*/
+  /*background: #75c9bc;*/
+  /*border-top: 1px solid #3b3d4b;*/
+  /*color: #FFF;*/
+/*}*/
 /*@media only screen and (min-width: 768px) {*/
   .main-nav {
-    width: auto;
+/*    width: auto;
     height: auto;
     background: none;
-    cursor: auto;
+    cursor: auto;*/
   }
   .main-nav ul {
     position: static;
@@ -143,13 +146,13 @@ header[role=banner]::after {
     margin-left: 1em;
   }
   .main-nav li:nth-last-child(2) {
-    margin-left: 2em;
+    /*margin-left: 2em;*/
   }
   .main-nav a {
-    display: inline-block;
+/*    display: inline-block;
     height: auto;
     line-height: normal;
-    background: transparent;
+    background: transparent;*/
   }
   .main-nav a.cd-signin, .main-nav a.cd-signup {
     padding: .6em 1em;
@@ -157,7 +160,7 @@ header[role=banner]::after {
     border-radius: 50em;
   }
   .main-nav a.cd-signin, .main-nav a.cd-signup  {
-    background: #75c9bc;
+    background: #edbe26;
     border: none;
   }
 /*}*/
@@ -174,7 +177,7 @@ xsigin/signup popup
   width: 100%;
   height: 100%;
   background: rgba(52, 54, 66, 0.9);
-  z-index: 3;
+  z-index: 1031;
   overflow-y: auto;
   cursor: pointer;
   visibility: hidden;
@@ -491,11 +494,40 @@ img#layout-back {
   margin: 0 auto;
 }
 
-div#layout {
-  width: 100%;
-  height: 100%;
+section#layout {
   text-align: center;
   position: relative;
-  display: inline-block;
+}
+
+.custom-text-color { color: #415665 }
+.custom-panel-text-color { color: #415665 }
+.custom-base-color {background-color: #7f8e99}
+.main .custom-action-color {background-color: #286d9f}
+.custom-action-color:hover {background-color: #286d9f !important}
+.white-panel-color {background-color: #fff}
+.custom-panel-color {background-color: #ffffff; border-top:1px solid #e5ecf1;}
+body .published-header {border-top: 4px solid #7f8e99; position: relative;}
+.custom-background-image {
+  background-image: url('http://quickmvp.s3.amazonaws.com/uploaded-images/69/786a60905411e597177731f0b398bd/DMD-Logo.jpg');
+  background-position: center;
+  background-position-y: initial;
+}
+
+.custom-alt-panel-color { background-color: #f1c831; border-top:1px solid #cecece; color: #415665; }
+.custom-alt-text-color { color: #415665; }
+
+.aboutus {
+  color: #415665;
+  font-family: Avenir,'Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+h2.aboutus {
+  font-weight: bold;
+}
+
+p.aboutus {
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  margin-top: 0.5em;
   text-align: center;
 }
