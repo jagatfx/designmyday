@@ -546,7 +546,16 @@ span#beta {
   text-transform: lowercase;
 }
 
+div.news-headline {
+  padding: 20px 0;
+}
+
 p.newsmeta {
   font-style: italic;
   font-size: 100%;
+  padding: 0;
+}
+
+div.news-headline img {
+  border: 1px solid #000;
 }
