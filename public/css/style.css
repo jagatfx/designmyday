@@ -560,6 +560,10 @@ p.newsmeta {
   padding: 0;
 }
 
+span.thick {
+  font-weight: bold;
+}
+
 div.news-headline img {
   border: 1px solid #000;
 }
@@ -567,6 +571,8 @@ div.news-headline img {
 div#team-bios {
   margin: 0 auto;
   padding: 20px 10px;
+  text-align: left;
+  width: 65%;
 }
 
 .video-container {
