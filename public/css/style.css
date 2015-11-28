@@ -541,6 +541,10 @@ section#news {
   text-align: center;
 }
 
+section#team {
+  text-align: center;
+}
+
 span#beta {
   font-style: italic;
   text-transform: lowercase;
@@ -558,4 +562,10 @@ p.newsmeta {
 
 div.news-headline img {
   border: 1px solid #000;
+}
+
+div#team-bios {
+  margin: 0 auto;
+  width: 750px;
+  padding: 20px 0;
 }

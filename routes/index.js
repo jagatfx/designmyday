@@ -12,6 +12,10 @@ router.get('/register', function(req, res) {
   res.render('register', { });
 });
 
+router.get('/team', function(req, res) {
+  res.render('team', { });
+});
+
 router.get('/news', function(req, res) {
   res.render('news', { });
 });
