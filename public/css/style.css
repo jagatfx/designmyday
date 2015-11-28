@@ -6,6 +6,7 @@ Primary style
 html * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
 }
 
 *, *:after, *:before {
@@ -22,7 +23,7 @@ body {
 }
 
 a {
-  color: #2f889a;
+  color: #edbe26;
   text-decoration: none;
 }
 
@@ -517,7 +518,7 @@ body .published-header {border-top: 4px solid #7f8e99; position: relative;}
 .custom-alt-text-color { color: #415665; }
 
 .aboutus {
-  color: #415665;
+  color: #000;
   font-family: Avenir,'Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 
@@ -536,7 +537,16 @@ section#pitch {
   text-align: center;
 }
 
+section#news {
+  text-align: center;
+}
+
 span#beta {
   font-style: italic;
   text-transform: lowercase;
+}
+
+p.newsmeta {
+  font-style: italic;
+  font-size: 100%;
 }

@@ -1,0 +1,131 @@
+
+  <div class="cd-user-modal"> <!-- this is the entire modal form, including the background -->
+    <div class="cd-user-modal-container"> <!-- this is the container wrapper -->
+      <ul class="cd-switcher">
+        <li><a href="#0">Sign in</a></li>
+        <li><a href="#0">Sign up</a></li>
+      </ul>
+
+      <div id="cd-login"> <!-- log in form -->
+        <form class="cd-form" role="form" action="/login" method="post" accept-charset="utf-8">
+          <p class="fieldset">
+            <label class="image-replace cd-username" for="username">Username:</label>
+            <input type="text" name="username" class="full-width has-padding has-border" id="username" placeholder="username" />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-password" for="password">Password:</label>
+            <input type="password" name="password" class="full-width has-padding has-border" id="password" placeholder="password" />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <input type="submit" value="Sign In" class="full-width has-padding" />
+          </p>
+        </form>
+
+        <!-- <p class="cd-form-bottom-message"><a href="#0">Forgot your password?</a></p> -->
+        <!-- <a href="#0" class="cd-close-form">Close</a> -->
+      </div> <!-- cd-login -->
+
+      <div id="cd-signup"> <!-- sign up form -->
+        <form class="cd-form" role="form" action="/register" method="post" accept-charset="utf-8">
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="email">Email:</label>
+            <input type="text" name="email" class="full-width has-padding has-border" id="email" placeholder="email" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-username" for="username">Username:</label>
+            <input type="text" name="username" class="full-width has-padding has-border" id="username" placeholder="username" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-password" for="password">Password:</label>
+            <input type="password" name="password" class="full-width has-padding has-border" id="password" placeholder="password" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-username" for="city">City:</label>
+            <input type="text" name="city" class="full-width has-padding has-border" id="city" placeholder="city" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-username" for="country">Country:</label>
+            <input type="text" name="country" class="full-width has-padding has-border" id="country" placeholder="country" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-username" for="yearborn">Year Born:</label>
+            <input type="text" name="yearborn" class="full-width has-padding has-border" id="yearborn" placeholder="yearborn" required />
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+          <p class="fieldset">
+            <input type="submit" value="Sign Up" class="full-width has-padding" />
+          </p>
+        </form>
+
+        <!-- <a href="#0" class="cd-close-form">Close</a> -->
+      </div> <!-- cd-signup -->
+
+      <div id="cd-reset-password"> <!-- reset password form -->
+        <p class="cd-form-message">Lost your password? Please enter your email address. You will receive a link to create a new password.</p>
+
+        <form class="cd-form">
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="reset-email">E-mail</label>
+            <input class="full-width has-padding has-border" id="reset-email" type="email" placeholder="E-mail">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <input class="full-width has-padding" type="submit" value="Reset password">
+          </p>
+        </form>
+
+        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+      </div> <!-- cd-reset-password -->
+      <a href="#0" class="cd-close-form">Close</a>
+    </div> <!-- cd-user-modal-container -->
+  </div> <!-- cd-user-modal -->
+
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-default navbar-fixed-top main-nav">
+    <div class="container">
+
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header page-scroll">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="#page-top"></a>
+        <a class="navbar-brand" href="http://www.designmyday.co">Design My Day</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="hidden">
+            <a href="#page-top"></a>
+          </li>
+          <li>
+            <a id="signup" href="#0">Sign up</a>
+          </li>
+          <li>
+            <a id="signin" href="#0">Sign in</a>
+          </li>
+          <li class="page-scroll">
+            <a href="#about">About</a>
+          </li>
+          <li>
+            <a href="/news">In the News</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
