@@ -1,0 +1,49 @@
+<% layout( 'basic' ) -%>
+
+<div>
+  <table class="table table-hover table-striped">
+    <thead>
+      <tr>
+        <th>metaActivity</th>
+        <th>activityVerb</th>
+        <th>activity</th>
+        <th>specificLocation</th>
+        <th>needPass</th>
+        <th>city</th>
+        <th>country</th>
+        <th>description</th>
+        <th>link</th>
+        <th>img</th>
+        <th>targetIntensity</th>
+        <th>targetFeelings</th>
+        <th>restrictions</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% activities.forEach( function( activity ){ %>
+      <tr>
+        <td><%= activity.metaActivity %></td>
+        <td><%= activity.activityVerb %></td>
+        <td class="medium"><%= activity.activity %></td>
+        <td><%= activity.specificLocation %></td>
+        <td><%= activity.needPass %></td>
+        <td><%= activity.city %></td>
+        <td><%= activity.country %></td>
+        <td class="longer"><%= activity.description %></td>
+        <td><%= activity.link %></td>
+        <td><%= activity.img %></td>
+        <td><%= activity.targetIntensity %></td>
+        <td><%= activity.targetFeelings %></td>
+        <td><%= activity.restrictions %></td>
+        <td><a href="/admin/activity/edit/<%= activity._id %>" title="Update">Edit</a></td>
+        <td><a href="/api/activity/delete/<%= activity._id %>" title="Delete">Delete</a></td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <div>
+    <a class="button-link" href="/admin/activity">Add a new activity</a>
+  </div>
+</div>
