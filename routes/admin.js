@@ -17,6 +17,7 @@ router.get('/activities', function(req, res) {
       return console.error(err);
     }
     res.render( 'activities', {
+      user : req.user,
       activities : activities
     });
   });
@@ -24,6 +25,7 @@ router.get('/activities', function(req, res) {
 
 router.get('/activity', function (req, res) {
   res.render( 'activity', {
+    user : req.user,
     activity: {}
   });
 });
@@ -31,6 +33,7 @@ router.get('/activity', function (req, res) {
 router.get('/activity/edit/:id', function (req, res) {
   Activity.findById(req.params.id, function (err, activity) {
     res.render( 'activity', {
+      user : req.user,
       activity : activity
     });
   });

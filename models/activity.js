@@ -12,7 +12,7 @@ var Activity = new Schema({
   description: String,
   link: String,
   img: String,
-  targetIntensity: { type: Number, default: -1 },
+  targetIntensity: { type: Number, default: 5 },
   targetFeelings: String,
   restrictions: String
 });

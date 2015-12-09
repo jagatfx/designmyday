@@ -1,6 +1,5 @@
-<% layout( 'layout' ) -%>
 <% if(!user) { %>
-
+  <% layout( 'layout' ) -%>
   <%- partial('nav') %>
 
   <section id="layout">
@@ -18,15 +17,24 @@
   </section>
 
 <% } else { %>
-  <section id="layout">
-    <h1>Limited Beta Opening Soon!</h1>
-    <p>You are currently logged in as <%= user.username %>
-    <a href="/logout">Logout</a>
-    <div>
-      <img src="/img/dmd-logo.jpg" alt="Design My Day" />
-    </div>
-    <div>
-      <h3>Visit <a href="https://design-my-day.quickmvp.com">this page</a> to learn more.</h3>
-    </div>
-  </section>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
+
+  <% if(user.isAdmin) { %>
+
+  <%- partial('vote') %>
+
+  <% } else { %>
+
+    <section id="layout">
+      <h1>Limited Beta Opening Soon!</h1>
+      <p>You are currently logged in as <%= user.username %>
+      <a href="/logout">Logout</a>
+      <div>
+        <img src="/img/dmd-logo.jpg" alt="Design My Day" />
+      </div>
+    </section>
+
+  <% } %>
+
 <% } %>

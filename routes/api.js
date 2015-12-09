@@ -1,38 +1,22 @@
 var express  = require('express');
 var router   = express.Router();
 var Activity = require('../models/activity');
-
-router.get('/activities', function(req, res, next) {
-  var results = req.query.results;
-  var type = req.query.type;
-  // TODO: implement pagination
-  // var page = req.query.page;
-  var maxResults = 0;
-  var findParam = {};
-  if (type) {
-    findParam.type = type;
-  }
-  if (results) {
-    maxResults = results;
-  }
-  Activity.find(findParam).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
-    if (err) {
-      res.json( {result: err} );
-      return;
-    }
-    res.json(activities);
-  });
-});
+var Vote     = require('../models/vote');
 
 router.get('/activity', function(req, res, next) {
   var results = req.query.results;
   var type = req.query.type;
+  var city = req.query.city;
   // TODO: implement pagination
   // var page = req.query.page;
   var maxResults = 0;
   var findParam = {};
   if (type) {
     findParam.type = type;
+  }
+  if (city) {
+    console.log('filtering city: '+city);
+    findParam.city = city;
   }
   if (results) {
     maxResults = results;

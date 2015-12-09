@@ -1,5 +1,8 @@
-<% layout( 'basic' ) -%>
+<% if(user) { %>
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
 
+<section>
 <div>
   <table class="table table-hover table-striped">
     <thead>
@@ -43,7 +46,12 @@
     <% }); %>
     </tbody>
   </table>
-  <div>
+  <div id="add-activity">
     <a class="button-link" href="/admin/activity">Add a new activity</a>
   </div>
 </div>
+</section>
+<% } else { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } %>

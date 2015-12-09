@@ -21,6 +21,10 @@ router.get('/news', function(req, res) {
   res.render('news', { });
 });
 
+router.get('/profile', function(req, res) {
+  res.render('profile', { user : req.user });
+});
+
 router.post('/register', function(req, res) {
   console.log('got /register POST');
   Account.register(new Account({

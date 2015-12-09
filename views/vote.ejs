@@ -1,0 +1,44 @@
+    <section id="vote">
+
+      <div>
+        <span class="intro">Meet <span class="thick" id="user">Rebecca!</span></span>
+        <br />
+        <img src="/img/isolated.gif" alt="isolated feeling" />
+        <p>
+          She's 28 years old and lives in London. Today she feels <span class="feeling">isolated</span>.
+        </p>
+        <p>
+          Suggest an activity below!
+        </p>
+      </div>
+
+      <div id="activities">
+
+      </div>
+
+    </section>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "http://localhost:3000/api/activity?city=Ubud"
+            }).then(function(data) {
+              data.forEach(function(theme, index) {
+              $('div#activities').append(
+                '<a href="'+data[index].link+'" target="_blank">'+
+                '<div class="col-md-3 col-sm-4">'+
+                    '<div class="activity">'+
+                        '<div class="text">'+
+                          '<h3>'+data[index].activityVerb+'</h3>'+
+                          '<h3>'+data[index].activity+'</h3>'+
+                          '<h3>'+data[index].specificLocation+'</h3>'+
+                          '<p class="votes">'+data[index].targetIntensity+'</p>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+                '</a'
+              );
+            });
+            });
+        });
+    </script>

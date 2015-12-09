@@ -1,5 +1,8 @@
-<% layout( 'basic' ) -%>
+<% if(user) { %>
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
 
+<section>
 <div class="container">
   <h2>Add / Edit activity</h2>
   <form role="form" action="/api/activity/<%= activity._id ? activity._id : '' %>" method="post" accept-charset="utf-8">
@@ -59,7 +62,14 @@
       <input type="text" class="form-control" id="restrictions" placeholder="Enter restrictions" name="restrictions" value="<%= activity.restrictions ? activity.restrictions : ''  %>" />
     </div>
 
-    <button type="submit" class="btn btn-default">Submit</button>
-    <a href="/admin/activities/">Cancel</a>
+    <div id="add-activity">
+      <button type="submit" class="btn btn-default">Submit</button>
+      <a href="/admin/activities/">Cancel</a>
+    </div>
   </form>
 </div>
+</section>
+<% } else { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } %>

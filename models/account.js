@@ -8,7 +8,8 @@ var Account = new Schema({
   password: String,
   city: String,
   country: String,
-  yearborn: { type: Number, default: -1 }
+  yearborn: { type: Number, default: -1 },
+  isAdmin: { type: Boolean, default: false }
 });
 
 Account.plugin(passportLocalMongoose);
