@@ -179,7 +179,7 @@ h2.aboutus {
 
 section.success {
   color: #000;
-  background: #edbe26;
+  background: #EDBE26;
 }
 
 section.success a,
@@ -477,7 +477,7 @@ body {
 }
 
 a {
-  color: #edbe26;
+  color: #EDBE26;
   text-decoration: none;
 }
 
@@ -634,7 +634,7 @@ a.cd-signin, a.cd-signup {
     border-radius: 50em;
   }
   .main-nav a.cd-signin, .main-nav a.cd-signup  {
-    background: #edbe26;
+    background: #EDBE26;
     border: none;
   }
 /*}*/
@@ -812,7 +812,7 @@ xsigin/signup popup
 .cd-form input[type=submit] {
   padding: 16px 0;
   cursor: pointer;
-  background: #edbe26;
+  background: #EDBE26;
   color: #FFF;
   font-weight: bold;
   border: none;
@@ -928,7 +928,6 @@ xsigin/signup popup
 }
 .cd-form-bottom-message a {
   color: #FFF;
-  text-decoration: underline;
 }
 
 .cd-close-form {
@@ -1091,9 +1090,11 @@ td.longer {
 }
 
 .button-link {
+  margin: 15px;
   padding: 10px 15px;
-  background: #4479BA;
+  background: #EDBE26;
   color: #FFF;
+  font-weight: bold;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -1109,18 +1110,20 @@ td.longer {
   -moz-user-select:none;
   -ms-user-select:none;
   user-select:none;
+  text-decoration: none;
 }
 .button-link:hover {
-  background: #356094;
-  border: solid 1px #2A4E77;
-  text-decoration: none;
+  font-weight: bold;
+  color: #FFF;
+  background: #9B7600;
+  border: solid 1px #9B7600;
 }
 .button-link:active {
   -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
-  background: #2E5481;
-  border: solid 1px #203E5F;
+  background: #9B7600;
+  border: solid 1px #9B7600;
 }
 
 div.activity {
@@ -1157,16 +1160,14 @@ div#activities {
 .activity .text p.votes del {
   color: #999999;
 }
-div#add-activity {
-  margin: 15px;
-}
-
 li#username a {
   text-transform: none;
-  color: #edbe26;
+  color: #EDBE26;
 }
-
 span.feeling {
   font-weight: bold;
   font-size: 14px;
+}
+div#add-activity a {
+  font-size: 40px;
 }

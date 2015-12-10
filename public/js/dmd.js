@@ -1,7 +1,7 @@
 
 function fetchActivities() {
   $.ajax({
-      url: "http://localhost:3000/api/activity?city=Ubud"
+      url: "http://www.designmyday.co/api/activity?city=Ubud"
   }).then(function(data) {
     data.forEach(function(theme, index) {
       $('div#activities').append(
