@@ -1,0 +1,22 @@
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
+
+    <section id="myactivity">
+
+      <div class="header-text" id="myactivity-text">
+        <p>
+          Your Tribe Suggests:
+        </p>
+      </div>
+
+      <div id="activities">
+
+      </div>
+
+    </section>
+
+    <script>
+      $(document).ready(function() {
+        fetchMyActivities();
+      });
+    </script>

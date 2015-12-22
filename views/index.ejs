@@ -20,12 +20,6 @@
   <% layout( 'login-layout' ) -%>
   <%- partial('login-nav') %>
 
-  <% if(user.isAdmin) { %>
-
-  <%- partial('vote') %>
-
-  <% } else { %>
-
     <section id="layout">
       <h1>Limited Beta Opening Soon!</h1>
       <p>You are currently logged in as <%= user.username %>
@@ -34,7 +28,5 @@
         <img src="/img/dmd-logo.jpg" alt="Design My Day" />
       </div>
     </section>
-
-  <% } %>
 
 <% } %>

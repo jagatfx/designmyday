@@ -1,0 +1,36 @@
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
+
+    <section id="severity">
+
+      <div class="header-text" id="severity-text">
+        <p>
+          How strong is your feeling?
+        </p>
+      </div>
+
+      <div id="range-select">
+        <table id="severity">
+          <tr>
+            <td id="alittle">A LITTLE</td>
+            <td></td>
+            <td id="alot">A LOT</td>
+          </tr>
+          <tr>
+            <td colspan="3"><input id="severity" type="range" min="1" max="10" value="5.5" step="0.1" /></td>
+          </tr>
+        </table>
+        <div>
+          <img id="severity" src="/img/<%= user.lastFeeling %>.gif" alt="<%= user.lastFeeling %> feeling" />
+        </div>
+        <button id="severity" class="btn btn-default">Continue</button>
+      </div>
+
+    </section>
+
+    <script>
+      $(document).ready(function() {
+        processSeveritySubmission();
+        updateViewOnSeverityChange();
+      });
+    </script>

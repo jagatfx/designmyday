@@ -1,14 +1,17 @@
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
+
     <section id="vote">
 
       <div>
-        <span class="intro">Meet <span class="thick" id="user">Rebecca!</span></span>
+        <span class="intro">Meet <span class="thick" id="user"><%= user._voteUser.username %>!</span></span>
         <br />
-        <img src="/img/isolated.gif" alt="isolated feeling" />
+        <img src="/img/<%= user._voteUser.lastFeeling %>.gif" alt="<%= user._voteUser.lastFeeling %> feeling" />
         <p>
-          She's 28 years old and lives in London. Today she feels <span class="feeling">isolated</span>.
+          <%= voteeAge %> years old and lives in <span class="city"><%= user._voteUser.city %></span>. Today <%= user._voteUser.username %> feels <span class="feeling"><%= user._voteUser.lastFeeling %></span>.
         </p>
         <p>
-          Suggest an activity below!
+          What should <%= user._voteUser.username %> do today? Click on an activity below or suggest something new
         </p>
       </div>
 
@@ -16,10 +19,14 @@
 
       </div>
 
+      <div id="add-activity">
+        <a class="button-link" href="/addactivity">Suggest Something New</a>
+      </div>
+
     </section>
 
     <script>
       $(document).ready(function() {
-        fetchActivities();
+        fetchVoteActivities();
       });
     </script>
