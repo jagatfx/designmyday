@@ -1,14 +1,32 @@
+function getActivityIcon(activity) {
+  var activityIcon = 'group';
+  var normalizedVerb = activity.activityVerb.trim();
+  var normalizedMetaActivity = activity.metaActivity.trim();
+  if (normalizedVerb === 'play') {
+    activityIcon = 'play';
+  } else if (activity.activityVerb === 'go') {
+    activityIcon = 'go';
+  } else if (activity.activityVerb === 'see') {
+    activityIcon = 'see';
+  }
+  if (normalizedMetaActivity === 'yoga') {
+    activityIcon = 'relax';
+  }
+  return activityIcon;
+}
 
 function fetchVoteActivities() {
   $.ajax({
     url: '/api/activity'
   }).then(function(data) {
     data.forEach(function(theme, index) {
+      var activityIcon = getActivityIcon(data[index]);
       $('div#activities').append(
         '<a id="'+data[index]._id+'" href="#">'+
         '<div class="col-md-3 col-sm-4">'+
             '<div class="activity">'+
                 '<div class="text">'+
+                  '<img src="/img/activity-'+activityIcon+'.gif" alt="activity" />'+
                   '<h3>'+data[index].activityVerb+'</h3>'+
                   '<h3>'+data[index].activity+'</h3>'+
                   '<h3>'+data[index].specificLocation+'</h3>'+
@@ -39,11 +57,13 @@ function fetchMyActivities() {
     url: '/api/myactivities'
   }).then(function(data) {
     data.forEach(function(theme, index) {
+      var activityIcon = getActivityIcon(data[index]);
       $('div#activities').append(
         '<a id="'+data[index]._id+'" href="#">'+
         '<div class="col-sm-4">'+
             '<div class="activity">'+
                 '<div class="text">'+
+                  '<img src="/img/activity-'+activityIcon+'.gif" alt="activity" />'+
                   '<h3>'+data[index].activityVerb+'</h3>'+
                   '<h3>'+data[index].activity+'</h3>'+
                   '<h3>'+data[index].specificLocation+'</h3>'+
