@@ -1,0 +1,103 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../node_modules/ajax-form/ajax-form.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="page-addactivity">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-material.activity {
+        padding: 10px;
+        margin: 10px;
+      }
+      iron-autogrow-textarea {
+        margin: 10px 0;
+      }
+    </style>
+    <div class="page-header">
+      <div class="page-title">Add A New Activity</div>
+      <div class="centered-container">
+        <paper-item>
+          <paper-item-body>
+            <div secondary><span class="caps">[[user.city]]</span>, <span class="caps">[[user.country]]</span></div>
+          </paper-item-body>
+        </paper-item>
+      </div>
+    </div>
+
+    <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
+      <paper-material elevation="1" class="activity">
+        <div class="horizontal">
+          <paper-item>Choose an action:</paper-item>
+          <paper-dropdown-menu>
+            <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{activityVerb}}">
+              <paper-item value="default">What action?</paper-item>
+              <paper-item value="take">take</paper-item>
+              <paper-item value="visit">visit</paper-item>
+              <paper-item value="go for">go_for</paper-item>
+              <paper-item value="go on">go_on</paper-item>
+              <paper-item value="go play">go_play</paper-item>
+              <paper-item value="get">get</paper-item>
+              <paper-item value="make">make</paper-item>
+              <paper-item value="learn">learn</paper-item>
+              <paper-item value="see">see</paper-item>
+              <paper-item value="watch">watch</paper-item>
+              <paper-item value="write">write</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+          <input type="hidden" name="activityVerb" value="{{activityVerb}}">
+        </div>
+        <paper-input name="activity" label="What is the activity?"></paper-input>
+        <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
+        <paper-input name="link" label="Official link to activity"></paper-input>
+        <paper-material elevation="1" class="vertical" class="activity">
+          <div class="horizontal">
+            <paper-item>Upload an image:</paper-item>
+            <paper-input name="image" type="file"></paper-input>
+          </div>
+          <div class="horizontal">
+            <paper-item>Description:</paper-item>
+            <iron-autogrow-textarea name="description"></iron-autogrow-textarea>
+          </div>
+        </paper-material>
+      </paper-material>
+<!--       <div>
+        <label for="image">Select an image to upload:</label>
+        <input type="file" id="image" name="image">
+      </div> -->
+      <paper-button class="dmd-btn" raised on-tap="_submitForm">Add Activity</paper-button>
+      <!-- <input type="submit" value="Submit"> -->
+    </form>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-addactivity',
+
+      properties: {
+      },
+
+      _submitForm: function(event) {
+        this.$.activityform.submit();
+        document.querySelector('app-router').go('/feeling');
+      },
+
+    });
+  })();
+  </script>
+</dom-module>

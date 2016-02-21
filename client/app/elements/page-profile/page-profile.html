@@ -1,0 +1,99 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!-- Custom elements -->
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="page-profile">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+        elevation: 3;
+        --paper-card-header: {
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+        };
+      }
+      .user-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 60%;
+        margin: 16px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .profile-container {
+        @apply(--layout-center-justified);
+      }
+      .user-content {
+        @apply(--layout-center-justified);
+        text-align: center;
+      }
+    </style>
+
+    <div>
+      <div class="page-header">
+        <div class="page-title">Profile</div>
+      </div>
+      <div class="profile-container horizontal">
+        <paper-card class="user-card">
+          <div class="user-content">
+            <div class="card-content">
+              <div class="username">username: [[user.username]]</div>
+              <div class="yearborn">age: [[user.age]]</div>
+              <div class="city caps">city: [[user.city]]</div>
+              <div class="country caps">country: [[user.country]]</div>
+            </div>
+          </div>
+        </paper-card>
+      </div>
+
+      <div class="centered-container">
+        <div class="">Previously Selected Activities</div>
+        <template is="dom-repeat"
+                  items="{{user.activitySelectSequence}}"
+                  as="activity">
+          <paper-card class="user-card">
+            <div class="card-content">
+              <div class="activity">activityId: [[activity.activity]]</div>
+<!--                 TODO: grab actual activities and fill in with real info
+                <h2>[[activity.activityVerb]] [[activity.activity]]</h2>
+                <iron-image src="[[activity.img]]"></iron-image>
+                <h2>[[activity.specificLocation]]</h2> -->
+            </div>
+          </paper-card>
+        </template>
+      </div>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-profile',
+
+      properties: {
+        user: {
+          type: Object,
+          notify: true
+        }
+      },
+    });
+  })();
+  </script>
+</dom-module>

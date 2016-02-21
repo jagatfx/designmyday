@@ -1,0 +1,64 @@
+<dom-module id="shared-styles"><template><style>
+      .page-title {
+        @apply(--paper-font-display2);
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 35px;
+        font-weight: bold;
+      }
+
+      paper-menu a > *, paper-menu paper-item > *, paper-menu paper-icon-item > * {
+        pointer-events: none;
+      }
+
+      @media (max-width: 600px) {
+        .page-title {
+          font-size: 24px!important;
+        }
+      }
+
+      .page-header {
+        @apply(--layout-center-justified);
+      }
+
+      .centered-container {
+         @apply(--layout-center-justified);
+         text-align: center;
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+      .vertical {
+        @apply(--layout-vertical);
+      }
+      .justified {
+        @apply(--layout-justified);
+      }
+
+      paper-button.dmd-btn {
+        --paper-button-ink-color: var(--primary-text-color);
+        /* These could also be individually defined for each of the
+          specific css classes, but we'll just do it once as an example */
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--light-accent-color);
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--dark-primary-color) !important;
+        };
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: var(--accent-color);
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--dark-primary-color) !important;
+        };
+      }
+      paper-button.dmd-btn:hover {
+        background-color: var(--light-accent-color);
+        color: #000;
+      }
+      .caps {
+        text-transform: capitalize;
+      }
+    </style></template></dom-module>

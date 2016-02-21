@@ -1,0 +1,125 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- Custom elements -->
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="vote-head">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        min-height: 50px;
+      }
+
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+        elevation: 2;
+        --paper-card-header: {
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+        };
+      }
+      .user-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 60%;
+        margin: 16px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+      .justified {
+        @apply(--layout-justified);
+      }
+
+      paper-icon-button {
+        color: var(--paper-grey-600);
+      }
+
+      .user-content {
+        @apply(--layout-center-justified);
+        text-align: center;
+      }
+      .city {
+        text-transform: capitalize;
+        font-weight: bold;
+      }
+      .feeling {
+        font-weight: bold;
+      }
+      .username {
+        font-weight: bold;
+      }
+    </style>
+
+    <div>
+      <div class="page-header">
+        <div class="page-title">Let's help someone</div>
+      </div>
+
+      <div class="centered-container horizontal">
+        <paper-card class="user-card">
+          <div class="user-content">
+            <div class="card-content">
+              <div>
+                Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
+                <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
+              </div>
+              <iron-image src="/img/[[user.votee.lastFeeling]].gif"></iron-image>
+              <div>
+                Help give this person an idea of what to do today.
+              </div>
+              <div>
+                Click an activity below or suggest something new.
+              </div>
+            </div>
+          </div>
+        </paper-card>
+      </div>
+
+      <div class="centered-container horizontal">
+        <a href="#/addactivity">
+          <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
+        </a>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+
+      is: 'vote-head',
+
+      properties: {
+
+        activity: Object,
+
+        user: {
+          notify: true
+        }
+
+      },
+
+    });
+  </script>
+</dom-module>

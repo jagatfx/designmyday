@@ -1,0 +1,153 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+
+<!-- Custom elements -->
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="page-severity">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        --severity-opacity: 1.0; /*0.55;*/
+        display: block;
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+      .justified {
+        @apply(--layout-justified);
+      }
+
+      iron-image#severity {
+        opacity: var(--severity-opacity);
+      }
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      .flexchild {
+        @apply(--layout-flex);
+        text-align: center;
+      }
+      .flexchild paper-slider {
+        width: 100%;
+      }
+      .vertical-middle {
+        margin: 20px auto;
+      }
+      .severity-slider {
+        --paper-slider-active-color: var(--accent-color);
+        --paper-slider-knob-color: #000;
+      }
+
+    </style>
+
+    <div>
+      <div class="page-header">
+        <div class="page-title">How strong is your feeling?</div>
+      </div>
+      <div class="range-select vertical-middle">
+        <div>A LITTLE</div>
+        <div class="flexchild">
+          <paper-slider class="severity-slider"
+                        min="1"
+                        max="10"
+                        value="{{sliderValue}}"
+                        step="0.1"
+                        on-change="_updateSeverity">
+          </paper-slider>
+        </div>
+        <div>A LOT</div>
+      </div>
+      <div class="range-select">
+        <div>
+          <iron-image id="severity" src="/img/{{user.lastFeeling}}.gif"></iron-image>
+        </div>
+      </div>
+      <div class="range-select">
+        <paper-button class="dmd-btn" raised on-tap="_doAjaxRequest">Continue</paper-button>
+      </div>
+    </div>
+
+    <iron-ajax
+      id="severityAjax"
+      method="get"
+      on-response="_severityReqComplete"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'page-severity',
+
+      user: {
+        notify: true
+      },
+
+      properties: {
+        sliderValue: {
+          type: Number,
+          notify: true,
+          value: 5.5
+        },
+
+        lastFeeling: {
+          type:  String
+        }
+      },
+
+      attached: function() {
+        // Delegate focus events with useCapture to figure out if one of our
+        // child elements is being focused or if we're about to blur
+        // All of this fanciness is for the sake of the raised paper effect
+        this.addEventListener('focus', this._activate.bind(this), true);
+        this.addEventListener('blur', this._deactivate.bind(this), true);
+        this.addEventListener('mouseenter', this._activate.bind(this));
+        this.addEventListener('mouseleave', this._deactivate.bind(this));
+      },
+
+      detached: function() {
+        this.removeEventListener('focus', this._activate.bind(this), true);
+        this.removeEventListener('blur', this._deactivate.bind(this), true);
+        this.removeEventListener('mouseenter', this._activate.bind(this));
+        this.removeEventListener('mouseleave', this._deactivate.bind(this));
+      },
+
+      _updateSeverity: function() {
+        var value = this.sliderValue;
+        // TODO: fix this
+        // this.customStyle['--severity-opacity'] = value/10.0;
+        // this.updateStyles();
+      },
+
+      _doAjaxRequest: function(e) {
+        var severity = e.currentTarget.getAttribute('data-severity');
+        this.$.severityAjax.url = '/api/severity/'+severity;
+        this.$.severityAjax.generateRequest();
+      },
+
+      _severityReqComplete: function() {
+        document.querySelector('app-router').go('/myactivities');
+      },
+
+      _ajaxError: function() {
+        // TODO: ajax error handling
+      },
+
+    });
+  </script>
+</dom-module>

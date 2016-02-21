@@ -1,0 +1,14 @@
+{
+  "name": "api-poster",
+  "version": "0.0.1",
+  "description": "Read json file and POSTs each element to an API.",
+  "main": "csv-form-poster.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "needle": "^0.11.0"
+  }
+}

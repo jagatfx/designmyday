@@ -1,0 +1,102 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!-- <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html"> -->
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="dmd-data">
+
+  <template>
+
+    <style>
+    </style>
+
+    <iron-ajax auto
+      id="activityAjax"
+      url="/api/[[_getUrl(route)]]"
+      handle-as="json"
+      debounce-duration="300"
+      on-response="_remoteActivitiesLoaded">
+    </iron-ajax>
+
+    <iron-ajax auto
+      url="/api/user"
+      handle-as="json"
+      debounce-duration="300"
+      on-response="_remoteUserLoaded">
+    </iron-ajax>
+
+    <!-- Backfill activities from localstorage. This prevents an initial flash while
+         we're waiting to hear from Firebase, and it lets the user see their
+         old activities if they start the app offline.
+         This SHOULD NOT write to Firebase. If the user has cleared their
+         localstorage, it should not nullify everything saved in Firebase. -->
+<!--     <iron-localstorage name="polymer-activity"
+                       on-iron-localstorage-load="_localLoaded"
+                       value="{{localActivities}}">
+    </iron-localstorage> -->
+
+  </template>
+  <script>
+    Polymer({
+
+      is: 'dmd-data',
+
+      properties: {
+
+        activities: {
+          notify: true
+        },
+
+        user: {
+          notify: true
+        },
+
+        route: String,
+
+        _remoteActivitiesConnected: {
+          value: false
+        },
+
+        _remoteUserConnected: {
+          value: false
+        }
+
+      },
+
+      _getUrl: function(route) {
+        if (route === 'myactivities') {
+          return 'myactivities';
+        }
+        return 'activity';
+      },
+
+      _remoteActivitiesLoaded: function(request) {
+        this._remoteActivitiesConnected = true;
+        console.log('remote activities storage connected');
+        this.activities = request.detail.response;
+      },
+
+      _remoteUserLoaded: function(request) {
+        this._remoteUserConnected = true;
+        console.log('remote user storage connected');
+        this.user = request.detail.response;
+      },
+
+      // _localLoaded: function() {
+      //   if (!this._remoteConnected) {
+      //     console.log('using local storage')
+      //   }
+      // },
+
+    });
+
+  </script>
+</dom-module>

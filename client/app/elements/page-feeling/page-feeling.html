@@ -1,0 +1,135 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- Custom elements -->
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="page-feeling">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        min-height: 50px;
+      }
+
+      .feeling-select {
+        @apply(--layout-center-justified);
+      }
+
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+        elevation: 2;
+        --paper-card-header: {
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+        };
+      }
+
+      .feeling-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 184px;
+        height: 184px;
+        margin: 16px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+    </style>
+
+    <div>
+      <div class="page-header">
+        <div class="page-title">How are you feeling today?</div>
+      </div>
+      <div class="feeling-select horizontal layout wrap">
+        <paper-card class="feeling-card" image="/img/worried.gif"
+          data-feeling="worried" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/emotional.gif"
+          data-feeling="emotional" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/unfocused.gif"
+          data-feeling="unfocused" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/bored.gif"
+          data-feeling="bored" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/stressed.gif"
+          data-feeling="stressed" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/lethargic.gif"
+          data-feeling="lethargic" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/angry.gif"
+          data-feeling="angry" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/isolated.gif"
+          data-feeling="isolated" on-tap="_doAjaxRequest"></paper-card>
+        <paper-card class="feeling-card" image="/img/fine.gif"
+          data-feeling="fine" on-tap="_doAjaxRequest"></paper-card>
+      </div>
+    </div>
+
+    <iron-ajax
+      id="feelingAjax"
+      method="get"
+      on-response="_feelingReqComplete"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'page-feeling',
+
+      properties: {
+
+        user: Object
+
+      },
+
+      attached: function() {
+        // Delegate focus events with useCapture to figure out if one of our
+        // child elements is being focused or if we're about to blur
+        // All of this fanciness is for the sake of the raised paper effect
+        this.addEventListener('focus', this._activate.bind(this), true);
+        this.addEventListener('blur', this._deactivate.bind(this), true);
+        this.addEventListener('mouseenter', this._activate.bind(this));
+        this.addEventListener('mouseleave', this._deactivate.bind(this));
+      },
+
+      detached: function() {
+        this.removeEventListener('focus', this._activate.bind(this), true);
+        this.removeEventListener('blur', this._deactivate.bind(this), true);
+        this.removeEventListener('mouseenter', this._activate.bind(this));
+        this.removeEventListener('mouseleave', this._deactivate.bind(this));
+      },
+
+      _doAjaxRequest: function(e) {
+        var feeling = e.currentTarget.getAttribute('data-feeling');
+        this.$.feelingAjax.url = '/api/feeling/'+feeling;
+        this.$.feelingAjax.generateRequest();
+        this.user.lastFeeling = feeling;
+        console.log('lastFeeling:'+this.user.lastFeeling);
+      },
+
+      _feelingReqComplete: function() {
+        document.querySelector('app-router').go('/severity');
+      },
+
+      _ajaxError: function() {
+        // TODO: ajax error handling
+      },
+
+    });
+  </script>
+</dom-module>

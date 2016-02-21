@@ -1,0 +1,327 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="activity-item">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        min-height: 50px;
+      }
+
+      .row {
+        position: relative;
+        padding: 16px 16px 16px 22px;
+      }
+
+      .btn-cancel {
+        opacity: 0;
+        /* Same as paper-material shadow */
+        /*https://github.com/PolymerElements/paper-styles/blob/master/shadow.html#L17*/
+        transition: opacity 0.28s;
+        /* Odd hack to fix cropped paper-ripple focus state */
+        /* https://github.com/PolymerElements/paper-icon-button/issues/33 */
+        font-size: 15px;
+      }
+
+      :host:hover .btn-cancel,
+      :host([active]) .btn-cancel {
+        opacity: 1;
+      }
+
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+      }
+      paper-card {
+          --paper-card-header: {
+              @apply(--layout-vertical);
+              @apply(--layout-center);
+          };
+      }
+      .activity-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 240px;
+        margin: 16px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        elevation: 2;
+      }
+      .card-content {
+        padding: 0;
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+      .justified {
+        @apply(--layout-justified);
+      }
+
+      paper-icon-button {
+        color: var(--paper-grey-600);
+      }
+      .vote-badge {
+        --paper-badge-width: 40px;
+        --paper-badge-height: 40px;
+      }
+      .description {
+        padding: 10px;
+      }
+      .description a {
+        color: var(--primary-color);
+      }
+      .favorite-yes {
+        --iron-icon-fill-color: red;
+      }
+      .favorite-no {
+        --iron-icon-fill-color: inherit;
+      }
+      .info {
+        /*--iron-icon-fill-color: var(--light-accent-color);*/
+      }
+      a {
+        text-decoration: none;
+      }
+      .container > div {
+        margin-top: 2px;
+        color: black;
+        font-size: 10px;
+      }
+      .done-yes {
+        --iron-icon-stroke-color: var(--accent-color);
+      }
+      .done-no {
+        --iron-icon-fill-color: inherit;
+      }
+
+    </style>
+
+    <paper-card id="card[[activity._id]]" class="activity-card">
+      <iron-image src="[[activity.img]]" on-tap="_doAjaxRequest"></iron-image>
+      <div class="card-content">
+        <p>[[activity.activityVerb]] [[activity.activity]]<br />
+        [[activity.specificLocation]]</p>
+      </div>
+      <paper-badge class="vote-badge"
+                   for="card[[activity._id]]"
+                   hidden="[[_showVotes(route)]]"
+                   label="[[activity.numVotes]] votes">
+      </paper-badge>
+      <div class="card-actions horizontal justified">
+        <span class="container">
+          <paper-icon-button class="info" icon="icons:info" data-dialog="dialog" on-tap="_toggleDialog"></paper-icon-button>
+          <div>info</div>
+        </span>
+        <span class="container">
+          <paper-icon-button id="favorite" class$="{{favorite}}" icon="favorite" on-tap="_toggleFavorite"></paper-icon-button>
+          <div>favorite</div>
+        </span>
+        <span class="container">
+          <paper-icon-button id="done" class$="{{doneClass}}" icon$="{{done}}" on-tap="_toggleDone"></paper-icon-button>
+          <div>done this</div>
+        </span>
+<!--         TODO: add social share
+        <a href="#" class="share" target="_blank">
+          <paper-icon-button icon="social:share"></paper-icon-button>
+          <div>share</div>
+        </a> -->
+        <a href="[[activity.link]]" target="_blank">
+          <span class="container">
+            <paper-icon-button class="link" icon="icons:link"></paper-icon-button>
+            <div>link</div>
+          </span>
+        </a>
+      </div>
+    </paper-card>
+
+    <paper-dialog id="dialog">
+      <div class="horizontal justified">
+        <div class="centered-container">
+          <h2>[[activity.activityVerb]] [[activity.activity]]</h2>
+          <iron-image src="[[activity.img]]"></iron-image>
+          <h2>[[activity.specificLocation]]</h2>
+        </div>
+        <p class="description">[[activity.description]]
+        <br />
+        <a href="[[activity.link]]" target="_blank">Find out more information</a>
+        </p>
+      </div>
+    </paper-dialog>
+
+    <iron-ajax
+      id="voteAjax"
+      method="get"
+      url="/api/vote/[[activity._id]]"
+      on-response="_voteReqComplete"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+    <iron-ajax
+      id="chooseAjax"
+      method="get"
+      url="/api/choose/[[activity._id]]"
+      on-response="_chooseReqComplete"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'activity-item',
+
+      properties: {
+
+        activity: Object,
+
+        route: String,
+
+        // // Used to show when one of the child elements has focus. Causes
+        // // paper-material to elevate
+        // active: {
+        //   type: Boolean,
+        //   value: false,
+        //   reflectToAttribute: true
+        // },
+
+        favorite: {
+          type: String,
+          value: 'favorite-no'
+        },
+
+        done: {
+          type: String,
+          value: 'icons:cloud'
+        },
+        doneClass: {
+          type: String,
+          value: 'done-no'
+        }
+
+      },
+
+      _doAjaxRequest: function(e) {
+        var route = this.route;
+        if (route === 'myactivities') {
+          this.$.chooseAjax.generateRequest();
+          return;
+        }
+        this.$.voteAjax.generateRequest();
+      },
+
+      _voteReqComplete: function() {
+        document.querySelector('app-router').go('/feeling');
+      },
+
+      _chooseReqComplete: function() {
+        document.querySelector('app-router').go('/vote');
+      },
+
+      _ajaxError: function() {
+        // TODO: ajax error handling
+      },
+
+      _showVotes: function(route) {
+        if (route === 'myactivities') {
+          return false;
+        }
+        return true;
+      },
+
+      // attached: function() {
+      //   // Delegate focus events with useCapture to figure out if one of our
+      //   // child elements is being focused or if we're about to blur
+      //   // All of this fanciness is for the sake of the raised paper effect
+      //   this.addEventListener('focus', this._activate.bind(this), true);
+      //   this.addEventListener('blur', this._deactivate.bind(this), true);
+      //   this.addEventListener('mouseenter', this._activate.bind(this));
+      //   this.addEventListener('mouseleave', this._deactivate.bind(this));
+      // },
+
+      // detached: function() {
+      //   this.removeEventListener('focus', this._activate.bind(this), true);
+      //   this.removeEventListener('blur', this._deactivate.bind(this), true);
+      //   this.removeEventListener('mouseenter', this._activate.bind(this));
+      //   this.removeEventListener('mouseleave', this._deactivate.bind(this));
+      // },
+
+      // _activate: function() {
+      //   this.active = true;
+      // },
+
+      // _deactivate: function() {
+      //   this.active = false;
+      // },
+
+      // If enter was pressed, unfocus the text input
+      _checkConfirmation: function(e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          e.target.blur();
+        }
+      },
+
+      _toggleDialog: function(e) {
+        this.$.dialog.toggle();
+      },
+
+      _toggleFavorite: function(e) {
+        if (this.favorite === 'favorite-yes') {
+          this.favorite = 'favorite-no';
+        } else {
+          this.favorite = 'favorite-yes';
+        }
+        this.$.favorite.updateStyles();
+      },
+
+      _toggleDone: function(e) {
+        if (this.done === 'icons:cloud') {
+          this.done = 'icons:cloud-done';
+        } else {
+          this.done = 'icons:cloud';
+        }
+        if (this.doneClass === 'done-yes') {
+          this.doneClass = 'done-no';
+        } else {
+          this.doneClass = 'done-yes';
+        }
+        this.$.done.updateStyles();
+      },
+
+    });
+  </script>
+</dom-module>
