@@ -4,3 +4,7 @@ data
 .env
 npm-debug.log
 Gemfile.lock
+bower_components
+.tmp
+.publish/
+
