@@ -3,9 +3,11 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var Account = new Schema({
-  email: { type: String, lowercase: true, trim: true },
-  username: { type: String, lowercase: true, trim: true },
-  password: String,
+  email: { type: String, lowercase: true, trim: true, required: true, unique: true },
+  username: { type: String, lowercase: true, trim: true, required: true, unique: true },
+  password: { type: String, required: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
   city: { type: String, lowercase: true, trim: true },
   country: { type: String, lowercase: true, trim: true },
   yearborn: { type: Number, default: -1 },
