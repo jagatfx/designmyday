@@ -30,6 +30,7 @@ function filterUser(user) {
     username: user.username,
     city: user.city,
     country: user.country,
+    yearborn: user.yearborn,
     age: user.yearborn ? currentYear - user.yearborn : 0,
     lastSeverity: user.lastSeverity,
     lastFeeling: user.lastFeeling,
