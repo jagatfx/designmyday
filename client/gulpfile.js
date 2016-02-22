@@ -39,7 +39,7 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-var DIST = '../server/public/dmd';
+var DIST = '../public/dmd';
 
 var dist = function(subpath) {
   return !subpath ? DIST : path.join(DIST, subpath);

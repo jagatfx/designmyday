@@ -1,6 +1,6 @@
 {
   "name": "designmyday",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "",
   "main": "index.js",
@@ -8,6 +8,7 @@
     "start": "nf start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "postinstall": "cd client && gulp",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jagatfx/designmyday.git"
