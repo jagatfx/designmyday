@@ -110,7 +110,7 @@ header .intro-text .skills {
 }
 
 .message-container {
-  padding-top: 50;
+  padding-top: 50px;
 }
 
 @media(min-width:768px) {
