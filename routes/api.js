@@ -148,8 +148,7 @@ router.post('/activityform', loggedIn, function(req, res) {
   var user = req.user;
   upload(req, res, function (err) {
     if (err) {
-      console.error('upload error when adding actiivty');
-      return res.redirect('/');
+      console.error('upload error when adding actiivty image:'+err);
     }
 
     new Activity({
@@ -160,7 +159,7 @@ router.post('/activityform', loggedIn, function(req, res) {
       country          : user.country,
       description      : req.body.description,
       link             : req.body.link,
-      img              : '/img/uploads/'+req.file.filename,
+      img              : req.file ? '/img/uploads/'+req.file.filename : undefined,
       updated_at       : Date.now()
     }).save( function( err, activity, count ) {
       if (err) {
