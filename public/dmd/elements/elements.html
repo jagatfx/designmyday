@@ -17279,6 +17279,9 @@ if (!window.Promise) {
       .caps {
         text-transform: capitalize;
       }
+      .upper {
+        text-transform: uppercase;
+      }
     </style>
   </template>
 </dom-module>
@@ -21105,23 +21108,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         }
       },
 
-      attached: function() {
-        // Delegate focus events with useCapture to figure out if one of our
-        // child elements is being focused or if we're about to blur
-        // All of this fanciness is for the sake of the raised paper effect
-        this.addEventListener('focus', this._activate.bind(this), true);
-        this.addEventListener('blur', this._deactivate.bind(this), true);
-        this.addEventListener('mouseenter', this._activate.bind(this));
-        this.addEventListener('mouseleave', this._deactivate.bind(this));
-      },
-
-      detached: function() {
-        this.removeEventListener('focus', this._activate.bind(this), true);
-        this.removeEventListener('blur', this._deactivate.bind(this), true);
-        this.removeEventListener('mouseenter', this._activate.bind(this));
-        this.removeEventListener('mouseleave', this._deactivate.bind(this));
-      },
-
       _updateSeverity: function() {
         var value = this.sliderValue;
         // TODO: fix this
@@ -21224,23 +21210,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       },
 
-      attached: function() {
-        // Delegate focus events with useCapture to figure out if one of our
-        // child elements is being focused or if we're about to blur
-        // All of this fanciness is for the sake of the raised paper effect
-        this.addEventListener('focus', this._activate.bind(this), true);
-        this.addEventListener('blur', this._deactivate.bind(this), true);
-        this.addEventListener('mouseenter', this._activate.bind(this));
-        this.addEventListener('mouseleave', this._deactivate.bind(this));
-      },
-
-      detached: function() {
-        this.removeEventListener('focus', this._activate.bind(this), true);
-        this.removeEventListener('blur', this._deactivate.bind(this), true);
-        this.removeEventListener('mouseenter', this._activate.bind(this));
-        this.removeEventListener('mouseleave', this._deactivate.bind(this));
-      },
-
       _doAjaxRequest: function(e) {
         var feeling = e.currentTarget.getAttribute('data-feeling');
         this.$.feelingAjax.url = '/api/feeling/'+feeling;
@@ -21309,9 +21278,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           <div class="user-content">
             <div class="card-content">
               <div class="username">username: [[user.username]]</div>
-              <div class="yearborn">age: [[user.age]]</div>
+              <div class="yearborn">year born: [[user.yearborn]]</div>
               <div class="city caps">city: [[user.city]]</div>
-              <div class="country caps">country: [[user.country]]</div>
+              <div class="country upper">country: [[user.country]]</div>
             </div>
           </div>
         </paper-card>
