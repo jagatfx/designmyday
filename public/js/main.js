@@ -1,3 +1,4 @@
+// source: http://codepen.io/adventuresinmissions/pen/celjI
 jQuery(document).ready(function($){
   var formModal = $('.cd-user-modal'),
     formLogin = formModal.find('#cd-login'),
@@ -51,10 +52,10 @@ jQuery(document).ready(function($){
   });
 
   //show forgot-password form
-  // forgotPasswordLink.on('click', function(event){
-  //   event.preventDefault();
-  //   forgot_password_selected();
-  // });
+  forgotPasswordLink.on('click', function(event){
+    event.preventDefault();
+    forgot_password_selected();
+  });
 
   //back to login from the forgot-password form
   backToLoginLink.on('click', function(event){
@@ -67,7 +68,7 @@ jQuery(document).ready(function($){
     formModal.addClass('is-visible');
     formLogin.addClass('is-selected');
     formSignup.removeClass('is-selected');
-    // formForgotPassword.removeClass('is-selected');
+    formForgotPassword.removeClass('is-selected');
     tabLogin.addClass('selected');
     tabSignup.removeClass('selected');
   }
@@ -77,16 +78,16 @@ jQuery(document).ready(function($){
     formModal.addClass('is-visible');
     formLogin.removeClass('is-selected');
     formSignup.addClass('is-selected');
-    // formForgotPassword.removeClass('is-selected');
+    formForgotPassword.removeClass('is-selected');
     tabLogin.removeClass('selected');
     tabSignup.addClass('selected');
   }
 
-  // function forgot_password_selected(){
-  //  formLogin.removeClass('is-selected');
-  //  formSignup.removeClass('is-selected');
-  //  formForgotPassword.addClass('is-selected');
-  // }
+  function forgot_password_selected(){
+   formLogin.removeClass('is-selected');
+   formSignup.removeClass('is-selected');
+   formForgotPassword.addClass('is-selected');
+  }
 
   //REMOVE THIS - it's just to show error messages
   formLogin.find('input[type="submit"]').on('click', function(event){

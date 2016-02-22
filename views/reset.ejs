@@ -1,0 +1,25 @@
+<% layout( 'layout' ) -%>
+  <section id="reset">
+    <div class="container">
+      <h1>Reset Password</h1>
+      <div id="cd-reset-password-now">
+        <form class="cd-form" role="form" method="post" accept-charset="utf-8">
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="password">New Password</label>
+            <input class="full-width has-padding has-border" name="password" id="password" type="password" placeholder="New password" autofocus>
+            <span class="cd-error-message">Error!</span>
+          </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="confirm">Confirm Password</label>
+            <input class="full-width has-padding has-border" name="confirm" id="confirm" type="password" placeholder="Confirm password" autofocus>
+            <span class="cd-error-message">Error!</span>
+          </p>
+
+          <p class="fieldset">
+            <input class="full-width has-padding" type="submit" value="Update password">
+          </p>
+        </form>
+      </div> <!-- cd-reset-password -->
+    </div>
+  </section>

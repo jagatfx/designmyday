@@ -1,11 +1,10 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var Schema   = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var Account = new Schema({
   email: { type: String, lowercase: true, trim: true, required: true, unique: true },
   username: { type: String, lowercase: true, trim: true, required: true, unique: true },
-  password: { type: String, required: true },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   city: { type: String, lowercase: true, trim: true },
@@ -23,8 +22,6 @@ var Account = new Schema({
   voteReceiveSequence: [Schema.Types.Mixed],
   activitySelectSequence: [Schema.Types.Mixed]
 });
-
-// TODO: track individual votes (date, activity, who voted for, what their feeling was, what their severity was)
 
 Account.plugin(passportLocalMongoose);
 
