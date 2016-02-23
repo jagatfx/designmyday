@@ -21,6 +21,7 @@
   "homepage": "https://github.com/jagatfx/designmyday#readme",
   "dependencies": {
     "async": "^1.5.2",
+    "aws-sdk": "^2.2.37",
     "body-parser": "^1.14.1",
     "cookie-parser": "^1.4.0",
     "crypto": "0.0.3",

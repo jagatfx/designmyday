@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
@@ -25,13 +26,19 @@
       iron-autogrow-textarea {
         margin: 10px 0;
       }
+      .activity-image {
+        --iron-image-width: 208px;
+      }
+      input.upload {
+        padding-top: 15px;
+      }
     </style>
     <div class="page-header">
       <div class="page-title">Add A New Activity</div>
       <div class="centered-container">
         <paper-item>
           <paper-item-body>
-            <div secondary><span class="caps">[[user.city]]</span>, <span class="caps">[[user.country]]</span></div>
+            <div secondary><span class="caps">[[user.city]]</span>, <span class="upper">[[user.country]]</span></div>
           </paper-item-body>
         </paper-item>
       </div>
@@ -55,6 +62,7 @@
               <paper-item value="see">see</paper-item>
               <paper-item value="watch">watch</paper-item>
               <paper-item value="write">write</paper-item>
+              <paper-item value="play">play</paper-item>
             </paper-menu>
           </paper-dropdown-menu>
           <input type="hidden" name="activityVerb" value="{{activityVerb}}">
@@ -63,22 +71,20 @@
         <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
         <paper-input name="link" label="Official link to activity"></paper-input>
         <paper-material elevation="1" class="vertical" class="activity">
-          <div class="horizontal">
-            <paper-item>Upload an image:</paper-item>
-            <paper-input name="image" type="file"></paper-input>
+          <div class="horizontal upload">
+            <paper-item>Upload an image (or leave as default image):</paper-item>
+            <input id="image" name="image" class="upload" type="file" on-change="_onFileChange"></input>
           </div>
+          <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
+          <paper-item class="disclaimer">Please do not upload copyrighted or large images (greater than 2MB in file size).</paper-item>
+          <input type="hidden" id="imgurl" name="imgurl" value="/img/activity-group.gif" />
           <div class="horizontal">
             <paper-item>Description:</paper-item>
-            <iron-autogrow-textarea name="description"></iron-autogrow-textarea>
+            <iron-autogrow-textarea name="description" placeholder="Enter a full description of the activity here"></iron-autogrow-textarea>
           </div>
         </paper-material>
       </paper-material>
-<!--       <div>
-        <label for="image">Select an image to upload:</label>
-        <input type="file" id="image" name="image">
-      </div> -->
       <paper-button class="dmd-btn" raised on-tap="_submitForm">Add Activity</paper-button>
-      <!-- <input type="submit" value="Submit"> -->
     </form>
 
   </template>
@@ -90,11 +96,55 @@
       is: 'page-addactivity',
 
       properties: {
+        preview: {
+          type: String,
+          value: '/img/activity-group.gif'
+        }
       },
 
       _submitForm: function(event) {
         this.$.activityform.submit();
         document.querySelector('app-router').go('/feeling');
+      },
+
+      _onFileChange: function(event) {
+        var files = this.$.image.files;
+        if (files) {
+          this._get_signed_request(files[0]);
+        }
+      },
+
+      _get_signed_request: function(file) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/sign_s3?file_name="+file.name+"&file_type="+file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response = JSON.parse(xhr.responseText);
+              this._upload_file(file, response.signed_request, response.url);
+            }
+            else{
+              alert("Could not get signed URL.");
+            }
+          }
+        }.bind(this);
+        xhr.send();
+      },
+
+      _upload_file: function(file, signed_request, url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", signed_request);
+        xhr.setRequestHeader('x-amz-acl', 'public-read');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            this.$.preview.src = url;
+            this.$.imgurl.value = url;
+          }
+        }.bind(this);
+        xhr.onerror = function() {
+          alert("Could not upload file.");
+        };
+        xhr.send(file);
       },
 
     });
