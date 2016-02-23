@@ -147,56 +147,34 @@ router.post('/activity', loggedIn, function (req, res) {
 
 router.post('/activityform', loggedIn, function(req, res) {
   var user = req.user;
-  new Activity({
-    activityVerb     : req.body.activityVerb,
-    activity         : req.body.activity,
-    specificLocation : req.body.specificLocation,
-    city             : user.city,
-    country          : user.country,
-    description      : req.body.description,
-    link             : req.body.link,
-    img              : req.body.imgurl,
-    updated_at       : Date.now()
-  }).save( function( err, activity, count ) {
-    if (err) {
-      return res.json( {result: err} );
-    } else {
-      // TODO: add vote for this new activity
-      console.log('saved new activity: '+activity.link);
-      return processActivityVote(req, res, activity._id);
-    }
+  upload(req, res, function (err) {
+    // // we expect error here because not actually sending image
+    // // but using upload to parse out multipart form
+    // if (err) {
+    //   console.error('upload error when adding activity image:'+err);
+    // }
+
+    new Activity({
+      activityVerb     : req.body.activityVerb,
+      activity         : req.body.activity,
+      specificLocation : req.body.specificLocation,
+      city             : user.city,
+      country          : user.country,
+      description      : req.body.description,
+      link             : req.body.link,
+      img              : req.body.imgurl,
+      updated_at       : Date.now()
+    }).save( function( err, activity, count ) {
+      if (err) {
+        return res.json( {result: err} );
+      } else {
+        // TODO: add vote for this new activity
+        console.log('saved new activity: '+activity.link);
+        return processActivityVote(req, res, activity._id);
+      }
+    });
   });
 });
-
-// // code for using local uploading
-// router.post('/activityform', loggedIn, function(req, res) {
-//   var user = req.user;
-//   upload(req, res, function (err) {
-//     if (err) {
-//       console.error('upload error when adding actiivty image:'+err);
-//     }
-
-//     new Activity({
-//       activityVerb     : req.body.activityVerb,
-//       activity         : req.body.activity,
-//       specificLocation : req.body.specificLocation,
-//       city             : user.city,
-//       country          : user.country,
-//       description      : req.body.description,
-//       link             : req.body.link,
-//       img              : req.file ? '/img/uploads/'+req.file.filename : undefined,
-//       updated_at       : Date.now()
-//     }).save( function( err, activity, count ) {
-//       if (err) {
-//         return res.json( {result: err} );
-//       } else {
-//         // TODO: add vote for this new activity
-//         console.log('saved new activity: '+activity.link);
-//         return processActivityVote(req, res, activity._id);
-//       }
-//     });
-//   });
-// });
 
 router.post('/activity/:id', loggedIn, function (req, res) {
   Activity.findById(req.params.id, function(err, activity) {
