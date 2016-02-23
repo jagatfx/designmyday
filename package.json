@@ -6,9 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nf start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd client && gulp"
   },
-  "postinstall": "cd client && gulp",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jagatfx/designmyday.git"
