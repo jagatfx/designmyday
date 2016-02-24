@@ -21650,7 +21650,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     <div>
       <vote-head user="{{user}}">
       </vote-head>
-      <activity-list route="{{route}}" activities="{{activities}}">
+      <activity-list route="{{route}}" activities="{{activities}}" user="{{user}}">
       </activity-list>
     </div>
   </template>
@@ -21681,7 +21681,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       <div class="page-title">Your Tribe Suggests</div>
       <div class="centered-container">you can help feeling [[user.lastFeeling]] by doing one of these activities (click your favorite)</div>
     </div>
-    <activity-list route="{{route}}" activities="{{activities}}">
+    <activity-list route="{{route}}" activities="{{activities}}" user="{{user}}">
     </activity-list>
 
   </template>
@@ -24732,7 +24732,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     <div class="activity-container horizontal layout wrap">
       <template is="dom-repeat" items="{{activities}}" as="activity">
-        <activity-item activity="{{activity}}" route="{{route}}">
+        <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
         </activity-item>
       </template>
     </div>
@@ -25368,6 +25368,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     <iron-ajax id="chooseAjax" method="get" url="/api/choose/[[activity._id]]" on-response="_chooseReqComplete" on-error="_ajaxError">
     </iron-ajax>
 
+    <iron-ajax id="favoriteAjax" method="post" url="/api/favorite/[[activity._id]]" on-error="_ajaxError">
+    </iron-ajax>
+
+    <iron-ajax id="completeAjax" method="post" url="/api/complete/[[activity._id]]" on-error="_ajaxError">
+    </iron-ajax>
+
   </template>
 
   <script>
@@ -25380,15 +25386,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
         activity: Object,
 
-        route: String,
+        user: {
+          type: Object,
+          notify: true
+        },
 
-        // // Used to show when one of the child elements has focus. Causes
-        // // paper-material to elevate
-        // active: {
-        //   type: Boolean,
-        //   value: false,
-        //   reflectToAttribute: true
-        // },
+        route: String,
 
         favorite: {
           type: String,
@@ -25404,6 +25407,22 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           value: 'done-no'
         }
 
+      },
+
+      ready: function() {
+        for (i = 0; i < this.user.favorites.length; i++) {
+          if (this.user.favorites[i] === this.activity._id) {
+            this.favorite = 'favorite-yes';
+            break;
+          }
+        }
+        for (i = 0; i < this.user.completes.length; i++) {
+          if (this.user.completes[i] === this.activity._id) {
+            this.done = 'icons:cloud-done';
+            this.doneClass = 'done-yes';
+            break;
+          }
+        }
       },
 
       _doAjaxRequest: function(e) {
@@ -25434,31 +25453,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         return true;
       },
 
-      // attached: function() {
-      //   // Delegate focus events with useCapture to figure out if one of our
-      //   // child elements is being focused or if we're about to blur
-      //   // All of this fanciness is for the sake of the raised paper effect
-      //   this.addEventListener('focus', this._activate.bind(this), true);
-      //   this.addEventListener('blur', this._deactivate.bind(this), true);
-      //   this.addEventListener('mouseenter', this._activate.bind(this));
-      //   this.addEventListener('mouseleave', this._deactivate.bind(this));
-      // },
-
-      // detached: function() {
-      //   this.removeEventListener('focus', this._activate.bind(this), true);
-      //   this.removeEventListener('blur', this._deactivate.bind(this), true);
-      //   this.removeEventListener('mouseenter', this._activate.bind(this));
-      //   this.removeEventListener('mouseleave', this._deactivate.bind(this));
-      // },
-
-      // _activate: function() {
-      //   this.active = true;
-      // },
-
-      // _deactivate: function() {
-      //   this.active = false;
-      // },
-
       // If enter was pressed, unfocus the text input
       _checkConfirmation: function(e) {
         if (e.keyCode === 13) {
@@ -25472,19 +25466,29 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       },
 
       _toggleFavorite: function(e) {
+        // TODO: do view updates on ajax success, not here
         if (this.favorite === 'favorite-yes') {
           this.favorite = 'favorite-no';
+          this.$.favoriteAjax.method = 'delete';
+          this.$.favoriteAjax.generateRequest();
         } else {
           this.favorite = 'favorite-yes';
+          this.$.favoriteAjax.method = 'post';
+          this.$.favoriteAjax.generateRequest();
         }
         this.$.favorite.updateStyles();
       },
 
       _toggleDone: function(e) {
+        // TODO: do view updates on ajax success, not here
         if (this.done === 'icons:cloud') {
           this.done = 'icons:cloud-done';
+          this.$.completeAjax.method = 'post';
+          this.$.completeAjax.generateRequest();
         } else {
           this.done = 'icons:cloud';
+          this.$.completeAjax.method = 'delete';
+          this.$.completeAjax.generateRequest();
         }
         if (this.doneClass === 'done-yes') {
           this.doneClass = 'done-no';

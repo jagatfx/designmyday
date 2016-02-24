@@ -17,6 +17,8 @@ var Account = new Schema({
   lastFeeling: { type: String, default: 'fine', lowercase: true, trim: true },
   lastSeverity: { type: Number, default: 5 },
   lastChosenActivity: { type: String, default: '' },
+  favorites: [String],
+  completes: [String],
   _voteUser: { type: Schema.Types.ObjectId, ref: 'Account' },
   voteCastSequence: [Schema.Types.Mixed],
   voteReceiveSequence: [Schema.Types.Mixed],

@@ -36,7 +36,9 @@ function filterUser(user) {
     lastFeeling: user.lastFeeling,
     lastChosenActivity: user.lastChosenActivity,
     _voteUser: user._voteUser,
-    activitySelectSequence: user.activitySelectSequence
+    activitySelectSequence: user.activitySelectSequence,
+    favorites: user.favorites,
+    completes: user.completes
   };
 }
 
@@ -427,5 +429,57 @@ router.get('/choose/:id', loggedIn, function (req, res) {
     }
   });
 });
+
+router.post('/favorite/:id', loggedIn, function (req, res) {
+  var user = req.user;
+  var activityId = req.params.id;
+  user.favorites.push(activityId);
+  user.save( function ( err, savedAccount, count ) {
+    if (err) {
+      return res.json( {result: err} );
+    } else {
+      console.log('added '+activityId+' to user:'+user._id);
+      return res.json( {result: 'OK'} );
+    }
+  });
+});
+
+router.delete('/favorite/:id', loggedIn, function (req, res) {
+  var user = req.user;
+  var activityId = req.params.id;
+  Account.findOneAndUpdate({_id: user._id}, { $pull: {favorites: activityId} }, function(err, data) {
+    if (err) {
+      return res.json( {result: err} );
+    } else {
+      return res.json( {result: 'OK'} );
+    }
+  });
+});
+
+router.post('/complete/:id', loggedIn, function (req, res) {
+  var user = req.user;
+  var activityId = req.params.id;
+  user.completes.push(activityId);
+  user.save( function ( err, savedAccount, count ) {
+    if (err) {
+      return res.json( {result: err} );
+    } else {
+      return res.json( {result: 'OK'} );
+    }
+  });
+});
+
+router.delete('/complete/:id', loggedIn, function (req, res) {
+  var user = req.user;
+  var activityId = req.params.id;
+  Account.findOneAndUpdate({_id: user._id}, { $pull: {completes: activityId} }, function(err, data) {
+    if (err) {
+      return res.json( {result: err} );
+    } else {
+      return res.json( {result: 'OK'} );
+    }
+  });
+});
+
 
 module.exports = router;
