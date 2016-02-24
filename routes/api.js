@@ -163,6 +163,7 @@ router.post('/activityform', loggedIn, function(req, res) {
       description      : req.body.description,
       link             : req.body.link,
       img              : req.body.imgurl,
+      addedBy          : user.username,
       updated_at       : Date.now()
     }).save( function( err, activity, count ) {
       if (err) {

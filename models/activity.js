@@ -16,6 +16,7 @@ var Activity = new Schema({
   targetFeelings: { type: String, default: '' },
   restrictions: { type: String, default: '' },
   activated: { type: Boolean, default: false },
+  addedBy: { type: String, default: '' },
   numVotes: { type: Number, default: 0 },
   ageu18Votes: { type: Number, default: 0 },
   age1824Votes: { type: Number, default: 0 },
