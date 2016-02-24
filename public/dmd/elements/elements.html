@@ -24607,27 +24607,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
       <paper-material elevation="1" class="activity">
-        <div class="horizontal">
-          <paper-item>Choose an action:</paper-item>
-          <paper-dropdown-menu>
-            <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{activityVerb}}">
-              <paper-item value="default">What action?</paper-item>
-              <paper-item value="take">take</paper-item>
-              <paper-item value="visit">visit</paper-item>
-              <paper-item value="go for">go_for</paper-item>
-              <paper-item value="go on">go_on</paper-item>
-              <paper-item value="go play">go_play</paper-item>
-              <paper-item value="get">get</paper-item>
-              <paper-item value="make">make</paper-item>
-              <paper-item value="learn">learn</paper-item>
-              <paper-item value="see">see</paper-item>
-              <paper-item value="watch">watch</paper-item>
-              <paper-item value="write">write</paper-item>
-              <paper-item value="play">play</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
-          <input type="hidden" name="activityVerb" value="{{activityVerb}}">
-        </div>
+        <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
         <paper-input name="activity" label="What is the activity?"></paper-input>
         <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
         <paper-input name="link" label="Official link to activity"></paper-input>
