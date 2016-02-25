@@ -252,17 +252,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       ready: function() {
-        for (i = 0; i < this.user.favorites.length; i++) {
-          if (this.user.favorites[i] === this.activity._id) {
-            this.favorite = 'favorite-yes';
-            break;
+        if (this.user) {
+          for (i = 0; i < this.user.favorites.length; i++) {
+            if (this.user.favorites[i] === this.activity._id) {
+              this.favorite = 'favorite-yes';
+              break;
+            }
           }
-        }
-        for (i = 0; i < this.user.completes.length; i++) {
-          if (this.user.completes[i] === this.activity._id) {
-            this.done = 'icons:cloud-done';
-            this.doneClass = 'done-yes';
-            break;
+          for (i = 0; i < this.user.completes.length; i++) {
+            if (this.user.completes[i] === this.activity._id) {
+              this.done = 'icons:cloud-done';
+              this.doneClass = 'done-yes';
+              break;
+            }
           }
         }
       },
