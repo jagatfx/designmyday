@@ -25338,12 +25338,14 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           <div>done this</div>
         </span>
 
-        <a href="[[activity.link]]" target="_blank">
-          <span class="container">
-            <paper-icon-button class="link" icon="icons:link"></paper-icon-button>
-            <div>link</div>
-          </span>
-        </a>
+        <template is="dom-if" if="{{activity.link}}">
+          <a href="[[activity.link]]" target="_blank">
+            <span class="container">
+              <paper-icon-button class="link" icon="icons:link"></paper-icon-button>
+              <div>link</div>
+            </span>
+          </a>
+        </template>
       </div>
     </paper-card>
 
@@ -25356,7 +25358,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         </div>
         <p class="description">[[activity.description]]
         <br>
-        <a href="[[activity.link]]" target="_blank">Find out more information</a>
+        <template is="dom-if" if="{{activity.link}}">
+          <a href="{{activity.link}}" target="_blank">Find out more information</a>
+        </template>
         </p>
       </div>
     </paper-dialog>
