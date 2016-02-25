@@ -84,7 +84,7 @@ router.get('/activity', loggedIn, function(req, res, next) {
   if (results) {
     maxResults = results;
   }
-  Activity.find(findParam).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
+  Activity.find().or([{city: city},{city: 'n/a'}]).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
     if (err) {
       return res.json( {result: err} );
     }
