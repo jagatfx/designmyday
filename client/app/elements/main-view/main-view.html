@@ -1,19 +1,5 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!-- Iron elements -->
-<link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-
+<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-
-<!-- Paper elements -->
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -74,6 +60,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #FFF;
       }
 
+      #mainToolbar a {
+        text-decoration: none;
+      }
+
       #mainToolbar .middle-container {
         height: 100%;
         margin-left: 48px;
@@ -98,12 +88,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       activity-list {
         margin: 0 auto 32px;
         max-width: 1200px;
-      }
-
-      .centered {
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
       }
 
       paper-icon-button.giant {
@@ -138,13 +122,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-drawer-panel id="paperDrawerPanel">
 
       <div drawer>
-
-        <!-- Drawer Toolbar -->
         <paper-toolbar class="custom" id="drawerToolbar"></paper-toolbar>
 
-        <!-- Drawer Content -->
         <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
-          <!-- Give anchors a tabindex to work around https://github.com/PolymerElements/iron-menu-behavior/issues/19 -->
 
           <a is="pushstate-anchor" data-route="profile" href="#/profile" tabindex="-1" on-click="closeDrawer">
             <span>Profile</span>
@@ -175,33 +155,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-header-panel main>
 
         <!-- Main Toolbar -->
-        <paper-toolbar class="custom" id="mainToolbar">
+        <paper-toolbar class="custom end-justified" id="mainToolbar">
           <paper-icon-button id="paperToggle" icon="icons:menu" paper-drawer-toggle></paper-icon-button>
-          <span class="flex"></span>
 
-          <!-- Application name -->
-          <div class="middle middle-container center horizontal layout flex">
-
-            <div class="app-name flex">
-              <a data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
-                <paper-icon-button class="toolbar"
-                     src="/img/dmd-logo.jpg"
-                     alt="Design My Day"
-                     title="Design My Day">
-                </paper-icon-button>
-              </a>
-            </div>
-
-            <a href="/logout">
-              <paper-button class="dmd-btn">Logout</paper-button>
+          <div class="app-name">
+            <a data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
+              <paper-icon-button class="toolbar"
+                   src="/img/dmd-logo.jpg"
+                   alt="Design My Day"
+                   title="Design My Day">
+              </paper-icon-button>
             </a>
-
-            <a class="profile-icon" href="#/profile">
-              <iron-icon icon="icons:account-circle"></iron-icon>
-            </a>
-
           </div>
 
+          <span class="flex-child"></span>
+
+          <a class="flex-center-align" href="/logout">
+            <paper-button class="dmd-btn">Logout</paper-button>
+          </a>
+
+          <a class="profile-icon flex-center-align" href="#/profile">
+            <iron-icon icon="icons:account-circle"></iron-icon>
+          </a>
         </paper-toolbar>
 
         <!-- Main Content -->

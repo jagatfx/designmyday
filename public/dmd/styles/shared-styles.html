@@ -35,6 +35,13 @@
       .justified {
         @apply(--layout-justified);
       }
+      .end-justified {
+        @apply(--layout-end-justified);
+      }
+
+      .wrap {
+        @apply(--layout-wrap);
+      }
 
       paper-button.dmd-btn {
         --paper-button-ink-color: var(--primary-text-color);
@@ -66,5 +73,12 @@
       }
       .disclaimer {
         font-style: italic;
+      }
+      .flex-center-align {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+      .flex-child {
+        @apply(--layout-flex);
       }
     </style></template></dom-module>
