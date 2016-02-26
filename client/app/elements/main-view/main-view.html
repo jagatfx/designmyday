@@ -119,9 +119,9 @@
 
     </style>
 
-    <paper-drawer-panel id="paperDrawerPanel">
+    <paper-drawer-panel id="paperDrawerPanel" drawer-width="0">
 
-      <div drawer>
+<!--       <div drawer>
         <paper-toolbar class="custom" id="drawerToolbar"></paper-toolbar>
 
         <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
@@ -150,13 +150,13 @@
             <span>MyActivities</span>
           </a>
         </paper-menu>
-      </div>
+      </div> -->
 
       <paper-header-panel main>
 
         <!-- Main Toolbar -->
         <paper-toolbar class="custom end-justified" id="mainToolbar">
-          <paper-icon-button id="paperToggle" icon="icons:menu" paper-drawer-toggle></paper-icon-button>
+          <!-- <paper-icon-button id="paperToggle" icon="icons:menu" paper-drawer-toggle></paper-icon-button> -->
 
           <div class="app-name">
             <a data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
@@ -224,17 +224,22 @@
 
         route: String,
 
-        activities: Array
+        activities: Array,
+
+        sideMenuVisible: {
+          type: Boolean,
+          value: false
+        }
 
       },
 
       // Close drawer after menu item is selected if drawerPanel is narrow
-      closeDrawer: function() {
-        var drawerPanel = this.$.paperDrawerPanel;
-        if (drawerPanel.narrow) {
-          drawerPanel.closeDrawer();
-        }
-      },
+      // closeDrawer: function() {
+      //   var drawerPanel = this.$.paperDrawerPanel;
+      //   if (drawerPanel.narrow) {
+      //     drawerPanel.closeDrawer();
+      //   }
+      // },
 
     });
   </script>

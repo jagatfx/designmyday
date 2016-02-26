@@ -17149,44 +17149,15 @@ if (!window.Promise) {
 
     </style>
 
-    <paper-drawer-panel id="paperDrawerPanel">
+    <paper-drawer-panel id="paperDrawerPanel" drawer-width="0">
 
-      <div drawer="">
-        <paper-toolbar class="custom" id="drawerToolbar"></paper-toolbar>
 
-        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
-
-          <a is="pushstate-anchor" data-route="profile" href="#/profile" tabindex="-1" on-click="closeDrawer">
-            <span>Profile</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="addactivity" href="#/addactivity" tabindex="-1" on-click="closeDrawer">
-            <span>Add Activity</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
-            <span>Vote</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="feeling" href="#/feeling" tabindex="-1" on-click="closeDrawer">
-            <span>Feeling</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="severity" href="#/severity" tabindex="-1" on-click="closeDrawer">
-            <span>Severity</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="myactivities" href="#/myactivities" tabindex="-1" on-click="closeDrawer">
-            <span>MyActivities</span>
-          </a>
-        </paper-menu>
-      </div>
 
       <paper-header-panel main="">
 
         
         <paper-toolbar class="custom end-justified" id="mainToolbar">
-          <paper-icon-button id="paperToggle" icon="icons:menu" paper-drawer-toggle=""></paper-icon-button>
+          
 
           <div class="app-name">
             <a data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
@@ -17241,17 +17212,22 @@ if (!window.Promise) {
 
         route: String,
 
-        activities: Array
+        activities: Array,
+
+        sideMenuVisible: {
+          type: Boolean,
+          value: false
+        }
 
       },
 
       // Close drawer after menu item is selected if drawerPanel is narrow
-      closeDrawer: function() {
-        var drawerPanel = this.$.paperDrawerPanel;
-        if (drawerPanel.narrow) {
-          drawerPanel.closeDrawer();
-        }
-      },
+      // closeDrawer: function() {
+      //   var drawerPanel = this.$.paperDrawerPanel;
+      //   if (drawerPanel.narrow) {
+      //     drawerPanel.closeDrawer();
+      //   }
+      // },
 
     });
   </script>
