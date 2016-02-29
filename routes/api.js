@@ -37,6 +37,8 @@ function filterUser(user) {
     lastChosenActivity: user.lastChosenActivity,
     _voteUser: user._voteUser,
     activitySelectSequence: user.activitySelectSequence,
+    votesCast: user.votesCast,
+    votesReceived: user.votesReceived,
     favorites: user.favorites,
     completes: user.completes
   };

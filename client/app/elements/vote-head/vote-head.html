@@ -5,6 +5,8 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 
 <!-- Custom elements -->
 <link rel="import" href="../../styles/shared-styles.html">
@@ -68,6 +70,12 @@
       .username {
         font-weight: bold;
       }
+      .step {
+        font-weight: bold;
+      }
+      .modal-header {
+        font-weight: bold;
+      }
     </style>
 
     <div>
@@ -95,12 +103,50 @@
         </paper-card>
       </div>
 
-      <div class="centered-container horizontal">
+      <div class="centered-container">
         <a href="#/addactivity">
           <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
         </a>
       </div>
     </div>
+
+    <span>{{_showIntroDialog(user)}}</span>
+    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <div class="centered-container">
+        <p><span class="modal-header">Welcome to Design My Day!</span><br />
+        Actionable ideas from a trusted community to brighten your day and help others do the same.<br />
+        Here's how it works in 3 easy steps:</p>
+      </div>
+      <paper-dialog-scrollable>
+        <div class="horizontal centered-container wrap">
+          <div>
+            <h1>1</h1>
+            <p class="step">Help a member of your local tribe<br />
+            by voting for the activity<br />
+            you think they should do today.</p>
+            <iron-image src="/img/uploads/good-idea.jpg"></iron-image>
+          </div>
+          <div>
+            <h1>2</h1>
+            <p class="step">You receive ideas<br />
+            for what to do today<br />
+            based on how you are feeling.</p>
+            <iron-image src="/img/uploads/get-suggestion.jpg"></iron-image>
+          </div>
+          <div>
+            <h1>3</h1>
+            <p class="step">Go do something<br />
+            feel better!<br />
+            <br />
+            </p>
+            <iron-image src="/img/uploads/do-something-feel-better.jpg"></iron-image>
+          </div>
+        </div>
+        <div class="buttons">
+          <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap me to continue</paper-button>
+        </div>
+      </paper-dialog-scrollable>
+    </paper-dialog>
 
   </template>
   <script>
@@ -111,11 +157,18 @@
       properties: {
 
         activity: Object,
+        user: Object
 
-        user: {
-          notify: true
+      },
+
+      _showIntroDialog: function(user) {
+        if (user && user.votesCast < 1) {
+          this.$.modal.open();
         }
+      },
 
+      _dialogContinue: function() {
+        this.$.modal.close();
       },
 
     });
