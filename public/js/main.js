@@ -1,15 +1,34 @@
 // source: http://codepen.io/adventuresinmissions/pen/celjI
-jQuery(document).ready(function($){
-  var formModal = $('.cd-user-modal'),
-    formLogin = formModal.find('#cd-login'),
-    formSignup = formModal.find('#cd-signup'),
-    formForgotPassword = formModal.find('#cd-reset-password'),
-    formModalTab = $('.cd-switcher'),
-    tabLogin = formModalTab.children('li').eq(0).children('a'),
-    tabSignup = formModalTab.children('li').eq(1).children('a'),
-    forgotPasswordLink = formLogin.find('.cd-form-bottom-message a'),
-    backToLoginLink = formForgotPassword.find('.cd-form-bottom-message a'),
-    mainNav = $('.main-nav');
+jQuery(document).ready(function($) {
+  var formModal = $('.cd-user-modal');
+  var formLogin = formModal.find('#cd-login');
+  var formForgotPassword = formModal.find('#cd-reset-password');
+  var formModalTab = $('.cd-switcher');
+  var tabLogin = formModalTab.children('li').eq(0).children('a');
+  var tabSignup = formModalTab.children('li').eq(1).children('a');
+  var forgotPasswordLink = formLogin.find('.cd-form-bottom-message a');
+  var backToLoginLink = formForgotPassword.find('.cd-form-bottom-message a');
+  var mainNav = $('.main-nav');
+
+  var validPassRegex=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,20}$/;
+  var validColor = "#66cc66";
+  var invalidColor = "#ff6666";
+
+  var formSignup = formModal.find('#cd-signup');
+  var signupPasswordInput = formSignup.find('#password');
+  var signupConfirmInput = formSignup.find('#confirm');
+  var signupSubmitButton = formSignup.find('#signup-submit');
+  var origSignupButtonBackground = signupSubmitButton.css('backgroundColor');
+  signupSubmitButton.prop("disabled", true);
+  signupSubmitButton.css('backgroundColor', '#ccc');
+
+  var formResetPassword = $('#cd-reset-password-now');
+  var forgotPasswordInput = formResetPassword.find('#password');
+  var forgotConfirmInput = formResetPassword.find('#confirm');
+  var forgotResetButton = formResetPassword.find('#pw-reset-button');
+  var origResetButtonBackground = forgotResetButton.css('backgroundColor');
+  forgotResetButton.prop("disabled", true);
+  forgotResetButton.css('backgroundColor', '#ccc');
 
   //open modal
   mainNav.on('click', function(event){
@@ -29,10 +48,10 @@ jQuery(document).ready(function($){
   });
   //close modal when clicking the esc keyboard button
   $(document).keyup(function(event){
-      if(event.which=='27'){
-        formModal.removeClass('is-visible');
-      }
-    });
+    if(event.which=='27'){
+      formModal.removeClass('is-visible');
+    }
+  });
 
   //switch from a tab to another
   formModalTab.on('click', function(event) {
@@ -89,6 +108,62 @@ jQuery(document).ready(function($){
    formForgotPassword.addClass('is-selected');
   }
 
+  function validateSignupPassword() {
+    if (!signupPasswordInput.val().match(validPassRegex)) {
+      signupConfirmInput.css('backgroundColor', invalidColor);
+      return false;
+    } else {
+      if (signupPasswordInput.val() === signupConfirmInput.val()) {
+        signupConfirmInput.css('backgroundColor', validColor);
+        return true;
+      } else {
+        signupConfirmInput.css('backgroundColor', invalidColor);
+        return false;
+      }
+    }
+  }
+
+  function validateSignupEmail() {
+    var validEmailRegex = /.+@.+/;
+    if (formSignup.find('#email').val().match(validEmailRegex)) {
+      return true;
+    }
+    return false;
+  }
+
+  function validateSignupForm() {
+    var isValid = validateSignupPassword() && validateSignupEmail();
+    if (isValid) {
+      signupSubmitButton.prop("disabled", false);
+      signupSubmitButton.css('backgroundColor', origSignupButtonBackground);
+    } else {
+      signupSubmitButton.prop("disabled", true);
+      signupSubmitButton.css('backgroundColor', '#ccc');
+    }
+  }
+
+  formSignup.keyup(function() {
+    validateSignupForm();
+  });
+
+  formResetPassword.keyup(function() {
+    if (!forgotPasswordInput.val().match(validPassRegex)) {
+      forgotConfirmInput.css('backgroundColor', invalidColor);
+      forgotResetButton.prop("disabled", true);
+      forgotResetButton.css('backgroundColor', '#ccc');
+    } else {
+      if (forgotPasswordInput.val() === forgotConfirmInput.val()) {
+        forgotConfirmInput.css('backgroundColor', validColor);
+        forgotResetButton.prop("disabled", false);
+        forgotResetButton.css('backgroundColor', origResetButtonBackground);
+      } else {
+        forgotConfirmInput.css('backgroundColor', invalidColor);
+        forgotResetButton.prop("disabled", true);
+        forgotResetButton.css('backgroundColor', '#ccc');
+      }
+    }
+  });
+
   //REMOVE THIS - it's just to show error messages
   formLogin.find('input[type="submit"]').on('click', function(event){
     // event.preventDefault();
@@ -125,7 +200,6 @@ jQuery(document).ready(function($){
   }
 
 });
-
 
 //credits http://css-tricks.com/snippets/jquery/move-cursor-to-end-of-textarea-or-input/
 jQuery.fn.putCursorAtEnd = function() {

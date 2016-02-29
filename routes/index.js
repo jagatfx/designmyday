@@ -24,7 +24,7 @@ function loggedIn(req, res, next) {
 
 router.get('/', function (req, res) {
   if (req.user && req.user.isAdmin) {
-    return res.redirect('/dmd');
+    return res.redirect('/dmd/#/vote');
   }
   res.render('index', { user : req.user });
 });
@@ -47,6 +47,7 @@ router.get('/dmd', loggedIn, function(req, res, next) {
 
 router.post('/register', function(req, res) {
   console.log('got /register POST');
+  // TODO: validate register input
   Account.register(new Account({
     username : req.body.username,
     email: req.body.email,
@@ -194,15 +195,28 @@ router.post('/reset/:token', function(req, res) {
       Account.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
         if (!user) {
           req.flash('error', 'Password reset token is invalid or has expired.');
-          return res.redirect('back');
+          return res.redirect('/');
         }
-        user.setPassword(req.body.password, function(err, user, passwordErr) {
+        var password = req.body.password;
+        var confirm = req.body.confirm;
+        if (password !== confirm) {
+          console.error('Requested passwords do not match.');
+          req.flash('error', 'Requested passwords do not match.');
+          return res.redirect('/');
+        }
+        user.setPassword(password, function(err, user, passwordErr) {
+          if (err || !user) {
+            req.flash('error', 'Invalid password requested.');
+            return res.redirect('/');
+          }
           user.resetPasswordToken = undefined;
           user.resetPasswordExpires = undefined;
 
           user.save(function(err) {
             if (err) {
               console.error('/reset save error:'+err);
+              req.flash('error', 'Error saving new password.');
+              return res.redirect('/');
             }
             req.logIn(user, function(err) {
               done(err, user);
@@ -228,41 +242,41 @@ router.post('/reset/:token', function(req, res) {
           'This is a confirmation that the password for your account with email ' + user.email + ' has just been changed.\n'
       };
       transporter.sendMail(mailOptions, function(err, response) {
-        req.flash('success', 'Success! Your password has been changed.');
         done(err);
       });
     }
   ], function(err) {
     if (err) {
       console.error('/reset error:'+err);
+      return res.redirect('/');
     }
-    res.redirect('/');
+    res.redirect('/dmd/#/vote');
   });
 });
 
 router.get('/sign_s3', function(req, res){
-    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-    var s3 = new aws.S3();
-    var s3_params = {
-        Bucket: S3_BUCKET,
-        Key: req.query.file_name,
-        Expires: 60,
-        ContentType: req.query.file_type,
-        ACL: 'public-read'
-    };
-    s3.getSignedUrl('putObject', s3_params, function(err, data){
-        if(err){
-            console.error(err);
-        }
-        else{
-            var return_data = {
-                signed_request: data,
-                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
-            };
-            res.write(JSON.stringify(return_data));
-            res.end();
-        }
-    });
+  aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+  var s3 = new aws.S3();
+  var s3_params = {
+    Bucket: S3_BUCKET,
+    Key: req.query.file_name,
+    Expires: 60,
+    ContentType: req.query.file_type,
+    ACL: 'public-read'
+  };
+  s3.getSignedUrl('putObject', s3_params, function(err, data){
+    if(err){
+      console.error(err);
+    }
+    else{
+      var return_data = {
+        signed_request: data,
+        url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
+      };
+      res.write(JSON.stringify(return_data));
+      res.end();
+    }
+  });
 });
 
 /////////////////

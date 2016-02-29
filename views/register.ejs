@@ -16,6 +16,12 @@
             <span class="cd-error-message">Error!</span>
           </p>
           <p class="fieldset">
+            <label class="image-replace cd-password" for="confirm">Confirm Password:</label>
+            <input type="password" name="confirm" class="full-width has-padding has-border" id="confirm" placeholder="confirm password" required />
+            <span class="cd-error-message">Error!</span>
+          </p>
+          <p style="font-style: italic;">Password must be between 7 and 20 characters and contain at least one numeric digit and at least one special character.</p>
+          <p class="fieldset">
             <label class="image-replace cd-city" for="city">City:</label>
             <input type="text" name="city" class="full-width has-padding has-border" id="city" placeholder="city" required />
             <span class="cd-error-message">Error!</span>
@@ -281,7 +287,7 @@
             <span class="cd-error-message">Error!</span>
           </p>
           <p class="fieldset">
-            <input type="submit" value="Sign Up" class="full-width has-padding" />
+            <input id="signup-submit" type="submit" value="Sign Up" class="full-width has-padding" />
           </p>
         </form>
 
