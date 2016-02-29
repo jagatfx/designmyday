@@ -30,6 +30,7 @@
       .range-select {
         @apply(--layout-horizontal);
         @apply(--layout-center-justified);
+        @apply(--layout-center);
         width: 80%;
         padding: 10px;
         margin: 0 auto;
@@ -41,22 +42,21 @@
       .flexchild paper-slider {
         width: 100%;
       }
-      .vertical-middle {
-        margin: 20px auto;
-      }
       .severity-slider {
         --paper-slider-active-color: var(--accent-color);
         --paper-slider-knob-color: #000;
       }
-
+      .slider-label {
+        font-size: 10px;
+      }
     </style>
 
     <div>
       <div class="page-header">
         <div class="page-title">How strong is your feeling?</div>
       </div>
-      <div class="range-select vertical-middle">
-        <div>A LITTLE</div>
+      <div class="range-select">
+        <div class="slider-label">A LITTLE</div>
         <div class="flexchild">
           <paper-slider class="severity-slider"
                         min="1"
@@ -66,7 +66,7 @@
                         on-change="_updateSeverity">
           </paper-slider>
         </div>
-        <div>A LOT</div>
+        <div class="slider-label">A LOT</div>
       </div>
       <div class="range-select">
         <div>

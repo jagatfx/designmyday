@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 
@@ -76,6 +77,23 @@
       .modal-header {
         font-weight: bold;
       }
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      .severity-slider {
+        --paper-slider-active-color: var(--accent-color);
+        --paper-slider-disabled-active-color: var(--accent-color);
+        --paper-slider-knob-color: #000;
+        --paper-slider-disabled-knob-color: #000;
+      }
+      .slider-label {
+        font-size: 10px;
+      }
     </style>
 
     <div>
@@ -92,6 +110,19 @@
                 <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
               </div>
               <iron-image src="/img/[[user.votee.lastFeeling]].gif"></iron-image>
+              <div class="range-select">
+                <div class="slider-label">A LITTLE</div>
+                <div class="flexchild">
+                  <paper-slider class="severity-slider"
+                                min="1"
+                                max="10"
+                                value="{{user.votee.lastSeverity}}"
+                                step="0.1"
+                                disabled>
+                  </paper-slider>
+                </div>
+                <div class="slider-label">A LOT</div>
+              </div>
               <div>
                 Help give this person an idea of what to do today.
               </div>
