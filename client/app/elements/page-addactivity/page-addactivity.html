@@ -70,6 +70,13 @@
       </div>
     </form>
 
+    <paper-dialog id="modal" modal>
+      <p>Your suggested activity has been added successfully! Now it is time for you to receive a suggested activity for today.</p>
+      <div class="buttons">
+        <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap me to continue</paper-button>
+      </div>
+    </paper-dialog>
+
   </template>
   <script>
   (function() {
@@ -87,6 +94,10 @@
 
       _submitForm: function(event) {
         this.$.activityform.submit();
+        this.$.modal.open();
+      },
+
+      _dialogContinue: function() {
         document.querySelector('app-router').go('/feeling');
       },
 
