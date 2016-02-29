@@ -69,15 +69,18 @@ router.post('/login', function(req, res) {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
       console.error(err);
+      req.flash('error', err);
       return res.redirect('/');
     }
     if (!user) {
-      console.log('/login no user redirect');
+      console.error('/login no user redirect');
+      req.flash('error', 'Problem with user or password');
       return res.redirect('/');
     }
     req.logIn(user, function(err) {
       if (err) {
         console.error(err);
+        req.flash('error', err);
         return res.redirect('/');
       }
       getMostUnvotedUser(user, function(err, selectedUser) {
