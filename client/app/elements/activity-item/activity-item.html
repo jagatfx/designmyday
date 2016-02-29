@@ -209,6 +209,15 @@
       on-error="_ajaxError">
     </iron-ajax>
 
+    <span>{{_setupActivityExtras(user)}}</span>
+
+    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+      <p>{{_getModalText(route)}}</p>
+      <div class="buttons">
+        <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>{{_getModalButtonText(route)}}</paper-button>
+      </div>
+    </paper-dialog>
+
   </template>
 
   <script>
@@ -220,12 +229,7 @@
       properties: {
 
         activity: Object,
-
-        user: {
-          type: Object,
-          notify: true
-        },
-
+        user: Object,
         route: String,
 
         favorite: {
@@ -244,18 +248,20 @@
 
       },
 
-      ready: function() {
-        if (this.user) {
-          for (i = 0; i < this.user.favorites.length; i++) {
-            if (this.user.favorites[i] === this.activity._id) {
+      _setupActivityExtras: function(user) {
+        if (user) {
+          for (i = 0; i < user.favorites.length; i++) {
+            if (user.favorites[i] === this.activity._id) {
               this.favorite = 'favorite-yes';
+              this.$.favorite.updateStyles();
               break;
             }
           }
-          for (i = 0; i < this.user.completes.length; i++) {
-            if (this.user.completes[i] === this.activity._id) {
+          for (i = 0; i < user.completes.length; i++) {
+            if (user.completes[i] === this.activity._id) {
               this.done = 'icons:cloud-done';
               this.doneClass = 'done-yes';
+              this.$.done.updateStyles();
               break;
             }
           }
@@ -263,8 +269,7 @@
       },
 
       _doAjaxRequest: function(e) {
-        var route = this.route;
-        if (route === 'myactivities') {
+        if (this.route === 'myactivities') {
           this.$.chooseAjax.generateRequest();
           return;
         }
@@ -272,11 +277,11 @@
       },
 
       _voteReqComplete: function() {
-        document.querySelector('app-router').go('/feeling');
+        this.$.modal.open();
       },
 
       _chooseReqComplete: function() {
-        document.querySelector('app-router').go('/vote');
+        this.$.modal.open();
       },
 
       _ajaxError: function() {
@@ -333,6 +338,30 @@
           this.doneClass = 'done-yes';
         }
         this.$.done.updateStyles();
+      },
+
+      _getModalText(route) {
+        if (route === 'myactivities') {
+          return "Nice job! Now it is time for you to go do your activity. Be sure to come back and tell us how it was!";
+        } else {
+          return "Your vote has been cast. Now it's time for you to receive a suggested activity. First, tell us how you are feeling...";
+        }
+      },
+
+      _getModalButtonText(route) {
+        if (route === 'myactivities') {
+          return "Still want to help more people, tap here";
+        } else {
+          return "Tap here to continue";
+        }
+      },
+
+      _dialogContinue: function() {
+        if (this.route === 'myactivities') {
+          document.querySelector('app-router').go('/vote');
+        } else {
+          document.querySelector('app-router').go('/feeling');
+        }
       },
 
     });
