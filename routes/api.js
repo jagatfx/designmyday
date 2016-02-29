@@ -54,10 +54,10 @@ router.get('/user', loggedIn, function(req, res, next) {
     }
     var votee = voter._voteUser;
 
-    if (!votee) {
-      return res.json( {result: 'Error: votee required and not found'} );
+    if (votee) {
+      votee = filterUser(votee);
+      console.info('no votee user found for user:'+user.username+', likely new city:'+user.city);
     }
-    votee = filterUser(votee);
     var retUser = filterUser(user);
     retUser.votee = votee;
     return res.json(retUser);
