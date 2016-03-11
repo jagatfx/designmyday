@@ -47,16 +47,39 @@ router.get('/dmd', loggedIn, function(req, res, next) {
 
 router.post('/register', function(req, res) {
   console.log('got /register POST');
+  var citycountry = req.body.citycountry;
+  var city;
+  var region;
+  var country;
+  var regex = /([^,]+), ([^,]+), (.+)/;
+  if (citycountry) {
+    var fields = regex.exec(citycountry);
+    if (fields.length === 4) {
+      city = fields[1];
+      region = fields[2];
+      country = fields[3];
+    } else {
+      console.error('Invalid citycountry:'+citycountry);
+      req.flash('error', 'You must pick a valid city/country');
+      return res.redirect('/');
+    }
+  } else {
+    console.error('citycountry field was empty');
+    req.flash('error', 'You must pick a valid city/country');
+    return res.redirect('/');
+  }
   // TODO: validate register input
   Account.register(new Account({
     username : req.body.username,
     email: req.body.email,
-    city: req.body.city,
-    country: req.body.country,
+    city: city,
+    region: region,
+    country: country,
     yearborn: req.body.yearborn
   }), req.body.password, function(err, account) {
     if (err) {
       console.error(err);
+      req.flash('error', 'Problem registering account: '+err);
       return res.redirect('/');
     }
 
