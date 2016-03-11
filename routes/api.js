@@ -360,6 +360,10 @@ router.get('/feeling/:name', loggedIn, function (req, res) {
   var feeling = req.params.name;
   console.log('feeling set to:'+feeling);
   user.lastFeeling = feeling;
+  user.historicFeelings.push({
+    fDate: Date.now(),
+    feeling: feeling
+  });
   user.save( function ( err, savedAccount, count ) {
     if (err) {
       return res.json( {result: err} );
@@ -374,6 +378,10 @@ router.get('/severity/:newSeverity', loggedIn, function (req, res) {
   var user = req.user;
   console.log('severity set to:'+newSeverity);
   user.lastSeverity = newSeverity;
+  user.historicSeverity.push({
+    fDate: Date.now(),
+    severity: newSeverity
+  });
   user.save( function ( err, savedAccount, count ) {
     if (err) {
       return res.json( {result: err} );

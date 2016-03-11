@@ -23,7 +23,9 @@ var Account = new Schema({
   _voteUser: { type: Schema.Types.ObjectId, ref: 'Account' },
   voteCastSequence: [Schema.Types.Mixed],
   voteReceiveSequence: [Schema.Types.Mixed],
-  activitySelectSequence: [Schema.Types.Mixed]
+  activitySelectSequence: [Schema.Types.Mixed],
+  historicFeelings: [Schema.Types.Mixed],
+  historicSeverity: [Schema.Types.Mixed]
 });
 
 Account.plugin(passportLocalMongoose);
