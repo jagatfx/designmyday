@@ -131,8 +131,17 @@ jQuery(document).ready(function($) {
     return false;
   }
 
+  function validateRegFields() {
+    if (formSignup.find('#username').val() &&
+      formSignup.find('#yearborn').val() &&
+      formSignup.find('#f_elem_city').val() ) {
+      return true;
+    }
+    return false;
+  }
+
   function validateSignupForm() {
-    var isValid = validateSignupPassword() && validateSignupEmail();
+    var isValid = validateSignupPassword() && validateSignupEmail() && validateRegFields();
     if (isValid) {
       signupSubmitButton.prop("disabled", false);
       signupSubmitButton.css('backgroundColor', origSignupButtonBackground);
