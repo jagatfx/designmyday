@@ -56,6 +56,7 @@ router.get('/user', loggedIn, function(req, res, next) {
 
     if (votee) {
       votee = filterUser(votee);
+    } else {
       console.info('no votee user found for user:'+user.username+', likely new city:'+user.city);
     }
     var retUser = filterUser(user);
