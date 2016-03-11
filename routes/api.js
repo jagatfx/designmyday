@@ -384,16 +384,17 @@ router.get('/severity/:newSeverity', loggedIn, function (req, res) {
 
 function getMyMostVotedActivities(user, callback) {
   var maxResultsLimit = 3;
-  var findParam = {
-    city: user.city
-  };
+  var city;
+  if (user) {
+    city = user.city;
+  }
   // TODO: get votes appropritate for feeling, severity, user metadata
   var sortParam = {};
   var feeling = user.lastFeeling.charAt(0).toUpperCase() + user.lastFeeling.slice(1);
   sortParam['feeling'+feeling+'Votes'] = 'desc';
   // TODO: skip activities already chosen by user
   // var excludeId = 'dd'; {_id: { '$ne': excludeId }}
-  Activity.find(findParam).sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
+  Activity.find().or([{city: city},{city: ''}]).sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
     if (err) {
       return callback(err);
     }
