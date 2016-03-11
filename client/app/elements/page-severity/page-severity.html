@@ -63,7 +63,7 @@
                         max="10"
                         value="{{sliderValue}}"
                         step="0.1"
-                        on-change="_updateSeverity">
+                        on-change="_updateSeverityView">
           </paper-slider>
         </div>
         <div class="slider-label">A LOT</div>
@@ -109,17 +109,17 @@
         }
       },
 
-      _updateSeverity: function() {
-        var value = this.sliderValue;
-        // TODO: fix this
-        // this.customStyle['--severity-opacity'] = value/10.0;
-        // this.updateStyles();
+      _updateSeverityView: function() {
       },
 
       _doAjaxRequest: function(e) {
-        var severity = e.currentTarget.getAttribute('data-severity');
-        this.$.severityAjax.url = '/api/severity/'+severity;
-        this.$.severityAjax.generateRequest();
+        var severity = this.sliderValue;
+        if (severity) {
+          this.$.severityAjax.url = '/api/severity/'+severity;
+          this.$.severityAjax.generateRequest();
+        } else {
+          console.error("severity is: "+severity);
+        }
       },
 
       _severityReqComplete: function() {
