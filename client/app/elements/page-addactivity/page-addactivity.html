@@ -29,6 +29,9 @@
       .activity-image {
         --iron-image-width: 208px;
       }
+      .upload {
+        margin: 10px;
+      }
       input.upload {
         padding-top: 15px;
       }
@@ -51,8 +54,9 @@
         <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
         <paper-input name="link" label="Official link to activity"></paper-input>
         <paper-material elevation="1" class="vertical" class="activity">
-          <div class="horizontal upload">
-            <paper-item>Upload an image (or leave as default image):</paper-item>
+          <div class="vertical upload">
+            <div>Upload an image</div>
+            <div>(or leave as default image):</div>
             <input id="image" class="upload" type="file" on-change="_onFileChange"></input>
           </div>
           <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
