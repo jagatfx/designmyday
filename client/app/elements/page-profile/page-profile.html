@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
 <!-- Custom elements -->
 <link rel="import" href="../../styles/shared-styles.html">
@@ -43,6 +45,14 @@
       .slider-label {
         font-size: 10px;
       }
+      paper-tabs {
+        background-color: var(--light-accent-color);
+        color: #000;
+        --paper-tabs-selection-bar-color: #000;
+      }
+      .tab-title {
+        padding-top: 15px;
+      }
     </style>
 
     <div>
@@ -78,25 +88,59 @@
         </paper-card>
       </div>
 
-      <div class="centered-container">
-        <div class="">Previously Selected Activities</div>
-        <div class="centered-container horizontal wrap">
-          <template is="dom-repeat"
-                    items="{{profileActivities}}"
-                    as="activity">
-            <activity-item activity="{{activity}}"
-                           route="{{route}}"
-                           user="{{user}}">
-            </activity-item>
-          </template>
+      <paper-tabs selected="{{selected}}">
+        <paper-tab>My Activity Suggestions</paper-tab>
+        <paper-tab>My Selected Activities</paper-tab>
+      </paper-tabs>
+
+      <iron-pages selected="{{selected}}">
+        <div>
+          <div class="centered-container">
+            <div class="tab-title">My Activity Suggestions</div>
+            <div class="centered-container horizontal wrap">
+              <template is="dom-repeat"
+                        items="{{mySuggestions}}"
+                        as="activity">
+                <activity-item activity="{{activity}}"
+                               route="{{route}}"
+                               user="{{user}}">
+                </activity-item>
+              </template>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <div>
+          <div class="centered-container">
+            <div class="tab-title">My Selected Activities</div>
+            <div class="centered-container horizontal wrap">
+              <template is="dom-repeat"
+                        items="{{profileActivities}}"
+                        as="activity">
+                <activity-item activity="{{activity}}"
+                               route="{{route}}"
+                               user="{{user}}">
+                </activity-item>
+              </template>
+            </div>
+          </div>
+        </div>
+        </div>
+      </iron-pages>
+
     </div>
 
     <iron-ajax auto
       url="/api/profileactivities"
       method="get"
       on-response="_profileActivitiesLoaded"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+    <iron-ajax auto
+      url="/api/mysuggestions"
+      method="get"
+      on-response="_mySuggestionsLoaded"
       on-error="_ajaxError">
     </iron-ajax>
 
@@ -114,10 +158,15 @@
           notify: true
         },
         profileActivities: Object,
+        mySuggestions: Object,
         feelingImg: {
           type: String,
           notify: true,
           value: '/img/place-emotion.gif'
+        },
+        selected: {
+          type: Number,
+          value: 0
         }
       },
 
@@ -131,7 +180,12 @@
 
       _profileActivitiesLoaded: function(request) {
         this.profileActivities = request.detail.response;
-      }
+      },
+
+      _mySuggestionsLoaded: function(request) {
+        this.mySuggestions = request.detail.response;
+      },
+
     });
   })();
   </script>

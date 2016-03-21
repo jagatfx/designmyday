@@ -70,7 +70,7 @@ router.get('/profileactivities', loggedIn, function(req, res, next) {
   Account.findOne({_id: user._id})
   .exec(function (err, voter) {
     if (err) {
-      return res.json( {result: 'Error: getting user'} );
+      return res.json( {result: 'Error: getting user '+err} );
     }
 
     Activity.find({
@@ -82,6 +82,17 @@ router.get('/profileactivities', loggedIn, function(req, res, next) {
       return res.json(activities);
     });
 
+  });
+});
+
+router.get('/mysuggestions', loggedIn, function(req, res, next) {
+  var user = req.user;
+
+  Activity.find({'addedBy': user.username}, function(err, activities) {
+    if (err) {
+      return res.json( {result: 'Error: getting mysuggestions '+err} );
+    }
+    return res.json(activities);
   });
 });
 
