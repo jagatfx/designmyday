@@ -66,7 +66,7 @@
       </div>
       <div class="range-select">
         <div>
-          <iron-image id="severity" src="/img/{{user.lastFeeling}}.gif"></iron-image>
+          <iron-image id="severity" src$="{{feelingImg}}"></iron-image>
         </div>
       </div>
       <div class="range-select">
@@ -102,7 +102,21 @@
 
         lastFeeling: {
           type:  String
+        },
+
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
         }
+      },
+
+      observers: [
+        'updateImage(user)'
+      ],
+
+      updateImage: function(user) {
+        this.feelingImg = '/img/'+user.lastFeeling+'.gif';
       },
 
       _updateSeverityView: function() {

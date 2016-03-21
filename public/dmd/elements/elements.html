@@ -18056,12 +18056,12 @@ if (!window.Promise) {
       },
 
       // Close drawer after menu item is selected if drawerPanel is narrow
-      // closeDrawer: function() {
+      closeDrawer: function() {
       //   var drawerPanel = this.$.paperDrawerPanel;
       //   if (drawerPanel.narrow) {
       //     drawerPanel.closeDrawer();
       //   }
-      // },
+      },
 
     });
   </script>
@@ -22182,7 +22182,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
                 Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
                 <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
               </div>
-              <iron-image src="/img/[[user.votee.lastFeeling]].gif"></iron-image>
+              <iron-image src$="{{feelingImg}}"></iron-image>
               <div class="range-select">
                 <div class="slider-label">A LITTLE</div>
                 <div class="flexchild">
@@ -22274,8 +22274,20 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       properties: {
 
         activity: Object,
-        user: Object
+        user: Object,
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
+        }
+      },
 
+      observers: [
+        'updateImage(user)'
+      ],
+
+      updateImage: function(user) {
+        this.feelingImg = '/img/'+user.lastFeeling+'.gif';
       },
 
       _showIntroDialog: function(user) {
@@ -22349,7 +22361,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
       <div class="range-select">
         <div>
-          <iron-image id="severity" src="/img/{{user.lastFeeling}}.gif"></iron-image>
+          <iron-image id="severity" src$="{{feelingImg}}"></iron-image>
         </div>
       </div>
       <div class="range-select">
@@ -22381,7 +22393,21 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
         lastFeeling: {
           type:  String
+        },
+
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
         }
+      },
+
+      observers: [
+        'updateImage(user)'
+      ],
+
+      updateImage: function(user) {
+        this.feelingImg = '/img/'+user.lastFeeling+'.gif';
       },
 
       _updateSeverityView: function() {
@@ -22554,7 +22580,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       <div class="profile-container horizontal">
         <paper-card class="user-card">
           <div>
-            <iron-image src="/img/[[user.lastFeeling]].gif"></iron-image>
+            <iron-image src$="{{feelingImg}}"></iron-image>
             <div class="range-select">
               <div class="slider-label">A LITTLE</div>
               <div class="flexchild">
@@ -22602,7 +22628,20 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           type: Object,
           notify: true
         },
-        profileActivities: Object
+        profileActivities: Object,
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
+        }
+      },
+
+      observers: [
+        'updateImage(user)'
+      ],
+
+      updateImage: function(user) {
+        this.feelingImg = '/img/'+user.lastFeeling+'.gif';
       },
 
       _profileActivitiesLoaded: function(request) {
