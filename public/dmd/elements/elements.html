@@ -18262,6 +18262,8 @@ if (!window.Promise) {
             </page-myactivities>
             <page-editactivity data-route="edit" route="{{route}}" user="{{user}}">
             </page-editactivity>
+            <page-feedback data-route="edit" route="{{route}}" user="{{user}}">
+            </page-feedback>
           </iron-pages>
 
         </div>
@@ -23486,7 +23488,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <div class="tab-title">My Selected Activities</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{profileActivities}}" as="activity">
-                <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
+                <activity-item activity="{{activity}}" route="{{route}}" user="none">
                 </activity-item>
               </template>
             </div>
@@ -26690,7 +26692,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       },
 
       _hideEdit: function() {
-        if (this.route === 'profile' && this.activity.addedBy === this.user.username) {
+        if (this.user != 'none' && this.route === 'profile' && this.activity.addedBy === this.user.username) {
           return false;
         }
         return true;
@@ -26932,10 +26934,563 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   })();
   </script>
 </dom-module>
+<script>
+
+  /**
+   * Use `Polymer.IronCheckedElementBehavior` to implement a custom element
+   * that has a `checked` property, which can be used for validation if the
+   * element is also `required`. Element instances implementing this behavior
+   * will also be registered for use in an `iron-form` element.
+   *
+   * @demo demo/index.html
+   * @polymerBehavior Polymer.IronCheckedElementBehavior
+   */
+  Polymer.IronCheckedElementBehaviorImpl = {
+
+    properties: {
+      /**
+       * Fired when the checked state changes.
+       *
+       * @event iron-change
+       */
+
+      /**
+       * Gets or sets the state, `true` is checked and `false` is unchecked.
+       */
+      checked: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+        notify: true,
+        observer: '_checkedChanged'
+      },
+
+      /**
+       * If true, the button toggles the active state with each tap or press
+       * of the spacebar.
+       */
+      toggles: {
+        type: Boolean,
+        value: true,
+        reflectToAttribute: true
+      },
+
+      /* Overriden from Polymer.IronFormElementBehavior */
+      value: {
+        type: String,
+        value: 'on',
+        observer: '_valueChanged'
+      }
+    },
+
+    observers: [
+      '_requiredChanged(required)'
+    ],
+
+    created: function() {
+      // Used by `iron-form` to handle the case that an element with this behavior
+      // doesn't have a role of 'checkbox' or 'radio', but should still only be
+      // included when the form is serialized if `this.checked === true`.
+      this._hasIronCheckedElementBehavior = true;
+    },
+
+    /**
+     * Returns false if the element is required and not checked, and true otherwise.
+     * @param {*=} _value Ignored.
+     * @return {boolean} true if `required` is false, or if `required` and `checked` are both true.
+     */
+    _getValidity: function(_value) {
+      return this.disabled || !this.required || (this.required && this.checked);
+    },
+
+    /**
+     * Update the aria-required label when `required` is changed.
+     */
+    _requiredChanged: function() {
+      if (this.required) {
+        this.setAttribute('aria-required', 'true');
+      } else {
+        this.removeAttribute('aria-required');
+      }
+    },
+
+    /**
+     * Fire `iron-changed` when the checked state changes.
+     */
+    _checkedChanged: function() {
+      this.active = this.checked;
+      this.fire('iron-change');
+    },
+
+    /**
+     * Reset value to 'on' if it is set to `undefined`.
+     */
+    _valueChanged: function() {
+      if (this.value === undefined || this.value === null) {
+        this.value = 'on';
+      }
+    }
+  };
+
+  /** @polymerBehavior Polymer.IronCheckedElementBehavior */
+  Polymer.IronCheckedElementBehavior = [
+    Polymer.IronFormElementBehavior,
+    Polymer.IronValidatableBehavior,
+    Polymer.IronCheckedElementBehaviorImpl
+  ];
+
+</script>
+<script>
+
+  /**
+   * Use `Polymer.PaperCheckedElementBehavior` to implement a custom element
+   * that has a `checked` property similar to `Polymer.IronCheckedElementBehavior`
+   * and is compatible with having a ripple effect.
+   * @polymerBehavior Polymer.PaperCheckedElementBehavior
+   */
+  Polymer.PaperCheckedElementBehaviorImpl = {
+
+    /**
+     * Synchronizes the element's checked state with its ripple effect.
+     */
+    _checkedChanged: function() {
+      Polymer.IronCheckedElementBehaviorImpl._checkedChanged.call(this);
+      if (this.hasRipple()) {
+        if (this.checked) {
+          this._ripple.setAttribute('checked', '');
+        } else {
+          this._ripple.removeAttribute('checked');
+        }
+      }
+    },
+
+    /**
+     * Synchronizes the element's `active` and `checked` state.
+     */
+    _buttonStateChanged: function() {
+      Polymer.PaperRippleBehavior._buttonStateChanged.call(this);
+      if (this.disabled) {
+        return;
+      }
+      if (this.isAttached) {
+        this.checked = this.active;
+      }
+    }
+
+  };
+
+  /** @polymerBehavior Polymer.PaperCheckedElementBehavior */
+  Polymer.PaperCheckedElementBehavior = [
+    Polymer.PaperInkyFocusBehavior,
+    Polymer.IronCheckedElementBehavior,
+    Polymer.PaperCheckedElementBehaviorImpl
+  ];
+
+</script>
+
+
+<dom-module id="paper-radio-button" assetpath="../bower_components/paper-radio-button/">
+  <template strip-whitespace="">
+    <style>
+      :host {
+        display: inline-block;
+        white-space: nowrap;
+        cursor: pointer;
+        @apply(--paper-font-common-base);
+      }
+
+      :host(:focus) {
+        outline: none;
+      }
+
+      #radioContainer {
+        display: inline-block;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+      }
+
+      #ink {
+        position: absolute;
+        top: -16px;
+        left: -16px;
+        width: 48px;
+        height: 48px;
+        color: var(--paper-radio-button-unchecked-ink-color, --primary-text-color);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      :host-context([dir="rtl"]) #ink {
+        right: -15px;
+        left: auto;
+      }
+
+      #ink[checked] {
+        color: var(--paper-radio-button-checked-ink-color, --primary-color);
+      }
+
+      #offRadio {
+        position: absolute;
+        box-sizing: content-box;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: solid 2px;
+        background-color: var(--paper-radio-button-unchecked-background-color, transparent);
+        border-color: var(--paper-radio-button-unchecked-color, --primary-text-color);
+        transition: border-color 0.28s;
+      }
+
+      #onRadio {
+        position: absolute;
+        box-sizing: content-box;
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--paper-radio-button-checked-color, --primary-color);
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        transition: -webkit-transform ease 0.28s;
+        transition: transform ease 0.28s;
+      }
+
+      :host([checked]) #offRadio {
+        border-color: var(--paper-radio-button-checked-color, --primary-color);
+      }
+
+      :host([checked]) #onRadio {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+      }
+
+      #radioLabel {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: var(--paper-radio-button-label-spacing, 10px);
+        white-space: normal;
+        color: var(--paper-radio-button-label-color, --primary-text-color);
+      }
+
+      :host-context([dir="rtl"]) #radioLabel {
+        margin-left: 0px;
+        margin-right: var(--paper-radio-button-label-spacing, 10px);
+      }
+
+      #radioLabel[hidden] {
+        display: none;
+      }
+
+      /* disabled state */
+
+      :host([disabled]) #offRadio {
+        border-color: var(--paper-radio-button-unchecked-color, --primary-text-color);
+        opacity: 0.5;
+      }
+
+      :host([disabled][checked]) #onRadio {
+        background-color: var(--paper-radio-button-unchecked-color, --primary-text-color);
+        opacity: 0.5;
+      }
+
+      :host([disabled]) #radioLabel {
+        /* slightly darker than the button, so that it's readable */
+        opacity: 0.65;
+      }
+    </style>
+
+    <div id="radioContainer">
+      <div id="offRadio"></div>
+      <div id="onRadio"></div>
+    </div>
+
+    <div id="radioLabel"><content></content></div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-radio-button',
+
+      behaviors: [
+        Polymer.PaperCheckedElementBehavior
+      ],
+
+      hostAttributes: {
+        role: 'radio',
+        'aria-checked': false,
+        tabindex: 0
+      },
+
+      properties: {
+        /**
+         * Fired when the checked state changes due to user interaction.
+         *
+         * @event change
+         */
+
+        /**
+         * Fired when the checked state changes.
+         *
+         * @event iron-change
+         */
+
+        ariaActiveAttribute: {
+          type: String,
+          value: 'aria-checked'
+        }
+      },
+
+      ready: function() {
+        this._rippleContainer = this.$.radioContainer;
+      }
+    })
+  </script>
+</dom-module>
+
+
+<dom-module id="paper-radio-group" assetpath="../bower_components/paper-radio-group/">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      :host ::content > * {
+        padding: 12px;
+      }
+    </style>
+
+    <content id="items" select="*"></content>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'paper-radio-group',
+
+    behaviors: [
+      Polymer.IronA11yKeysBehavior,
+      Polymer.IronSelectableBehavior
+    ],
+
+    hostAttributes: {
+      role: 'radiogroup',
+      tabindex: 0
+    },
+
+    properties: {
+      /**
+       * Fired when the radio group selection changes.
+       *
+       * @event paper-radio-group-changed
+       */
+
+      /**
+       * Overriden from Polymer.IronSelectableBehavior
+       */
+      attrForSelected: {
+        type: String,
+        value: 'name'
+      },
+
+      /**
+       * Overriden from Polymer.IronSelectableBehavior
+       */
+      selectedAttribute: {
+        type: String,
+        value: 'checked'
+      },
+
+      /**
+       * Overriden from Polymer.IronSelectableBehavior
+       */
+      selectable: {
+        type: String,
+        value: 'paper-radio-button'
+      },
+
+      /**
+       * If true, radio-buttons can be deselected
+       */
+      allowEmptySelection: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    keyBindings: {
+      'left up': 'selectPrevious',
+      'right down': 'selectNext',
+    },
+
+    /**
+     * Selects the given value.
+     */
+     select: function(value) {
+      if (this.selected) {
+        var oldItem = this._valueToItem(this.selected);
+
+        if (this.selected == value) {
+          // If deselecting is allowed we'll have to apply an empty selection.
+          // Otherwise, we should force the selection to stay and make this
+          // action a no-op.
+          if (this.allowEmptySelection) {
+            value = '';
+          } else {
+            if (oldItem)
+              oldItem.checked = true;
+            return;
+          }
+        }
+
+        if (oldItem)
+          oldItem.checked = false;
+      }
+
+      Polymer.IronSelectableBehavior.select.apply(this, [value]);
+      this.fire('paper-radio-group-changed');
+    },
+
+    /**
+     * Selects the previous item. If the previous item is disabled, then it is
+     * skipped, and its previous item is selected
+     */
+    selectPrevious: function() {
+      var length = this.items.length;
+      var newIndex = Number(this._valueToIndex(this.selected));
+
+      do {
+        newIndex = (newIndex - 1 + length) % length;
+      } while (this.items[newIndex].disabled)
+
+      this._itemActivate(this._indexToValue(newIndex), this.items[newIndex]);
+    },
+
+    /**
+     * Selects the next item. If the next item is disabled, then it is
+     * skipped, and the next item after it is selected.
+     */
+    selectNext: function() {
+      var length = this.items.length;
+      var newIndex = Number(this._valueToIndex(this.selected));
+
+      do {
+        newIndex = (newIndex + 1 + length) % length;
+      } while (this.items[newIndex].disabled)
+
+      this._itemActivate(this._indexToValue(newIndex), this.items[newIndex]);
+    },
+  });
+</script>
+<dom-module id="page-feedback" assetpath="page-feedback/">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-material.activity {
+        padding: 10px;
+        margin: 10px;
+      }
+      iron-autogrow-textarea {
+        margin: 10px 0;
+      }
+      .page-container {
+        padding-bottom: 20px;
+      }
+      .feedback {
+        margin: 15px;
+        padding: 15px;
+      }
+    </style>
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-title">After Activity Feedback</div>
+      </div>
+
+      <div class="centered-container">
+        <form is="ajax-form" id="feedbackform" action$="/api/feedback/{{activityId}}" method="post" enctype="multipart/form-data">
+          <paper-material elevation="1" class="feedback">
+            <paper-radio-group id="radio" selected="same">
+              <paper-radio-button name="mworse">I felt much worse after</paper-radio-button>
+              <paper-radio-button name="worse">I felt a bit worse after</paper-radio-button>
+              <paper-radio-button name="same">I felt the same after</paper-radio-button>
+              <paper-radio-button name="better">I felt a bit better after</paper-radio-button>
+              <paper-radio-button name="mbetter">I felt much better after</paper-radio-button>
+            </paper-radio-group>
+            <input type="hidden" id="choice" name="choice">
+            <iron-autogrow-textarea rows="4" name="comment" placeholder="Enter comments about your experience"></iron-autogrow-textarea>
+            <div>
+              <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Submit Feedback</paper-button>
+            </div>
+          </paper-material>
+        </form>
+      </div>
+    </div>
+
+    <div class="centered-container">
+      <activity-item activity="{{activity}}" route="feedback" user="none">
+      </activity-item>
+    </div>
+
+    <paper-dialog id="modal" modal="">
+      <p>Your feedback has been submitted successfully!</p>
+      <div class="buttons">
+        <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>
+      </div>
+    </paper-dialog>
+
+    <iron-ajax auto="" url="/api/activity/{{activityId}}" method="get" on-response="_activityLoaded" on-error="_ajaxError" verbose="true">
+    </iron-ajax>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-feedback',
+
+      properties: {
+        activity: Object,
+        user: Object
+      },
+
+      _submitForm: function(event) {
+        this.$.choice.value = this.$.radio.selected;
+        this.$.feedbackform.submit();
+        this.$.modal.open();
+      },
+
+      _dialogContinue: function() {
+        document.querySelector('app-router').go('/profile');
+      },
+
+      _activityLoaded: function(request) {
+        this.activity = request.detail.response;
+      },
+
+      _ajaxError: function(request, error) {
+      },
+
+    });
+  })();
+  </script>
+</dom-module>
 <dom-module id="dmd-router" assetpath="dmd-router/">
   <template>
     <app-router id="router" mode="hash">
       <app-route path="/editactivity/:activityId" element="page-editactivity"></app-route>
+      <app-route path="/feedback/:activityId" element="page-feedback"></app-route>
       <app-route path="/:route" element="main-view"></app-route>
     </app-router>
   </template>

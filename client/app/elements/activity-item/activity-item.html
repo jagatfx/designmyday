@@ -302,7 +302,7 @@
       },
 
       _hideEdit: function() {
-        if (this.route === 'profile' && this.activity.addedBy === this.user.username) {
+        if (this.user != 'none' && this.route === 'profile' && this.activity.addedBy === this.user.username) {
           return false;
         }
         return true;

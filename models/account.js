@@ -25,7 +25,8 @@ var Account = new Schema({
   voteReceiveSequence: [Schema.Types.Mixed],
   activitySelectSequence: [Schema.Types.Mixed],
   historicFeelings: [Schema.Types.Mixed],
-  historicSeverity: [Schema.Types.Mixed]
+  historicSeverity: [Schema.Types.Mixed],
+  feedbackReports: [Schema.Types.Mixed]
 });
 
 Account.plugin(passportLocalMongoose);

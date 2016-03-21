@@ -516,6 +516,33 @@ router.get('/choose/:id', loggedIn, function (req, res) {
   });
 });
 
+router.post('/feedback/:id', loggedIn, function (req, res) {
+  var activityId = req.params.id;
+  var user = req.user;
+  upload(req, res, function (err) {
+    // // we expect error here because not actually sending image
+    // // but using upload to parse out multipart form
+    // if (err) {
+    //   console.error('upload error when adding activity image:'+err);
+    // }
+    user.feedbackReports.push({
+      cDate: Date.now(),
+      activity: activityId,
+      choice: req.body.choice,
+      comment: req.body.comment
+    });
+    // TODO: think about tracking the other two choices that were not selected as well
+    console.log('feedback recorded:'+activityId);
+    user.save( function ( err, savedAccount, count ) {
+      if (err) {
+        return res.json( {result: err} );
+      } else {
+        res.json( {result: 'OK'} );
+      }
+    });
+  });
+});
+
 router.post('/favorite/:id', loggedIn, function (req, res) {
   var user = req.user;
   var activityId = req.params.id;
