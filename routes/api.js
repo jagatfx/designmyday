@@ -65,6 +65,26 @@ router.get('/user', loggedIn, function(req, res, next) {
   });
 });
 
+router.get('/profileactivities', loggedIn, function(req, res, next) {
+  var user = req.user;
+  Account.findOne({_id: user._id})
+  .exec(function (err, voter) {
+    if (err) {
+      return res.json( {result: 'Error: getting user'} );
+    }
+
+    Activity.find({
+      '_id': { $in: user.activitySelectSequence.map(function(activity) { return activity.activity; })}
+    }, function(err, activities) {
+      if (err) {
+        return res.json( {result: 'Error: getting user activities'} );
+      }
+      return res.json(activities);
+    });
+
+  });
+});
+
 router.get('/activity', loggedIn, function(req, res, next) {
   var results = req.query.results;
   var type = req.query.type;
@@ -403,7 +423,8 @@ function getMyMostVotedActivities(user, callback) {
   sortParam['feeling'+feeling+'Votes'] = 'desc';
   // TODO: skip activities already chosen by user
   // var excludeId = 'dd'; {_id: { '$ne': excludeId }}
-  Activity.find().or([{city: city},{city: ''}]).sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
+  Activity.find({'_id': { $nin: user.activitySelectSequence.map(function(activity) { return activity.activity; })}}
+    ).or([{city: city},{city: ''}]).sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
     if (err) {
       return callback(err);
     }

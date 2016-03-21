@@ -17863,6 +17863,12 @@ if (!window.Promise) {
       .flex-child {
         @apply(--layout-flex);
       }
+      .severity-slider {
+        --paper-slider-active-color: var(--accent-color);
+        --paper-slider-disabled-active-color: var(--accent-color);
+        --paper-slider-knob-color: #000;
+        --paper-slider-disabled-knob-color: #000;
+      }
     </style>
   </template>
 </dom-module>
@@ -18009,7 +18015,7 @@ if (!window.Promise) {
         <div class="content">
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <page-profile data-route="profile" user="{{user}}">
+            <page-profile data-route="profile" route="{{route}}" user="{{user}}">
             </page-profile>
             <page-addactivity data-route="addactivity" user="{{user}}">
             </page-addactivity>
@@ -22155,17 +22161,11 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         padding: 10px;
         margin: 0 auto;
       }
-      .severity-slider {
-        --paper-slider-active-color: var(--accent-color);
-        --paper-slider-disabled-active-color: var(--accent-color);
-        --paper-slider-knob-color: #000;
-        --paper-slider-disabled-knob-color: #000;
+      .logout {
+        text-decoration: none;
       }
       .slider-label {
         font-size: 10px;
-      }
-      .logout {
-        text-decoration: none;
       }
     </style>
 
@@ -22329,10 +22329,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       }
       .flexchild paper-slider {
         width: 100%;
-      }
-      .severity-slider {
-        --paper-slider-active-color: var(--accent-color);
-        --paper-slider-knob-color: #000;
       }
       .slider-label {
         font-size: 10px;
@@ -22546,6 +22542,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         @apply(--layout-center-justified);
         text-align: center;
       }
+      .slider-label {
+        font-size: 10px;
+      }
     </style>
 
     <div>
@@ -22554,6 +22553,17 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
       <div class="profile-container horizontal">
         <paper-card class="user-card">
+          <div>
+            <iron-image src="/img/[[user.lastFeeling]].gif"></iron-image>
+            <div class="range-select">
+              <div class="slider-label">A LITTLE</div>
+              <div class="flexchild">
+                <paper-slider class="severity-slider" min="1" max="10" value="{{user.lastSeverity}}" step="0.1" disabled="">
+                </paper-slider>
+              </div>
+              <div class="slider-label">A LOT</div>
+            </div>
+          </div>
           <div class="user-content">
             <div class="card-content">
               <div>username: <span class="username">[[user.username]]</span></div>
@@ -22567,16 +22577,17 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
       <div class="centered-container">
         <div class="">Previously Selected Activities</div>
-        <template is="dom-repeat" items="{{user.activitySelectSequence}}" as="activity">
-          <paper-card class="user-card">
-            <div class="card-content">
-              <div class="activity">activityId: [[activity.activity]]</div>
-
-            </div>
-          </paper-card>
-        </template>
+        <div class="centered-container horizontal wrap">
+          <template is="dom-repeat" items="{{profileActivities}}" as="activity">
+            <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
+            </activity-item>
+          </template>
+        </div>
       </div>
     </div>
+
+    <iron-ajax auto="" url="/api/profileactivities" method="get" on-response="_profileActivitiesLoaded" on-error="_ajaxError">
+    </iron-ajax>
 
   </template>
   <script>
@@ -22590,8 +22601,13 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         user: {
           type: Object,
           notify: true
-        }
+        },
+        profileActivities: Object
       },
+
+      _profileActivitiesLoaded: function(request) {
+        this.profileActivities = request.detail.response;
+      }
     });
   })();
   </script>
@@ -25585,7 +25601,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         <p><span class="caps">[[activity.activityVerb]]</span> [[activity.activity]]<br>
         [[activity.specificLocation]]</p>
       </div>
-      <paper-badge class="vote-badge" for="card[[activity._id]]" hidden="[[_showVotes(route)]]" label="[[activity.numVotes]] votes">
+      <paper-badge class="vote-badge" for="card[[activity._id]]" hidden="[[_hideVotes(route)]]" label="[[activity.numVotes]] votes">
       </paper-badge>
       <div class="card-actions horizontal justified">
         <span class="container">
@@ -25703,8 +25719,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         if (this.route === 'myactivities') {
           this.$.chooseAjax.generateRequest();
           return;
+        } else if (this.route === 'vote') {
+          this.$.voteAjax.generateRequest();
         }
-        this.$.voteAjax.generateRequest();
       },
 
       _voteReqComplete: function() {
@@ -25719,8 +25736,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         // TODO: ajax error handling
       },
 
-      _showVotes: function(route) {
-        if (route === 'myactivities') {
+      _hideVotes: function() {
+        if (this.route === 'myactivities') {
           return false;
         }
         return true;
@@ -25771,27 +25788,32 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         this.$.done.updateStyles();
       },
 
-      _getModalText(route) {
-        if (route === 'myactivities') {
+      _getModalText() {
+        if (this.route === 'myactivities') {
           return "Nice job! Now it is time for you to go do your activity. Be sure to come back and tell us how it was!";
-        } else {
+        } else if (this.route === 'vote') {
           return "Your vote has been cast. Now it's time for you to receive a suggested activity. First, tell us how you are feeling...";
+        } else {
+          return '';
         }
       },
 
-      _getModalButtonText(route) {
-        if (route === 'myactivities') {
+      _getModalButtonText() {
+        if (this.route === 'myactivities') {
           return "Still want to help more people, tap here";
-        } else {
+        } else if (this.route === 'vote') {
           return "Tap here to continue";
+        } else {
+          return '';
         }
       },
 
       _dialogContinue: function() {
         if (this.route === 'myactivities') {
           document.querySelector('app-router').go('/vote');
-        } else {
+        } else if (this.route === 'vote') {
           document.querySelector('app-router').go('/feeling');
+        } else {
         }
       },
 

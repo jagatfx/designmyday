@@ -131,7 +131,7 @@
       </div>
       <paper-badge class="vote-badge"
                    for="card[[activity._id]]"
-                   hidden="[[_showVotes(route)]]"
+                   hidden="[[_hideVotes(route)]]"
                    label="[[activity.numVotes]] votes">
       </paper-badge>
       <div class="card-actions horizontal justified">
@@ -272,8 +272,9 @@
         if (this.route === 'myactivities') {
           this.$.chooseAjax.generateRequest();
           return;
+        } else if (this.route === 'vote') {
+          this.$.voteAjax.generateRequest();
         }
-        this.$.voteAjax.generateRequest();
       },
 
       _voteReqComplete: function() {
@@ -288,8 +289,8 @@
         // TODO: ajax error handling
       },
 
-      _showVotes: function(route) {
-        if (route === 'myactivities') {
+      _hideVotes: function() {
+        if (this.route === 'myactivities') {
           return false;
         }
         return true;
@@ -340,27 +341,32 @@
         this.$.done.updateStyles();
       },
 
-      _getModalText(route) {
-        if (route === 'myactivities') {
+      _getModalText() {
+        if (this.route === 'myactivities') {
           return "Nice job! Now it is time for you to go do your activity. Be sure to come back and tell us how it was!";
-        } else {
+        } else if (this.route === 'vote') {
           return "Your vote has been cast. Now it's time for you to receive a suggested activity. First, tell us how you are feeling...";
+        } else {
+          return '';
         }
       },
 
-      _getModalButtonText(route) {
-        if (route === 'myactivities') {
+      _getModalButtonText() {
+        if (this.route === 'myactivities') {
           return "Still want to help more people, tap here";
-        } else {
+        } else if (this.route === 'vote') {
           return "Tap here to continue";
+        } else {
+          return '';
         }
       },
 
       _dialogContinue: function() {
         if (this.route === 'myactivities') {
           document.querySelector('app-router').go('/vote');
-        } else {
+        } else if (this.route === 'vote') {
           document.querySelector('app-router').go('/feeling');
+        } else {
         }
       },
 
