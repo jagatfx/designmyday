@@ -23,14 +23,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       url="/api/[[_getUrl(route)]]"
       handle-as="json"
       debounce-duration="300"
-      on-response="_remoteActivitiesLoaded">
+      on-response="_remoteActivitiesLoaded"
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <iron-ajax auto
       url="/api/user"
       handle-as="json"
       debounce-duration="300"
-      on-response="_remoteUserLoaded">
+      on-response="_remoteUserLoaded"
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <!-- Backfill activities from localstorage. This prevents an initial flash while
@@ -88,6 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._remoteUserConnected = true;
         console.log('remote user storage connected');
         this.user = request.detail.response;
+      },
+
+      _ajaxError: function(request, error) {
       },
 
       // _localLoaded: function() {

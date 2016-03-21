@@ -1,16 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-dropdown/iron-dropdown.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../../node_modules/ajax-form/ajax-form.html">
 
-<dom-module id="page-addactivity">
+<dom-module id="page-editactivity">
   <template>
     <style include="shared-styles"></style>
     <style>
@@ -39,53 +29,52 @@
     </style>
     <div class="page-container">
       <div class="page-header">
-        <div class="page-title">Add A New Activity</div>
-        <div class="centered-container">
-          <paper-item>
-            <paper-item-body>
-              <div secondary><span class="caps">[[user.city]]</span>, <span class="upper">[[user.country]]</span></div>
-            </paper-item-body>
-          </paper-item>
-        </div>
+        <div class="page-title">Edit Activity</div>
       </div>
 
-      <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
+      <form is="ajax-form" id="activityform" action$="/api/activityform/{{activity._id}}" method="post" enctype="multipart/form-data">
         <paper-material elevation="1" class="activity">
-          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
-          <paper-input name="activity" label="What is the activity?"></paper-input>
-          <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
-          <paper-input name="link" label="Official link to activity"></paper-input>
+          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)" value$="{{activity.activityVerb}}"></paper-input>
+          <paper-input name="activity" label="What is the activity?" value$="{{activity.activity}}"></paper-input>
+          <paper-input name="specificLocation" label="Where (place/business name)?" value$="{{activity.specificLocation}}"></paper-input>
+          <paper-input name="link" label="Official link to activity" value$="{{activity.link}}"></paper-input>
           <paper-material elevation="1" class="vertical" class="activity">
             <div class="vertical upload">
               <div>Upload an image</div>
-              <div>(or leave as default image):</div>
+              <div>(or leave as the original image):</div>
               <input id="image" class="upload" type="file" on-change="_onFileChange"></input>
             </div>
             <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
             <paper-item class="disclaimer">Please do not upload copyrighted or large images (greater than 2MB in file size).</paper-item>
-            <input type="hidden" id="imgurl" name="imgurl" value="/img/activity-group.gif" />
+            <input type="hidden" id="imgurl" name="imgurl" value$="{{activity.img}}" />
             <div class="horizontal">
               <paper-item>Description:</paper-item>
-              <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here"></iron-autogrow-textarea>
+              <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here" value$="{{activity.description}}"></iron-autogrow-textarea>
             </div>
           </paper-material>
         </paper-material>
         <div class="centered-container horizontal">
-          <paper-button class="dmd-btn" raised on-tap="_submitForm">Add Activity</paper-button>
-          <a data-route="vote" href="#/vote"><paper-item>Cancel</paper-item></a>
+          <paper-button class="dmd-btn" raised on-tap="_submitForm">Update Activity</paper-button>
+          <a data-route="vote" href="#/profile"><paper-item>Cancel</paper-item></a>
         </div>
       </form>
 
     </div>
 
     <paper-dialog id="modal" modal>
-      <p>Your suggested activity has been added successfully!
-      Now it's time for you to receive a suggested activity.
-      First, tell us how you are feeling...</p>
+      <p>Your suggested activity has been updated successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap here to continue</paper-button>
       </div>
     </paper-dialog>
+
+    <iron-ajax auto
+      url="/api/activity/{{activityId}}"
+      method="get"
+      on-response="_activityLoaded"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
 
   </template>
   <script>
@@ -93,12 +82,24 @@
     'use strict';
 
     Polymer({
-      is: 'page-addactivity',
+      is: 'page-editactivity',
 
       properties: {
         preview: {
           type: String,
           value: '/img/activity-group.gif'
+        },
+        user: Object,
+        activity: Object
+      },
+
+      observers: [
+        '_updatePreview(activity)'
+      ],
+
+      _updatePreview: function(activity) {
+        if (this.preview === '/img/activity-group.gif') {
+          this.preview = activity.img;
         }
       },
 
@@ -108,7 +109,7 @@
       },
 
       _dialogContinue: function() {
-        document.querySelector('app-router').go('/feeling');
+        document.querySelector('app-router').go('/profile');
       },
 
       _onFileChange: function(event) {
@@ -120,7 +121,7 @@
 
       _get_signed_request: function(file) {
         var xhr = new XMLHttpRequest();
-        var uniqueFilename = this.user.username + '_' + Date.now() + '_' + file.name;
+        var uniqueFilename = Date.now() + '_' + file.name;
         xhr.open("GET", "/sign_s3?file_name="+uniqueFilename+"&file_type="+file.type);
         xhr.onreadystatechange = function() {
           if(xhr.readyState === 4){
@@ -150,6 +151,13 @@
           alert("Could not upload file.");
         };
         xhr.send(file);
+      },
+
+      _activityLoaded: function(request) {
+        this.activity = request.detail.response;
+      },
+
+      _ajaxError: function(request, error) {
       },
 
     });

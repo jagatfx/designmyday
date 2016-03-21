@@ -4,9 +4,6 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 
-<!-- Custom elements -->
-<link rel="import" href="../../styles/shared-styles.html">
-
 <dom-module id="page-severity">
 
   <template>
@@ -78,7 +75,8 @@
       id="severityAjax"
       method="get"
       on-response="_severityReqComplete"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
   </template>
@@ -136,7 +134,7 @@
         document.querySelector('app-router').go('/myactivities');
       },
 
-      _ajaxError: function() {
+      _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
 

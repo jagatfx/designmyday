@@ -6,9 +6,6 @@
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
-<!-- Custom elements -->
-<link rel="import" href="../../styles/shared-styles.html">
-
 <dom-module id="main-view">
 
   <template>
@@ -204,6 +201,10 @@
                                user="{{user}}"
                                activities="{{activities}}">
             </page-myactivities>
+            <page-editactivity data-route="edit"
+                               route="{{route}}"
+                               user="{{user}}">
+            </page-editactivity>
           </iron-pages>
 
         </div>

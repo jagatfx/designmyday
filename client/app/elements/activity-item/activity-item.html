@@ -9,8 +9,6 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 
-<link rel="import" href="../../styles/shared-styles.html">
-
 <dom-module id="activity-item">
 
   <template>
@@ -126,8 +124,11 @@
                   alt="[[activity.activityVerb]] [[activity.activity]]">
       </iron-image>
       <div class="card-content">
-        <p><span class="caps">[[activity.activityVerb]]</span> [[activity.activity]]<br />
+        <p><span>[[activity.activityVerb]]</span> [[activity.activity]]<br />
         [[activity.specificLocation]]</p>
+      </div>
+      <div hidden$="[[_hideEdit(user, route)]]">
+        <a href="#/editactivity/[[activity._id]]">edit</a>
       </div>
       <paper-badge class="vote-badge"
                    for="card[[activity._id]]"
@@ -166,7 +167,7 @@
     <paper-dialog id="dialog">
       <div class="horizontal justified">
         <div class="centered-container">
-          <h2><span class="caps">[[activity.activityVerb]]</span> [[activity.activity]]</h2>
+          <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
           <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
           <h2>[[activity.specificLocation]]</h2>
         </div>
@@ -184,7 +185,8 @@
       method="get"
       url="/api/vote/[[activity._id]]"
       on-response="_voteReqComplete"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <iron-ajax
@@ -192,21 +194,24 @@
       method="get"
       url="/api/choose/[[activity._id]]"
       on-response="_chooseReqComplete"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <iron-ajax
       id="favoriteAjax"
       method="post"
       url="/api/favorite/[[activity._id]]"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <iron-ajax
       id="completeAjax"
       method="post"
       url="/api/complete/[[activity._id]]"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <span>{{_setupActivityExtras(user)}}</span>
@@ -285,12 +290,19 @@
         this.$.modal.open();
       },
 
-      _ajaxError: function() {
+      _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
 
       _hideVotes: function() {
         if (this.route === 'myactivities') {
+          return false;
+        }
+        return true;
+      },
+
+      _hideEdit: function() {
+        if (this.route === 'profile' && this.activity.addedBy === this.user.username) {
           return false;
         }
         return true;

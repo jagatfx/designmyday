@@ -16324,6 +16324,331 @@ context. You should place this element as a child of `<body>` whenever possible.
 <script type="text/javascript">
 !function(){function t(t){if(!t.ctrlKey&&!t.metaKey&&2!==t.which){var e=this.getAttribute("href");if(0!==e.indexOf("http")||window.location.host===new URL(e).host){window.history.pushState(JSON.parse(this.getAttribute("state")),this.getAttribute("title"),e);try{var n=new PopStateEvent("popstate",{bubbles:!1,cancelable:!1,state:window.history.state});"dispatchEvent_"in window?window.dispatchEvent_(n):window.dispatchEvent(n)}catch(i){var a=document.createEvent("CustomEvent");a.initCustomEvent("popstate",!1,!1,{state:window.history.state}),window.dispatchEvent(a)}t.preventDefault()}}}var e=Object.create(HTMLAnchorElement.prototype);e.createdCallback=function(){this.addEventListener("click",t,!1)},e.detachedCallback=function(){this.removeEventListener("click",t,!1)},document.registerElement("pushstate-anchor",{prototype:e,"extends":"a"})}();
 </script>
+<style is="custom-style">
+
+  /* Application theme */
+
+  :root {
+    --primary-text-color: #212121;
+    --primary-background-color: #fff;
+    --secondary-text-color: #727272;
+    --disabled-text-color: #BDBDBD;
+    --divider-color: #B6B6B6;
+    --primary-color: #EDBD23;
+    --light-primary-color: #FFECB3;
+    --dark-primary-color: #EDBD23;
+    --accent-color: #EDBD23;
+    --light-accent-color: #FFECB3;
+    --dark-accent-color: #EDBD23;
+
+    /* Components */
+
+    /* paper-drawer-panel */
+    --drawer-menu-color: #ffffff;
+    --drawer-border-color: 1px solid #ccc;
+    --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
+
+    /* paper-menu */
+    --paper-menu-background-color: #fff;
+    --menu-link-color: #111111;
+  }
+
+  /* General styles */
+
+  body {
+    @apply(--layout-fullbleed);
+    @apply(--layout-vertical);
+  }
+
+  .space {
+    @apply(--layout-flex);
+  }
+
+  #drawerToolbar {
+    color: var(--secondary-text-color);
+    background-color: var(--drawer-menu-color);
+    border-bottom: var(--drawer-toolbar-border-color);
+  }
+
+  #drawerToolbar .menu-name {
+    @apply(--paper-font-title);
+  }
+
+  paper-scroll-header-panel {
+    height: 100%;
+  }
+
+  paper-menu {
+    --paper-menu-selected-item: {
+      color: var(--primary-color);
+    }
+
+    --paper-menu-focused-item-after: {
+      background: var(--primary-color);
+    }
+  }
+
+  paper-menu iron-icon {
+    margin-right: 33px;
+    opacity: 0.54;
+  }
+
+  paper-menu a {
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+
+    text-decoration: none;
+    color: var(--menu-link-color);
+    font-family: 'Roboto', 'Noto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    min-height: 30px;
+    padding: 0 16px;
+  }
+
+  #mainToolbar.tall .app-name {
+    font-size: 40px;
+    font-weight: 300;
+    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+  }
+
+  #mainToolbar .middle-container,
+  #mainToolbar .bottom-container {
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+  }
+
+  #mainToolbar .middle-container  {
+    height: 100%;
+    margin-left: 48px;
+  }
+
+  #mainToolbar:not(.tall) .middle-container {
+    font-size: 18px;
+    padding-bottom: 0;
+  }
+
+  #mainToolbar .bottom-container {
+    @apply(--paper-font-subhead);
+
+    margin-left: 48px;
+    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+  }
+
+  /* Height of the scroll area */
+  .content {
+    /*height: 900px;*/
+  }
+
+  section[data-route="home"] paper-material {
+    @apply(--paper-font-body2);
+  }
+
+  section[data-route="home"] paper-material .subhead {
+    @apply(--paper-font-subhead);
+  }
+
+  paper-material {
+    border-radius: 2px;
+    height: 100%;
+    padding: 16px 0 16px 0;
+    width: calc(98.66% - 16px);
+    margin: 16px auto;
+    background: white;
+  }
+
+  #toast .toast-hide-button {
+    color: #eeff41;
+    margin: 10px;
+  }
+
+  /* Breakpoints */
+
+  /* Small */
+  @media (max-width: 600px) {
+
+    #drawer .paper-toolbar {
+      margin-left: 16px;
+    }
+
+    #mainToolbar.tall .app-name {
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    paper-material {
+      --menu-container-display: none;
+      width: calc(97.33% - 32px);
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+  }
+
+  /* Tablet+ */
+  @media (min-width: 601px) {
+
+    #drawer.paper-drawer-panel > [drawer] {
+      border-right: 1px solid rgba(0, 0, 0, 0.14);
+    }
+
+    iron-pages {
+      padding: 20px 62px;
+    }
+
+    paper-material {
+      width: calc(98% - 46px);
+      margin-bottom: 32px;
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+
+  }
+
+  /* Material Design Adaptive Breakpoints */
+  /*
+    Below you'll find CSS media queries based on the breakpoint guidance
+    published by the Material Design team. You can choose to use, customise
+    or remove these breakpoints based on your needs.
+
+    http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
+   */
+
+  /* mobile-small */
+  @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) { }
+  /* mobile-large */
+  @media all and (min-width: 361px) and (orientation: portrait) { }
+  /* mobile-small-landscape */
+  @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
+  /* mobile-large-landscape */
+  @media all and (min-width: 481px) and (orientation: landscape) { }
+  /* tablet-small-landscape */
+  @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) { }
+  /* tablet-large-landscape */
+  @media all and (min-width: 961px) and (orientation: landscape) { }
+  /* tablet-small */
+  @media all and (min-width: 600px) and (orientation: portrait) { }
+  /* tablet-large */
+  @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) { }
+  /* desktop-x-small-landscape */
+  @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
+  /* desktop-x-small */
+  @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) { }
+  /* desktop-small-landscape */
+  @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) { }
+  /* desktop-small */
+  @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) { }
+  /* desktop-medium-landscape */
+  @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) { }
+  /* desktop-medium */
+  @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) { }
+  /* desktop-large */
+  @media all and (min-width: 1281px) and (max-width: 1600px) { }
+  /* desktop-xlarge */
+  @media all and (min-width: 1601px) and (max-width: 1920px) { }
+
+</style>
+<dom-module id="shared-styles" assetpath="../styles/">
+  <template>
+    <style>
+      .page-title {
+        @apply(--paper-font-display2);
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 35px;
+        font-weight: bold;
+      }
+
+      paper-menu a > *, paper-menu paper-item > *, paper-menu paper-icon-item > * {
+        pointer-events: none;
+      }
+
+      @media (max-width: 600px) {
+        .page-title {
+          font-size: 24px!important;
+        }
+      }
+
+      .page-header {
+        @apply(--layout-center-justified);
+      }
+
+      .centered-container {
+         @apply(--layout-center-justified);
+         text-align: center;
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+      .vertical {
+        @apply(--layout-vertical);
+      }
+      .justified {
+        @apply(--layout-justified);
+      }
+      .end-justified {
+        @apply(--layout-end-justified);
+      }
+
+      .wrap {
+        @apply(--layout-wrap);
+      }
+
+      paper-button.dmd-btn {
+        --paper-button-ink-color: var(--primary-text-color);
+        /* These could also be individually defined for each of the
+          specific css classes, but we'll just do it once as an example */
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--light-accent-color);
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--dark-primary-color) !important;
+        };
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: var(--accent-color);
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--dark-primary-color) !important;
+        };
+      }
+      paper-button.dmd-btn:hover {
+        background-color: var(--light-accent-color);
+        color: #000;
+      }
+      .caps {
+        text-transform: capitalize;
+      }
+      .upper {
+        text-transform: uppercase;
+      }
+      .disclaimer {
+        font-style: italic;
+      }
+      .flex-center-align {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+      .flex-child {
+        @apply(--layout-flex);
+      }
+      .severity-slider {
+        --paper-slider-active-color: var(--accent-color);
+        --paper-slider-disabled-active-color: var(--accent-color);
+        --paper-slider-knob-color: #000;
+        --paper-slider-disabled-knob-color: #000;
+      }
+    </style>
+  </template>
+</dom-module>
 <script>function MakePromise (asap) {
   function Promise(fn) {
 		if (typeof this !== 'object' || typeof fn !== 'function') throw new TypeError();
@@ -17341,10 +17666,10 @@ if (!window.Promise) {
     <style>
     </style>
 
-    <iron-ajax auto="" id="activityAjax" url="/api/[[_getUrl(route)]]" handle-as="json" debounce-duration="300" on-response="_remoteActivitiesLoaded">
+    <iron-ajax auto="" id="activityAjax" url="/api/[[_getUrl(route)]]" handle-as="json" debounce-duration="300" on-response="_remoteActivitiesLoaded" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
-    <iron-ajax auto="" url="/api/user" handle-as="json" debounce-duration="300" on-response="_remoteUserLoaded">
+    <iron-ajax auto="" url="/api/user" handle-as="json" debounce-duration="300" on-response="_remoteUserLoaded" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
     
@@ -17395,6 +17720,9 @@ if (!window.Promise) {
         this._remoteUserConnected = true;
         console.log('remote user storage connected');
         this.user = request.detail.response;
+      },
+
+      _ajaxError: function(request, error) {
       },
 
       // _localLoaded: function() {
@@ -17778,101 +18106,6 @@ if (!window.Promise) {
     })();
   </script>
 </dom-module>
-<dom-module id="shared-styles" assetpath="../styles/">
-  <template>
-    <style>
-      .page-title {
-        @apply(--paper-font-display2);
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 35px;
-        font-weight: bold;
-      }
-
-      paper-menu a > *, paper-menu paper-item > *, paper-menu paper-icon-item > * {
-        pointer-events: none;
-      }
-
-      @media (max-width: 600px) {
-        .page-title {
-          font-size: 24px!important;
-        }
-      }
-
-      .page-header {
-        @apply(--layout-center-justified);
-      }
-
-      .centered-container {
-         @apply(--layout-center-justified);
-         text-align: center;
-      }
-
-      .horizontal {
-        @apply(--layout-horizontal);
-      }
-      .vertical {
-        @apply(--layout-vertical);
-      }
-      .justified {
-        @apply(--layout-justified);
-      }
-      .end-justified {
-        @apply(--layout-end-justified);
-      }
-
-      .wrap {
-        @apply(--layout-wrap);
-      }
-
-      paper-button.dmd-btn {
-        --paper-button-ink-color: var(--primary-text-color);
-        /* These could also be individually defined for each of the
-          specific css classes, but we'll just do it once as an example */
-        --paper-button-flat-keyboard-focus: {
-          background-color: var(--light-accent-color);
-        };
-        --paper-button-raised-keyboard-focus: {
-          background-color: var(--dark-primary-color) !important;
-        };
-        color: #fff;
-        font-weight: bold;
-        padding: 10px 20px;
-        background-color: var(--accent-color);
-        --paper-button-raised-keyboard-focus: {
-          background-color: var(--dark-primary-color) !important;
-        };
-      }
-      paper-button.dmd-btn:hover {
-        background-color: var(--light-accent-color);
-        color: #000;
-      }
-      .caps {
-        text-transform: capitalize;
-      }
-      .upper {
-        text-transform: uppercase;
-      }
-      .disclaimer {
-        font-style: italic;
-      }
-      .flex-center-align {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-      }
-      .flex-child {
-        @apply(--layout-flex);
-      }
-      .severity-slider {
-        --paper-slider-active-color: var(--accent-color);
-        --paper-slider-disabled-active-color: var(--accent-color);
-        --paper-slider-knob-color: #000;
-        --paper-slider-disabled-knob-color: #000;
-      }
-    </style>
-  </template>
-</dom-module>
-
 <dom-module id="main-view" assetpath="main-view/">
 
   <template>
@@ -18027,6 +18260,8 @@ if (!window.Promise) {
             </page-severity>
             <page-myactivities data-route="myactivities" route="{{route}}" user="{{user}}" activities="{{activities}}">
             </page-myactivities>
+            <page-editactivity data-route="edit" route="{{route}}" user="{{user}}">
+            </page-editactivity>
           </iron-pages>
 
         </div>
@@ -22087,7 +22322,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   });
 
 </script>
-
 <dom-module id="vote-head" assetpath="vote-head/">
 
   <template>
@@ -22306,7 +22540,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     });
   </script>
 </dom-module>
-
 <dom-module id="page-severity" assetpath="page-severity/">
 
   <template>
@@ -22369,7 +22602,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
     </div>
 
-    <iron-ajax id="severityAjax" method="get" on-response="_severityReqComplete" on-error="_ajaxError">
+    <iron-ajax id="severityAjax" method="get" on-response="_severityReqComplete" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -22427,14 +22660,13 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         document.querySelector('app-router').go('/myactivities');
       },
 
-      _ajaxError: function() {
+      _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
 
     });
   </script>
 </dom-module>
-
 <dom-module id="page-feeling" assetpath="page-feeling/">
 
   <template>
@@ -22495,7 +22727,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
     </div>
 
-    <iron-ajax id="feelingAjax" method="get" on-response="_feelingReqComplete" on-error="_ajaxError">
+    <iron-ajax id="feelingAjax" method="get" on-response="_feelingReqComplete" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -22524,7 +22756,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         document.querySelector('app-router').go('/severity');
       },
 
-      _ajaxError: function() {
+      _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
 
@@ -23154,7 +23386,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     });
   </script>
 </dom-module>
-
 <dom-module id="page-profile" assetpath="page-profile/">
   <template>
     <style include="shared-styles"></style>
@@ -23269,7 +23500,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     <iron-ajax auto="" url="/api/profileactivities" method="get" on-response="_profileActivitiesLoaded" on-error="_ajaxError">
     </iron-ajax>
 
-    <iron-ajax auto="" url="/api/mysuggestions" method="get" on-response="_mySuggestionsLoaded" on-error="_ajaxError">
+    <iron-ajax auto="" url="/api/mysuggestions" method="get" on-response="_mySuggestionsLoaded" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -23314,11 +23545,13 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         this.mySuggestions = request.detail.response;
       },
 
+      _ajaxError: function() {
+      },
+
     });
   })();
   </script>
 </dom-module>
-
 <dom-module id="page-vote" assetpath="page-vote/">
   <template>
     <style include="shared-styles"></style>
@@ -23347,7 +23580,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   })();
   </script>
 </dom-module>
-
 <dom-module id="page-myactivities" assetpath="page-myactivities/">
   <template>
     <style include="shared-styles"></style>
@@ -25854,44 +26086,50 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       input.upload {
         padding-top: 15px;
       }
+      .page-container {
+        padding-bottom: 20px;
+      }
     </style>
-    <div class="page-header">
-      <div class="page-title">Add A New Activity</div>
-      <div class="centered-container">
-        <paper-item>
-          <paper-item-body>
-            <div secondary=""><span class="caps">[[user.city]]</span>, <span class="upper">[[user.country]]</span></div>
-          </paper-item-body>
-        </paper-item>
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-title">Add A New Activity</div>
+        <div class="centered-container">
+          <paper-item>
+            <paper-item-body>
+              <div secondary=""><span class="caps">[[user.city]]</span>, <span class="upper">[[user.country]]</span></div>
+            </paper-item-body>
+          </paper-item>
+        </div>
       </div>
-    </div>
 
-    <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
-      <paper-material elevation="1" class="activity">
-        <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
-        <paper-input name="activity" label="What is the activity?"></paper-input>
-        <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
-        <paper-input name="link" label="Official link to activity"></paper-input>
-        <paper-material elevation="1" class="vertical">
-          <div class="vertical upload">
-            <div>Upload an image</div>
-            <div>(or leave as default image):</div>
-            <input id="image" class="upload" type="file" on-change="_onFileChange">
-          </div>
-          <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
-          <paper-item class="disclaimer">Please do not upload copyrighted or large images (greater than 2MB in file size).</paper-item>
-          <input type="hidden" id="imgurl" name="imgurl" value="/img/activity-group.gif">
-          <div class="horizontal">
-            <paper-item>Description:</paper-item>
-            <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here"></iron-autogrow-textarea>
-          </div>
+      <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
+        <paper-material elevation="1" class="activity">
+          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
+          <paper-input name="activity" label="What is the activity?"></paper-input>
+          <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
+          <paper-input name="link" label="Official link to activity"></paper-input>
+          <paper-material elevation="1" class="vertical">
+            <div class="vertical upload">
+              <div>Upload an image</div>
+              <div>(or leave as default image):</div>
+              <input id="image" class="upload" type="file" on-change="_onFileChange">
+            </div>
+            <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
+            <paper-item class="disclaimer">Please do not upload copyrighted or large images (greater than 2MB in file size).</paper-item>
+            <input type="hidden" id="imgurl" name="imgurl" value="/img/activity-group.gif">
+            <div class="horizontal">
+              <paper-item>Description:</paper-item>
+              <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here"></iron-autogrow-textarea>
+            </div>
+          </paper-material>
         </paper-material>
-      </paper-material>
-      <div class="centered-container horizontal">
-        <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Add Activity</paper-button>
-        <a data-route="vote" href="#/vote"><paper-item>Cancel</paper-item></a>
-      </div>
-    </form>
+        <div class="centered-container horizontal">
+          <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Add Activity</paper-button>
+          <a data-route="vote" href="#/vote"><paper-item>Cancel</paper-item></a>
+        </div>
+      </form>
+
+    </div>
 
     <paper-dialog id="modal" modal="">
       <p>Your suggested activity has been added successfully!
@@ -25971,7 +26209,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   })();
   </script>
 </dom-module>
-
 <dom-module id="activity-list" assetpath="activity-list/">
 
   <template>
@@ -26304,8 +26541,11 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       <iron-image class="activity-image" src="[[activity.img]]" on-tap="_doAjaxRequest" alt="[[activity.activityVerb]] [[activity.activity]]">
       </iron-image>
       <div class="card-content">
-        <p><span class="caps">[[activity.activityVerb]]</span> [[activity.activity]]<br>
+        <p><span>[[activity.activityVerb]]</span> [[activity.activity]]<br>
         [[activity.specificLocation]]</p>
+      </div>
+      <div hidden$="[[_hideEdit(user, route)]]">
+        <a href="#/editactivity/[[activity._id]]">edit</a>
       </div>
       <paper-badge class="vote-badge" for="card[[activity._id]]" hidden="[[_hideVotes(route)]]" label="[[activity.numVotes]] votes">
       </paper-badge>
@@ -26337,7 +26577,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     <paper-dialog id="dialog">
       <div class="horizontal justified">
         <div class="centered-container">
-          <h2><span class="caps">[[activity.activityVerb]]</span> [[activity.activity]]</h2>
+          <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
           <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
           <h2>[[activity.specificLocation]]</h2>
         </div>
@@ -26350,16 +26590,16 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
     </paper-dialog>
 
-    <iron-ajax id="voteAjax" method="get" url="/api/vote/[[activity._id]]" on-response="_voteReqComplete" on-error="_ajaxError">
+    <iron-ajax id="voteAjax" method="get" url="/api/vote/[[activity._id]]" on-response="_voteReqComplete" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
-    <iron-ajax id="chooseAjax" method="get" url="/api/choose/[[activity._id]]" on-response="_chooseReqComplete" on-error="_ajaxError">
+    <iron-ajax id="chooseAjax" method="get" url="/api/choose/[[activity._id]]" on-response="_chooseReqComplete" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
-    <iron-ajax id="favoriteAjax" method="post" url="/api/favorite/[[activity._id]]" on-error="_ajaxError">
+    <iron-ajax id="favoriteAjax" method="post" url="/api/favorite/[[activity._id]]" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
-    <iron-ajax id="completeAjax" method="post" url="/api/complete/[[activity._id]]" on-error="_ajaxError">
+    <iron-ajax id="completeAjax" method="post" url="/api/complete/[[activity._id]]" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
     <span>{{_setupActivityExtras(user)}}</span>
@@ -26438,12 +26678,19 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         this.$.modal.open();
       },
 
-      _ajaxError: function() {
+      _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
 
       _hideVotes: function() {
         if (this.route === 'myactivities') {
+          return false;
+        }
+        return true;
+      },
+
+      _hideEdit: function() {
+        if (this.route === 'profile' && this.activity.addedBy === this.user.username) {
           return false;
         }
         return true;
@@ -26526,9 +26773,169 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     });
   </script>
 </dom-module>
+<dom-module id="page-editactivity" assetpath="page-editactivity/">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-material.activity {
+        padding: 10px;
+        margin: 10px;
+      }
+      iron-autogrow-textarea {
+        margin: 10px 0;
+      }
+      .activity-image {
+        --iron-image-width: 208px;
+      }
+      .upload {
+        margin: 10px;
+      }
+      input.upload {
+        padding-top: 15px;
+      }
+      .page-container {
+        padding-bottom: 20px;
+      }
+    </style>
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-title">Edit Activity</div>
+      </div>
+
+      <form is="ajax-form" id="activityform" action$="/api/activityform/{{activity._id}}" method="post" enctype="multipart/form-data">
+        <paper-material elevation="1" class="activity">
+          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)" value$="{{activity.activityVerb}}"></paper-input>
+          <paper-input name="activity" label="What is the activity?" value$="{{activity.activity}}"></paper-input>
+          <paper-input name="specificLocation" label="Where (place/business name)?" value$="{{activity.specificLocation}}"></paper-input>
+          <paper-input name="link" label="Official link to activity" value$="{{activity.link}}"></paper-input>
+          <paper-material elevation="1" class="vertical">
+            <div class="vertical upload">
+              <div>Upload an image</div>
+              <div>(or leave as the original image):</div>
+              <input id="image" class="upload" type="file" on-change="_onFileChange">
+            </div>
+            <iron-image id="preview" class="activity-image" src="{{preview}}"></iron-image>
+            <paper-item class="disclaimer">Please do not upload copyrighted or large images (greater than 2MB in file size).</paper-item>
+            <input type="hidden" id="imgurl" name="imgurl" value$="{{activity.img}}">
+            <div class="horizontal">
+              <paper-item>Description:</paper-item>
+              <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here" value$="{{activity.description}}"></iron-autogrow-textarea>
+            </div>
+          </paper-material>
+        </paper-material>
+        <div class="centered-container horizontal">
+          <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Update Activity</paper-button>
+          <a data-route="vote" href="#/profile"><paper-item>Cancel</paper-item></a>
+        </div>
+      </form>
+
+    </div>
+
+    <paper-dialog id="modal" modal="">
+      <p>Your suggested activity has been updated successfully!</p>
+      <div class="buttons">
+        <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>
+      </div>
+    </paper-dialog>
+
+    <iron-ajax auto="" url="/api/activity/{{activityId}}" method="get" on-response="_activityLoaded" on-error="_ajaxError" verbose="true">
+    </iron-ajax>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-editactivity',
+
+      properties: {
+        preview: {
+          type: String,
+          value: '/img/activity-group.gif'
+        },
+        user: Object,
+        activity: Object
+      },
+
+      observers: [
+        '_updatePreview(activity)'
+      ],
+
+      _updatePreview: function(activity) {
+        if (this.preview === '/img/activity-group.gif') {
+          this.preview = activity.img;
+        }
+      },
+
+      _submitForm: function(event) {
+        this.$.activityform.submit();
+        this.$.modal.open();
+      },
+
+      _dialogContinue: function() {
+        document.querySelector('app-router').go('/profile');
+      },
+
+      _onFileChange: function(event) {
+        var files = this.$.image.files;
+        if (files) {
+          this._get_signed_request(files[0]);
+        }
+      },
+
+      _get_signed_request: function(file) {
+        var xhr = new XMLHttpRequest();
+        var uniqueFilename = Date.now() + '_' + file.name;
+        xhr.open("GET", "/sign_s3?file_name="+uniqueFilename+"&file_type="+file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response = JSON.parse(xhr.responseText);
+              this._upload_file(file, response.signed_request, response.url);
+            }
+            else{
+              alert("Could not get signed URL.");
+            }
+          }
+        }.bind(this);
+        xhr.send();
+      },
+
+      _upload_file: function(file, signed_request, url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", signed_request);
+        xhr.setRequestHeader('x-amz-acl', 'public-read');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            this.$.preview.src = url;
+            this.$.imgurl.value = url;
+          }
+        }.bind(this);
+        xhr.onerror = function() {
+          alert("Could not upload file.");
+        };
+        xhr.send(file);
+      },
+
+      _activityLoaded: function(request) {
+        this.activity = request.detail.response;
+      },
+
+      _ajaxError: function(request, error) {
+      },
+
+    });
+  })();
+  </script>
+</dom-module>
 <dom-module id="dmd-router" assetpath="dmd-router/">
   <template>
     <app-router id="router" mode="hash">
+      <app-route path="/editactivity/:activityId" element="page-editactivity"></app-route>
       <app-route path="/:route" element="main-view"></app-route>
     </app-router>
   </template>
@@ -26545,235 +26952,4 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   })();
   </script>
 </dom-module>
-<style is="custom-style">
-
-  /* Application theme */
-
-  :root {
-    --primary-text-color: #212121;
-    --primary-background-color: #fff;
-    --secondary-text-color: #727272;
-    --disabled-text-color: #BDBDBD;
-    --divider-color: #B6B6B6;
-    --primary-color: #EDBD23;
-    --light-primary-color: #FFECB3;
-    --dark-primary-color: #EDBD23;
-    --accent-color: #EDBD23;
-    --light-accent-color: #FFECB3;
-    --dark-accent-color: #EDBD23;
-
-    /* Components */
-
-    /* paper-drawer-panel */
-    --drawer-menu-color: #ffffff;
-    --drawer-border-color: 1px solid #ccc;
-    --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
-
-    /* paper-menu */
-    --paper-menu-background-color: #fff;
-    --menu-link-color: #111111;
-  }
-
-  /* General styles */
-
-  body {
-    @apply(--layout-fullbleed);
-    @apply(--layout-vertical);
-  }
-
-  .space {
-    @apply(--layout-flex);
-  }
-
-  #drawerToolbar {
-    color: var(--secondary-text-color);
-    background-color: var(--drawer-menu-color);
-    border-bottom: var(--drawer-toolbar-border-color);
-  }
-
-  #drawerToolbar .menu-name {
-    @apply(--paper-font-title);
-  }
-
-  paper-scroll-header-panel {
-    height: 100%;
-  }
-
-  paper-menu {
-    --paper-menu-selected-item: {
-      color: var(--primary-color);
-    }
-
-    --paper-menu-focused-item-after: {
-      background: var(--primary-color);
-    }
-  }
-
-  paper-menu iron-icon {
-    margin-right: 33px;
-    opacity: 0.54;
-  }
-
-  paper-menu a {
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-
-    text-decoration: none;
-    color: var(--menu-link-color);
-    font-family: 'Roboto', 'Noto', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
-    min-height: 30px;
-    padding: 0 16px;
-  }
-
-  #mainToolbar.tall .app-name {
-    font-size: 40px;
-    font-weight: 300;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  #mainToolbar .middle-container,
-  #mainToolbar .bottom-container {
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-  }
-
-  #mainToolbar .middle-container  {
-    height: 100%;
-    margin-left: 48px;
-  }
-
-  #mainToolbar:not(.tall) .middle-container {
-    font-size: 18px;
-    padding-bottom: 0;
-  }
-
-  #mainToolbar .bottom-container {
-    @apply(--paper-font-subhead);
-
-    margin-left: 48px;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  /* Height of the scroll area */
-  .content {
-    /*height: 900px;*/
-  }
-
-  section[data-route="home"] paper-material {
-    @apply(--paper-font-body2);
-  }
-
-  section[data-route="home"] paper-material .subhead {
-    @apply(--paper-font-subhead);
-  }
-
-  paper-material {
-    border-radius: 2px;
-    height: 100%;
-    padding: 16px 0 16px 0;
-    width: calc(98.66% - 16px);
-    margin: 16px auto;
-    background: white;
-  }
-
-  #toast .toast-hide-button {
-    color: #eeff41;
-    margin: 10px;
-  }
-
-  /* Breakpoints */
-
-  /* Small */
-  @media (max-width: 600px) {
-
-    #drawer .paper-toolbar {
-      margin-left: 16px;
-    }
-
-    #mainToolbar.tall .app-name {
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    paper-material {
-      --menu-container-display: none;
-      width: calc(97.33% - 32px);
-      padding-left: 16px;
-      padding-right: 16px;
-    }
-
-  }
-
-  /* Tablet+ */
-  @media (min-width: 601px) {
-
-    #drawer.paper-drawer-panel > [drawer] {
-      border-right: 1px solid rgba(0, 0, 0, 0.14);
-    }
-
-    iron-pages {
-      padding: 20px 62px;
-    }
-
-    paper-material {
-      width: calc(98% - 46px);
-      margin-bottom: 32px;
-      padding-left: 30px;
-      padding-right: 30px;
-    }
-
-  }
-
-  /* Material Design Adaptive Breakpoints */
-  /*
-    Below you'll find CSS media queries based on the breakpoint guidance
-    published by the Material Design team. You can choose to use, customise
-    or remove these breakpoints based on your needs.
-
-    http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
-   */
-
-  /* mobile-small */
-  @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) { }
-  /* mobile-large */
-  @media all and (min-width: 361px) and (orientation: portrait) { }
-  /* mobile-small-landscape */
-  @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
-  /* mobile-large-landscape */
-  @media all and (min-width: 481px) and (orientation: landscape) { }
-  /* tablet-small-landscape */
-  @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) { }
-  /* tablet-large-landscape */
-  @media all and (min-width: 961px) and (orientation: landscape) { }
-  /* tablet-small */
-  @media all and (min-width: 600px) and (orientation: portrait) { }
-  /* tablet-large */
-  @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) { }
-  /* desktop-x-small-landscape */
-  @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
-  /* desktop-x-small */
-  @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) { }
-  /* desktop-small-landscape */
-  @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) { }
-  /* desktop-small */
-  @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) { }
-  /* desktop-medium-landscape */
-  @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) { }
-  /* desktop-medium */
-  @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) { }
-  /* desktop-large */
-  @media all and (min-width: 1281px) and (max-width: 1600px) { }
-  /* desktop-xlarge */
-  @media all and (min-width: 1601px) and (max-width: 1920px) { }
-
-</style>
 </div></body></html>

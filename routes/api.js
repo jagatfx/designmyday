@@ -50,6 +50,7 @@ router.get('/user', loggedIn, function(req, res, next) {
   .populate('_voteUser')
   .exec(function (err, voter) {
     if (err) {
+      console.error(err);
       return res.json( {result: 'Error: getting votee'} );
     }
     var votee = voter._voteUser;
@@ -70,6 +71,7 @@ router.get('/profileactivities', loggedIn, function(req, res, next) {
   Account.findOne({_id: user._id})
   .exec(function (err, voter) {
     if (err) {
+      console.error(err);
       return res.json( {result: 'Error: getting user '+err} );
     }
 
@@ -77,6 +79,7 @@ router.get('/profileactivities', loggedIn, function(req, res, next) {
       '_id': { $in: user.activitySelectSequence.map(function(activity) { return activity.activity; })}
     }, function(err, activities) {
       if (err) {
+        console.error(err);
         return res.json( {result: 'Error: getting user activities'} );
       }
       return res.json(activities);
@@ -90,6 +93,7 @@ router.get('/mysuggestions', loggedIn, function(req, res, next) {
 
   Activity.find({'addedBy': user.username}, function(err, activities) {
     if (err) {
+      console.error(err);
       return res.json( {result: 'Error: getting mysuggestions '+err} );
     }
     return res.json(activities);
@@ -120,6 +124,7 @@ router.get('/activity', loggedIn, function(req, res, next) {
   }
   Activity.find().or([{city: city},{city: ''}]).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
     if (err) {
+      console.error(err);
       return res.json( {result: err} );
     }
     res.json(activities);
@@ -129,8 +134,8 @@ router.get('/activity', loggedIn, function(req, res, next) {
 router.get('/activity/:id', loggedIn, function(req, res, next) {
   Activity.findById(req.params.id, function (err, activity) {
     if (err) {
-      res.json( {result: err} );
-      return;
+      console.error(err);
+      return res.json( {result: err} );
     }
     res.json(activity);
   });
@@ -145,8 +150,8 @@ router.post('/activity', loggedIn, function (req, res) {
       activity.updated_at  = Date.now();
       activity.save( function ( err, activity, count ) {
         if (err) {
-          res.json( {result: err} );
-          return;
+          console.error(err);
+          return res.json( {result: err} );
         } else {
           console.log('saved activity: '+activity.link);
           res.json( {result: 'OK'} );
@@ -170,8 +175,8 @@ router.post('/activity', loggedIn, function (req, res) {
         updated_at       : Date.now()
       }).save( function( err, activity, count ) {
         if (err) {
-          res.json( {result: err} );
-          return;
+          console.error(err);
+          return res.json( {result: err} );
         } else {
           console.log('saved activity: '+activity.link);
           res.json( {result: 'OK'} );
@@ -203,9 +208,10 @@ router.post('/activityform', loggedIn, function(req, res) {
       updated_at       : Date.now()
     }).save( function( err, activity, count ) {
       if (err) {
+        console.error(err);
         return res.json( {result: err} );
       } else {
-        // TODO: add vote for this new activity
+        // after suggesting always vote for the activity
         console.log('saved new activity: '+activity.link);
         return processActivityVote(req, res, activity._id);
       }
@@ -213,9 +219,45 @@ router.post('/activityform', loggedIn, function(req, res) {
   });
 });
 
+router.post('/activityform/:id', loggedIn, function(req, res) {
+  var user = req.user;
+  upload(req, res, function (err) {
+    // // we expect error here because not actually sending image
+    // // but using upload to parse out multipart form
+    // if (err) {
+    //   console.error('upload error when adding activity image:'+err);
+    // }
+
+    Activity.findById(req.params.id, function(err, activity) {
+      if (activity) {
+        if (user.username === activity.addedBy) {
+          activity.activityVerb     = req.body.activityVerb;
+          activity.activity         = req.body.activity;
+          activity.specificLocation = req.body.specificLocation;
+          activity.description      = req.body.description;
+          activity.link             = req.body.link;
+          activity.img              = req.body.imgurl;
+          activity.updated_at       = Date.now();
+          activity.save( function ( err, activity, count ) {
+            if (err) {
+              console.error(err);
+              return res.json( {result: err} );
+            } else {
+              console.log('saved activity: '+activity._id);
+              res.json( {result: 'OK'} );
+            }
+          });
+        } else {
+          return res.json( {result: 'error: only the user that suggested the activity can edit it'} );
+        }
+      }
+    });
+  });
+});
+
 router.post('/activity/:id', loggedIn, function (req, res) {
   Activity.findById(req.params.id, function(err, activity) {
-    if(activity) {
+    if (activity) {
       activity.metaActivity     = req.body.metaActivity;
       activity.activityVerb     = req.body.activityVerb;
       activity.activity         = req.body.activity;
@@ -232,8 +274,8 @@ router.post('/activity/:id', loggedIn, function (req, res) {
       activity.updated_at       = Date.now();
       activity.save( function ( err, activity, count ) {
         if (err) {
-          res.json( {result: err} );
-          return;
+          console.error(err);
+          return res.json( {result: err} );
         } else {
           console.log('saved activity: '+activity._id);
           // TODO: re-enable API response ajax enabled for admin
@@ -250,10 +292,10 @@ router.get('/activity/delete/:id', loggedIn, function (req, res) {
   Activity.findById(req.params.id, function (err, activity) {
     activity.remove( function (err, activity) {
       if (err) {
-        res.json( {result: err} );
-        return;
+        console.error(err);
+        return res.json( {result: err} );
       }
-      res.send( {result: 'OK'} );
+      res.json( {result: 'OK'} );
     });
   });
 });
@@ -302,19 +344,19 @@ function processActivityVote(req, res, activityId) {
     console.log('voteeId:'+voteeId+' voterId:'+voterId+' activityId:'+activityId);
 
     if (!voteeId || !voterId) {
-      return res.send( {result: 'Error: voter and votee ids required and not found'} );
+      return res.json( {result: 'Error: voter and votee ids required and not found'} );
     }
     Account.findById(voteeId, function(voteeErr, votee) {
 
       if (voteeErr) {
-        return res.send( {result: 'Error: voteeErr:' + voteeErr +
+        return res.json( {result: 'Error: voteeErr:' + voteeErr +
           ' with voterId:'+ voterId + ' voteeId:' + voteeId} );
       }
 
       Activity.findById(activityId, function(activityErr, activity) {
 
         if (activityErr) {
-          return res.send( {result: 'Error: activityErr:' + activityErr +
+          return res.json( {result: 'Error: activityErr:' + activityErr +
             ' with voterId:'+ voterId + ' voteeId:' + voteeId +
             ' activityId:' + activityId} );
         }
@@ -355,7 +397,7 @@ function processActivityVote(req, res, activityId) {
                 var voteeFeeling = votee.lastFeeling;
 
                 if (voteeAge < 1 || !voteeFeeling) {
-                  return res.send( { result: 'Error: voteeAge:'+voteeAge+' voteeFeeling:'+voteeFeeling } );
+                  return res.json( { result: 'Error: voteeAge:'+voteeAge+' voteeFeeling:'+voteeFeeling } );
                 }
 
                 updateActivityVotes(activity, voteeFeeling, voteeAge);

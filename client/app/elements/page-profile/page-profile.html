@@ -3,9 +3,6 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
-<!-- Custom elements -->
-<link rel="import" href="../../styles/shared-styles.html">
-
 <dom-module id="page-profile">
   <template>
     <style include="shared-styles"></style>
@@ -141,7 +138,8 @@
       url="/api/mysuggestions"
       method="get"
       on-response="_mySuggestionsLoaded"
-      on-error="_ajaxError">
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
   </template>
@@ -184,6 +182,9 @@
 
       _mySuggestionsLoaded: function(request) {
         this.mySuggestions = request.detail.response;
+      },
+
+      _ajaxError: function() {
       },
 
     });
