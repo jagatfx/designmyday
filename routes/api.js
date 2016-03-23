@@ -1,7 +1,9 @@
 var express  = require('express');
 var router   = express.Router();
+var mongoose = require('mongoose');
 var Account  = require('../models/account');
 var Activity = require('../models/activity');
+var ObjectId = mongoose.Types.ObjectId;
 var multer   = require('multer');
 
 var storage = multer.diskStorage({
@@ -300,28 +302,18 @@ router.get('/activity/delete/:id', loggedIn, function (req, res) {
   });
 });
 
-function updateActivityVotes(activity, feeling, age) {
+function updateActivityVotes(activity, feeling, yearBorn, severity) {
   console.log('updating activity votes');
-  var capFeeling = feeling.charAt(0).toUpperCase() + feeling.slice(1);
-  activity['feeling'+capFeeling+'Votes']++;
+  activity[getFeelingProperty(feeling)]++;
 
-  if (age < 18) {
-    activity.ageu18Votes++;
-  } else if (age < 25) {
-    activity.age1824Votes++;
-  } else if (age < 35) {
-    activity.age2534Votes++;
-  } else if (age < 45) {
-    activity.age3544Votes++;
-  } else if (age < 55) {
-    activity.age4554Votes++;
-  } else if (age < 65) {
-    activity.age5564Votes++;
-  } else {
-    activity.ageo65Votes++;
-  }
+  activity[getAgeProperty(yearBorn)]++;
+  activity[getSeverityProperty(severity)]++;
 
   activity.numVotes++;
+}
+
+function getFeelingProperty(feeling) {
+  return 'feeling' + feeling.charAt(0).toUpperCase() + feeling.slice(1) + 'Votes';
 }
 
 function processActivityVote(req, res, activityId) {
@@ -395,12 +387,13 @@ function processActivityVote(req, res, activityId) {
 
                 var voteeAge = votee.yearborn ? currentYear - votee.yearborn : 0;
                 var voteeFeeling = votee.lastFeeling;
+                var voteeSeverity = votee.lastSeverity;
 
                 if (voteeAge < 1 || !voteeFeeling) {
                   return res.json( { result: 'Error: voteeAge:'+voteeAge+' voteeFeeling:'+voteeFeeling } );
                 }
 
-                updateActivityVotes(activity, voteeFeeling, voteeAge);
+                updateActivityVotes(activity, voteeFeeling, votee.yearborn, voteeSeverity);
 
                 activity.save( function ( err, savedActivity, count ) {
                   if (err) {
@@ -464,20 +457,85 @@ router.get('/severity/:newSeverity', loggedIn, function (req, res) {
   });
 });
 
+function getAgeProperty(userYearBorn) {
+  var currentYear = new Date().getFullYear();
+  var age = userYearBorn ? currentYear - userYearBorn : 0;
+  var ageProperty;
+  if (age < 18) {
+    ageProperty = 'ageu18Votes';
+  } else if (age < 25) {
+    ageProperty = 'age1824Votes';
+  } else if (age < 35) {
+    ageProperty = 'age2534Votes';
+  } else if (age < 45) {
+    ageProperty = 'age3544Votes';
+  } else if (age < 55) {
+    ageProperty = 'age4554Votes';
+  } else if (age < 65) {
+    ageProperty = 'age5564Votes';
+  } else {
+    ageProperty = 'ageo65Votes';
+  }
+  return ageProperty;
+}
+
+function getSeverityProperty(severity) {
+  if (severity < 3) {
+    return 'lowSeverityVotes';
+  } else if (severity > 8) {
+    return 'highSeverityVotes';
+  } else {
+    return 'medSeverityVotes';
+  }
+}
+
 function getMyMostVotedActivities(user, callback) {
   var maxResultsLimit = 3;
-  var city;
-  if (user) {
-    city = user.city;
-  }
-  // TODO: get votes appropritate for feeling, severity, user metadata
-  var sortParam = {};
-  var feeling = user.lastFeeling.charAt(0).toUpperCase() + user.lastFeeling.slice(1);
-  sortParam['feeling'+feeling+'Votes'] = 'desc';
-  // TODO: skip activities already chosen by user
-  // var excludeId = 'dd'; {_id: { '$ne': excludeId }}
-  Activity.find({'_id': { $nin: user.activitySelectSequence.map(function(activity) { return activity.activity; })}}
-    ).or([{city: city},{city: ''}]).sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
+  var sortParam = {
+    score: 'desc'
+  };
+  var city = user.city;
+
+  // filter results to those not picked previously and those either in no city or
+  // in the user's city
+  var match = {
+    $match: {
+      _id: {
+        $nin: user.activitySelectSequence.map(function(activity) { return new ObjectId(activity.activity); })
+      },
+      $or: [{city: city}, {city: ''}]
+    }
+  };
+
+  var feelingProperty = getFeelingProperty(user.lastFeeling);
+  var ageProperty = getAgeProperty(user.yearborn);
+  var severityProperty = getSeverityProperty(user.lastSeverity);
+  // project a score value that is the aggregate of votes for feeling, age, severity
+  var project = {
+    $project: {
+      score: {
+        $add: [ "$"+feelingProperty, "$"+ageProperty, "$"+severityProperty ]
+      },
+      metaActivity: 1,
+      activityVerb: 1,
+      activity: 1,
+      specificLocation: 1,
+      needPass: 1,
+      city: 1,
+      country: 1,
+      description: 1,
+      link: 1,
+      img: 1,
+      targetIntensity: 1,
+      targetFeelings: 1,
+      restrictions: 1,
+      activated: 1,
+      addedBy: 1
+    }
+  };
+
+  Activity.aggregate(match, project)
+  .sort(sortParam).limit(maxResultsLimit).exec(function (err, activities) {
     if (err) {
       return callback(err);
     }
