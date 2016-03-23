@@ -63,6 +63,10 @@ router.get('/dcma', function(req, res) {
   res.render('dcma', { });
 });
 
+router.get('/contact', function(req, res) {
+  res.render('contact', { });
+});
+
 router.get('/dmd', loggedIn, function(req, res, next) {
   next();
 });
