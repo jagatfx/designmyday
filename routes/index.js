@@ -120,10 +120,7 @@ function assignVoteeUser(req, res) {
         if (countErr) {
           console.error(countErr);
         }
-        if ((user.role === 'beta' || user.role === 'admin') && count === 1) {
-          return res.redirect('/dmd/#/vote');
-        }
-        return res.redirect('/');
+        return res.redirect('/dmd/#/vote');
       });
     } else {
       user._voteUser = selectedUser._id;
@@ -133,11 +130,7 @@ function assignVoteeUser(req, res) {
         } else {
           console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
         }
-        if (user.role === 'beta' || user.role === 'admin') {
-          return res.redirect('/dmd/#/vote');
-        } else {
-          return res.redirect('/');
-        }
+        return res.redirect('/dmd/#/vote');
       });
     }
   });
@@ -360,8 +353,9 @@ function getMostUnvotedUser (excludeUser, callback) {
       return callback("ERROR: no users from the voter's city");
     }
 
-    Account.findOne({city: excludeUser.city, username: { '$ne': excludeUser.username }})
-    .sort({votesReceived: 'asc'})
+    Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
+      country: excludeUser.country, username: { '$ne': excludeUser.username }},
+      "$orderby":{ "votesReceived": 1 }})
     .exec(function (err, selectedAccount) {
       callback(null, selectedAccount);
     });
