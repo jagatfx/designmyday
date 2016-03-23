@@ -202,6 +202,7 @@
       id="favoriteAjax"
       method="post"
       url="/api/favorite/[[activity._id]]"
+      on-response="_favoriteReqComplete"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -210,6 +211,16 @@
       id="completeAjax"
       method="post"
       url="/api/complete/[[activity._id]]"
+      on-response="_completeReqComplete"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
+
+    <iron-ajax
+      id="voteeAjax"
+      method="get"
+      url="/votee"
+      on-response="_voteeReqComplete"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -290,6 +301,12 @@
         this.$.modal.open();
       },
 
+      _favoriteReqComplete: function() {
+      },
+
+      _completeReqComplete: function() {
+      },
+
       _ajaxError: function(request, error) {
         // TODO: ajax error handling
       },
@@ -306,14 +323,6 @@
           return false;
         }
         return true;
-      },
-
-      // If enter was pressed, unfocus the text input
-      _checkConfirmation: function(e) {
-        if (e.keyCode === 13) {
-          e.preventDefault();
-          e.target.blur();
-        }
       },
 
       _toggleDialog: function(e) {
@@ -373,9 +382,13 @@
         }
       },
 
+      _voteeReqComplete: function() {
+        document.querySelector('app-router').go('/vote');
+      },
+
       _dialogContinue: function() {
         if (this.route === 'myactivities') {
-          document.querySelector('app-router').go('/vote');
+          this.$.voteeAjax.generateRequest();
         } else if (this.route === 'vote') {
           document.querySelector('app-router').go('/feeling');
         } else {
