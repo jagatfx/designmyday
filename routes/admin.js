@@ -3,14 +3,24 @@ var router   = express.Router();
 var Activity = require('../models/activity');
 
 function loggedIn(req, res, next) {
-  if (req.user) {
+  var user = req.user;
+  if (user && (user.role === 'admin' || user.role === 'beta')) {
+    next();
+  } else {
+    res.json( {result: 'ERROR: API call not authorized'} );
+  }
+}
+
+function isAdmin(req, res, next) {
+  var user = req.user;
+  if (user && user.role === 'admin') {
     next();
   } else {
     res.redirect('/');
   }
 }
 
-router.get('/activities', loggedIn, function(req, res) {
+router.get('/activities', isAdmin, function(req, res) {
   var results = req.query.results;
   var type = req.query.type;
   // TODO: implement pagination
@@ -31,14 +41,14 @@ router.get('/activities', loggedIn, function(req, res) {
   });
 });
 
-router.get('/activity', loggedIn, function (req, res) {
+router.get('/activity', isAdmin, function (req, res) {
   res.render( 'activity', {
     user : req.user,
     activity: {}
   });
 });
 
-router.get('/activity/edit/:id', loggedIn, function (req, res) {
+router.get('/activity/edit/:id', isAdmin, function (req, res) {
   Activity.findById(req.params.id, function (err, activity) {
     res.render( 'activity', {
       user : req.user,

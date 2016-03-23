@@ -16,12 +16,21 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage }).single('image');
 
-// TODO add role-based permissions
 function loggedIn(req, res, next) {
-  if (req.user) {
+  var user = req.user;
+  if (user && (user.role === 'admin' || user.role === 'beta')) {
     next();
   } else {
-    res.json( {result: 'ERROR: API calls require a logged in user'} );
+    res.json( {result: 'ERROR: API call not authorized'} );
+  }
+}
+
+function isAdmin(req, res, next) {
+  var user = req.user;
+  if (user && user.role === 'admin') {
+    next();
+  } else {
+    res.redirect('/');
   }
 }
 

@@ -14,8 +14,17 @@ var S3_BUCKET      = process.env.S3_BUCKET;
 var Account  = require('../models/account');
 
 function loggedIn(req, res, next) {
-  // TODO: admin to beta level when ready
-  if (req.user && req.user.isAdmin) {
+  var user = req.user;
+  if (user && (user.role === 'admin' || user.role === 'beta')) {
+    next();
+  } else {
+    res.redirect('/');
+  }
+}
+
+function isAdmin(req, res, next) {
+  var user = req.user;
+  if (user && user.role === 'admin') {
     next();
   } else {
     res.redirect('/');
@@ -23,7 +32,8 @@ function loggedIn(req, res, next) {
 }
 
 router.get('/', function (req, res) {
-  if (req.user && req.user.isAdmin) {
+  var user = req.user;
+  if (user && (user.role === 'admin' || user.role === 'beta')) {
     return res.redirect('/dmd/#/vote');
   }
   res.render('index', { user : req.user });
