@@ -111,6 +111,42 @@ router.post('/register', function(req, res) {
   });
 });
 
+function assignVoteeUser(req, res) {
+  var user = req.user;
+  getMostUnvotedUser(user, function(err, selectedUser) {
+    if (err) {
+      console.error(err);
+      Account.count({city: user.city}, function(countErr, count) {
+        if (countErr) {
+          console.error(countErr);
+        }
+        if ((user.role === 'beta' || user.role === 'admin') && count === 1) {
+          return res.redirect('/dmd/#/vote');
+        }
+        return res.redirect('/');
+      });
+    } else {
+      user._voteUser = selectedUser._id;
+      user.save( function ( err, user, count ) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
+        }
+        if (user.role === 'beta' || user.role === 'admin') {
+          return res.redirect('/dmd/#/vote');
+        } else {
+          return res.redirect('/');
+        }
+      });
+    }
+  });
+}
+
+router.get('/votee', loggedIn, function(req, res, next) {
+  assignVoteeUser(req, res);
+});
+
 router.post('/login', function(req, res) {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
@@ -129,34 +165,7 @@ router.post('/login', function(req, res) {
         req.flash('error', err);
         return res.redirect('/');
       }
-      getMostUnvotedUser(user, function(err, selectedUser) {
-        if (err) {
-          console.error(err);
-          Account.count({city: user.city}, function(countErr, count) {
-            if (countErr) {
-              console.error(countErr);
-            }
-            if (user.isAdmin && count === 1) {
-              return res.redirect('/dmd/#/vote');
-            }
-            return res.redirect('/');
-          });
-        } else {
-          user._voteUser = selectedUser._id;
-          user.save( function ( err, user, count ) {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
-            }
-            if (user.isAdmin) {
-              return res.redirect('/dmd/#/vote');
-            } else {
-              return res.redirect('/');
-            }
-          });
-        }
-      });
+      assignVoteeUser(req, res);
     });
   })(req, res);
 });
