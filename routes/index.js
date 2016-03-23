@@ -51,6 +51,18 @@ router.get('/news', function(req, res) {
   res.render('news', { });
 });
 
+router.get('/tos', function(req, res) {
+  res.render('tos', { });
+});
+
+router.get('/privacy', function(req, res) {
+  res.render('privacy', { });
+});
+
+router.get('/dcma', function(req, res) {
+  res.render('dcma', { });
+});
+
 router.get('/dmd', loggedIn, function(req, res, next) {
   next();
 });

@@ -342,7 +342,7 @@ footer {
 }
 
 footer .footer-above {
-  background-color: #C3980C;
+  background-color: #EDBE26;
 }
 
 footer .footer-col {
@@ -502,6 +502,14 @@ input::-ms-clear, textarea::-ms-clear {
 ul {
   list-style-type: none;
   padding-left: 0;
+}
+
+div.tos {
+  padding: 20px;
+  margin: 20px;
+}
+ul.tos {
+  list-style-type: disc;
 }
 
 table {
