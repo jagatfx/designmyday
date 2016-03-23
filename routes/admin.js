@@ -1,5 +1,6 @@
 var express  = require('express');
 var router   = express.Router();
+var Account  = require('../models/account');
 var Activity = require('../models/activity');
 
 function loggedIn(req, res, next) {
@@ -19,6 +20,32 @@ function isAdmin(req, res, next) {
     res.redirect('/');
   }
 }
+
+router.get('/users', isAdmin, function(req, res) {
+  Account.find({}).exec(function (err, accounts) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: 'Error: '+err} );
+    }
+    var filteredAccounts = accounts.map(function(account) {
+      var filterAccount = {
+        email: account.email,
+        username: account.username,
+        city: account.city,
+        region: account.region,
+        country: account.country,
+        yearborn: account.yearborn,
+        role: account.role,
+        votesCast: account.votesCast,
+        votesReceived: account.votesReceived,
+        lastFeeling: account.lastFeeling,
+        lastSeverity: account.lastSeverity
+      };
+      return filterAccount;
+    });
+    return res.json(filteredAccounts);
+  });
+});
 
 router.get('/activities', isAdmin, function(req, res) {
   var results = req.query.results;
