@@ -46,8 +46,10 @@ function sendIdea (back, res) {
         console.error(err);
         back.text = 'Oops, I had a problem';
       } else {
-        back.text = activity.activityVerb + ' ' + activity.activity + ' ' + activity.specificLocation +
-          ' (' + activity.city + ', ' + activity.country + ')';
+        back.text = activity.activityVerb + ' ' + activity.activity + ' ' + activity.specificLocation;
+        if (activity.city && activity.city != '') {
+          back.text += ' (' + activity.city + ', ' + activity.country + ')';
+        }
       }
       return res.json(back);
     });
