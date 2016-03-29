@@ -6,23 +6,26 @@ var Activity    = require('../models/activity');
 
 var token = process.env.TELEGRAM_TOKEN;
 
-// // Setup polling way
-// var bot = new TelegramBot(token, {polling: true});
-
-// // Matches /echo [whatever]
-// bot.onText(/\/echo (.+)/, function (msg, match) {
-//   var fromId = msg.from.id;
-//   var resp = match[1];
-//   bot.sendMessage(fromId, resp);
-// });
-
-// // Any kind of message
-// bot.on('message', function (msg) {
-//   var chatId = msg.chat.id;
-//   // photo can be: a file path, a stream or a Telegram file_id
-//   var photo = 'http://www.designmyday.co/img/layout.jpg';
-//   bot.sendPhoto(chatId, photo, {caption: 'Design My Day'});
-// });
+// Example packet:
+// {
+//   update_id: 802238593,
+//   message: {
+//     message_id: 22,
+//     from: {
+//       id: 209915578,
+//       first_name: 'Jacob',
+//       username: 'jagatfx'
+//     },
+//     chat: {
+//       id: 209915578,
+//       first_name: 'Jacob',
+//       username: 'jagatfx',
+//       type: 'private'
+//     },
+//     date: 1459226440,
+//     text: 'testing'
+//   }
+// }
 
 router.get('/dmdhook', function (req, res) {
   res.json({ok: true});
@@ -30,8 +33,24 @@ router.get('/dmdhook', function (req, res) {
 
 router.post('/dmdhook', function (req, res) {
   var data = req.body;
-  console.log(data);
-  res.json({ ok : true });
+  if (!data) {
+    return res.json({ ok: false });
+  }
+  var updateId = data.update_id;
+  var message = data.message;
+  var mid = message.message_id;
+  var from = message.from;
+  var chat = message.chat;
+  var mDate = message.date;
+  var text = message.text;
+
+  var back = {
+    ok: true,
+    chat_id: chat.id,
+    text: text
+  }
+  res.json(back);
 });
 
 module.exports = router;
+
