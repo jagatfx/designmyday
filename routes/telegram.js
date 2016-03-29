@@ -24,7 +24,7 @@ var token = process.env.TELEGRAM_TOKEN;
 //   bot.sendPhoto(chatId, photo, {caption: 'Design My Day'});
 // });
 
-router.post('/'+token, function (req, res) {
+router.post('/dmdhook', function (req, res) {
   var data = JSON.parse(req.body);
   console.log(data);
   res.json({ ok : true });
