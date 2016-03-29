@@ -15,6 +15,7 @@ var flash         = require('express-flash');
 var routes        = require('./routes');
 var apiRouter     = require('./routes/api');
 var adminRouter   = require('./routes/admin');
+var telegramRouter = require('./routes/telegram');
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use(passport.session());
 app.use('/', routes);
 app.use('/api', apiRouter);
 app.use('/admin', adminRouter);
+app.use('/telegram', telegramRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
