@@ -2,9 +2,10 @@ var express     = require('express');
 var router      = express.Router();
 var Account     = require('../models/account');
 var Activity    = require('../models/activity');
-// var TelegramBot = require('node-telegram-bot-api');
 
-// var token = '142335758:AAHd5RxDAXsMgBs7HUsapQrJIKeyaXQlH_4';
+
+var token = process.env.TELEGRAM_TOKEN;
+
 // // Setup polling way
 // var bot = new TelegramBot(token, {polling: true});
 
@@ -23,8 +24,10 @@ var Activity    = require('../models/activity');
 //   bot.sendPhoto(chatId, photo, {caption: 'Design My Day'});
 // });
 
-router.get('/', function (req, res) {
-  res.json({ response : "OK" });
+router.get('/'+token, function (req, res) {
+  var data = JSON.parse(req.body);
+  console.log(data);
+  res.json({ ok : true });
 });
 
 module.exports = router;
