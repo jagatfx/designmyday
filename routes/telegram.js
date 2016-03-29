@@ -47,6 +47,7 @@ router.post('/dmdhook', function (req, res) {
 
   var back = {
     ok: true,
+    method: 'sendMessage',
     chat_id: chat.id,
     text: text
   }
