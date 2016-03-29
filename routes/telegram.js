@@ -29,7 +29,7 @@ router.get('/dmdhook', function (req, res) {
 });
 
 router.post('/dmdhook', function (req, res) {
-  var data = JSON.parse(req.body);
+  var data = req.body;
   console.log(data);
   res.json({ ok : true });
 });
