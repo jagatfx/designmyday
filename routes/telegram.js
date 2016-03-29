@@ -33,7 +33,8 @@ router.get('/dmdhook', function (req, res) {
 
 router.post('/dmdhook', function (req, res) {
   var data = req.body;
-  if (!data) {
+  console.log(req.body);
+  if (!data || !data.message) {
     return res.json({ ok: false });
   }
   var updateId = data.update_id;
