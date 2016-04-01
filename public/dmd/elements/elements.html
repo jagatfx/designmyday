@@ -19624,6 +19624,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         @apply(--layout-wrap);
       }
 
+      paper-dialog {
+        z-index: 105; /* polymer ios bug */
+      }
+
       iron-autogrow-textarea {
         margin: 10px auto;
         display: block;
