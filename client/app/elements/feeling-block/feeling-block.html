@@ -1,0 +1,67 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
+<dom-module id="feeling-block">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 70%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      .slider-label {
+        font-size: 10px;
+      }
+    </style>
+    <div>
+      <iron-image src$="{{feelingImg}}"></iron-image>
+      <div class="range-select">
+        <div class="slider-label">A LITTLE</div>
+        <div class="flexchild">
+          <paper-slider class="severity-slider"
+                        min="1"
+                        max="10"
+                        value="{{user.lastSeverity}}"
+                        step="0.1"
+                        disabled>
+          </paper-slider>
+        </div>
+        <div class="slider-label">A LOT</div>
+      </div>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'feeling-block',
+
+      properties: {
+        user: Object,
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
+        }
+      },
+
+      observers: [
+        'updateImage(user)'
+      ],
+
+      updateImage: function(user) {
+        this.feelingImg = '/img/'+user.lastFeeling+'.gif';
+      },
+    });
+  })();
+  </script>
+</dom-module>
