@@ -1,6 +1,10 @@
-<% layout( 'layout' ) -%>
-
-<%- partial('nav') %>
+<% if(!user) { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } else { %>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
+<% } %>
 
   <!-- Contact Section -->
   <section id="contact">

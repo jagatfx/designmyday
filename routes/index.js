@@ -64,7 +64,7 @@ router.get('/dcma', function(req, res) {
 });
 
 router.get('/contact', function(req, res) {
-  res.render('contact', { });
+  res.render('contact', { user : req.user });
 });
 
 router.get('/dmd', loggedIn, function(req, res, next) {
