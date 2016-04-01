@@ -52,6 +52,22 @@
         width: 90%;
       }
 
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      .flexchild {
+        @apply(--layout-flex);
+        text-align: center;
+      }
+      .flexchild paper-slider {
+        width: 100%;
+      }
+
       paper-button.dmd-btn {
         --paper-button-ink-color: var(--primary-text-color);
         /* These could also be individually defined for each of the
@@ -95,7 +111,7 @@
         --paper-slider-disabled-active-color: var(--accent-color);
         --paper-slider-knob-color: #000;
         --paper-slider-disabled-knob-color: #000;
-        @apply(--layout-center);
+        min-width: 200px;
       }
     </style>
   </template>

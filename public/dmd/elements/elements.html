@@ -19630,6 +19630,22 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         width: 90%;
       }
 
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      .flexchild {
+        @apply(--layout-flex);
+        text-align: center;
+      }
+      .flexchild paper-slider {
+        width: 100%;
+      }
+
       paper-button.dmd-btn {
         --paper-button-ink-color: var(--primary-text-color);
         /* These could also be individually defined for each of the
@@ -19673,7 +19689,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         --paper-slider-disabled-active-color: var(--accent-color);
         --paper-slider-knob-color: #000;
         --paper-slider-disabled-knob-color: #000;
-        @apply(--layout-center);
+        min-width: 200px;
       }
     </style>
   </template>
@@ -22545,21 +22561,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
       iron-image#severity {
         opacity: var(--severity-opacity);
-      }
-      .range-select {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
-        @apply(--layout-center);
-        width: 80%;
-        padding: 10px;
-        margin: 0 auto;
-      }
-      .flexchild {
-        @apply(--layout-flex);
-        text-align: center;
-      }
-      .flexchild paper-slider {
-        width: 100%;
       }
       .slider-label {
         font-size: 10px;
@@ -27485,9 +27486,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         @apply(--layout-center-justified);
         text-align: center;
       }
-      .slider-label {
-        font-size: 10px;
-      }
       paper-tabs {
         background-color: var(--light-accent-color);
         color: #000;
@@ -27495,14 +27493,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       }
       .tab-title {
         padding-top: 15px;
-      }
-      .range-select {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
-        @apply(--layout-center);
-        width: 80%;
-        padding: 10px;
-        margin: 0 auto;
       }
       table.profile {
         margin: 0 auto;
@@ -27515,17 +27505,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
       <div class="profile-container horizontal">
         <paper-card class="other-card">
-          <div>
-            <iron-image src$="{{feelingImg}}"></iron-image>
-            <div class="range-select">
-              <div class="slider-label">A LITTLE</div>
-              <div class="flexchild">
-                <paper-slider class="severity-slider" min="1" max="10" value="{{other.lastSeverity}}" step="0.1" disabled="">
-                </paper-slider>
-              </div>
-              <div class="slider-label">A LOT</div>
-            </div>
-          </div>
+          <feeling-block user="{{user}}"></feeling-block>
           <div class="other-content">
             <div class="card-content">
               <table class="profile">
@@ -27652,29 +27632,22 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      .range-select {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
-        @apply(--layout-center);
-        width: 70%;
-        padding: 10px;
-        margin: 0 auto;
-      }
       .slider-label {
         font-size: 10px;
+        min-width: 45px;
       }
     </style>
-    <div>
+    <paper-material elevation="0">
       <iron-image src$="{{feelingImg}}"></iron-image>
-      <div class="range-select">
-        <div class="slider-label">A LITTLE</div>
+      <paper-material elevation="0" class="range-select">
+        <paper-item class="slider-label">A LITTLE</paper-item>
         <div class="flexchild">
           <paper-slider class="severity-slider" min="1" max="10" value="{{user.lastSeverity}}" step="0.1" disabled="">
           </paper-slider>
         </div>
-        <div class="slider-label">A LOT</div>
-      </div>
-    </div>
+        <paper-item class="slider-label">A LOT</paper-item>
+      </paper-material>
+    </paper-material>
   </template>
   <script>
   (function() {
