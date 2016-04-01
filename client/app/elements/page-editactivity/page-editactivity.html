@@ -69,7 +69,8 @@
     </paper-dialog>
 
     <iron-ajax auto
-      url="/api/activity/{{activityId}}"
+      url="/api/activity/{{activityid}}"
+      id="editAjax"
       method="get"
       on-response="_activityLoaded"
       on-error="_ajaxError"
@@ -85,6 +86,7 @@
       is: 'page-editactivity',
 
       properties: {
+        activityid: String,
         preview: {
           type: String,
           value: '/img/activity-group.gif'

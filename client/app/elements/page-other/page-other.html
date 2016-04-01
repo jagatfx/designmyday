@@ -1,0 +1,225 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-other">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+        elevation: 3;
+        --paper-card-header: {
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+        };
+      }
+      .other-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .profile-container {
+        @apply(--layout-center-justified);
+      }
+      .other-content {
+        @apply(--layout-center-justified);
+        text-align: center;
+      }
+      .slider-label {
+        font-size: 10px;
+      }
+      paper-tabs {
+        background-color: var(--light-accent-color);
+        color: #000;
+        --paper-tabs-selection-bar-color: #000;
+      }
+      .tab-title {
+        padding-top: 15px;
+      }
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
+      table.profile {
+        margin: 0 auto;
+        text-align: left;
+      }
+    </style>
+    <div>
+      <div class="page-header">
+        <div class="page-title">Profile</div>
+      </div>
+      <div class="profile-container horizontal">
+        <paper-card class="other-card">
+          <div>
+            <iron-image src$="{{feelingImg}}"></iron-image>
+            <div class="range-select">
+              <div class="slider-label">A LITTLE</div>
+              <div class="flexchild">
+                <paper-slider class="severity-slider"
+                              min="1"
+                              max="10"
+                              value="{{other.lastSeverity}}"
+                              step="0.1"
+                              disabled>
+                </paper-slider>
+              </div>
+              <div class="slider-label">A LOT</div>
+            </div>
+          </div>
+          <div class="other-content">
+            <div class="card-content">
+              <table class="profile">
+                <tr><td><span class="caps">othername:</span></td> <td><span class="othername">[[other.othername]]</span></td></tr>
+                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></div></td></tr>
+                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></div></td></tr>
+                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></div></td></tr>
+              </table>
+            </div>
+          </div>
+        </paper-card>
+      </div>
+
+      <paper-tabs selected="{{selected}}">
+        <paper-tab>Activity Suggestions</paper-tab>
+        <paper-tab>Selected Activities</paper-tab>
+      </paper-tabs>
+
+      <iron-pages selected="{{selected}}">
+        <div>
+          <div class="centered-container">
+            <div class="tab-title">Activity Suggestions</div>
+            <div class="centered-container horizontal wrap">
+              <template is="dom-repeat"
+                        items="{{suggestions}}"
+                        as="activity">
+                <activity-item activity="{{activity}}"
+                               route="{{route}}"
+                               user="{{user}}">
+                </activity-item>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="centered-container">
+            <div class="tab-title">Selected Activities</div>
+            <div class="centered-container horizontal wrap">
+              <template is="dom-repeat"
+                        items="{{profileActivities}}"
+                        as="activity">
+                <activity-item activity="{{activity}}"
+                               route="{{route}}"
+                               user="{{user}}"
+                               tab="myactivities">
+                </activity-item>
+              </template>
+            </div>
+          </div>
+        </div>
+        </div>
+      </iron-pages>
+    </div>
+
+    <iron-ajax
+      id="profileAjax"
+      method="get"
+      on-response="_profileLoaded"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+    <iron-ajax
+      id="activitiesAjax"
+      method="get"
+      on-response="_profileActivitiesLoaded"
+      on-error="_ajaxError">
+    </iron-ajax>
+
+    <iron-ajax
+      id="suggestionsAjax"
+      method="get"
+      on-response="_suggestionsLoaded"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-other',
+
+      properties: {
+        other: Object,
+        profileActivities: Object,
+        suggestions: Object,
+        othername: String,
+        feelingImg: {
+          type: String,
+          notify: true,
+          value: '/img/place-emotion.gif'
+        },
+        selected: {
+          type: Number,
+          value: 1
+        },
+        route: {
+          type: String,
+          value: 'other'
+        }
+      },
+
+      observers: [
+        'updateOnOther(other)',
+        'updateOnOthername(othername)'
+      ],
+
+      updateOnOther: function(other) {
+        this.feelingImg = '/img/'+other.lastFeeling+'.gif';
+      },
+
+      updateOnOthername: function(othername) {
+        this.$.profileAjax.url = '/api/other/profile/'+this.othername;
+        this.$.activitiesAjax.url = '/api/other/profileactivities/'+this.othername;
+        this.$.suggestionsAjax.url = '/api/other/suggestions/'+this.othername;
+        this.$.profileAjax.generateRequest();
+        this.$.activitiesAjax.generateRequest();
+        this.$.suggestionsAjax.generateRequest();
+      },
+
+      _profileLoaded: function(request) {
+        this.other = request.detail.response;
+      },
+
+      _profileActivitiesLoaded: function(request) {
+        this.profileActivities = request.detail.response;
+      },
+
+      _suggestionsLoaded: function(request) {
+        this.suggestions = request.detail.response;
+      },
+
+      _ajaxError: function() {
+      },
+    });
+  })();
+  </script>
+</dom-module>

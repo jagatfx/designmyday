@@ -128,7 +128,7 @@
         [[activity.specificLocation]]</p>
       </div>
       <div hidden$="[[_hideEdit(user, route)]]">
-        <a href="#/editactivity/[[activity._id]]">edit</a>
+        <a href="#/edit?activityid=[[activity._id]]">edit</a>
       </div>
       <paper-badge class="vote-badge"
                    for="card[[activity._id]]"
@@ -170,6 +170,7 @@
           <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
           <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
           <h2>[[activity.specificLocation]]</h2>
+          <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
         </div>
         <p class="description">[[activity.description]]
         <br />

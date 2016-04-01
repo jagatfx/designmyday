@@ -207,12 +207,19 @@
             </page-myactivities>
             <page-editactivity data-route="edit"
                                route="{{route}}"
-                               user="{{user}}">
+                               user="{{user}}"
+                               activityid="{{activityid}}">
             </page-editactivity>
-            <page-feedback data-route="edit"
+            <page-feedback data-route="feedback"
                            route="{{route}}"
-                           user="{{user}}">
+                           user="{{user}}"
+                           activityid="{{activityid}}">
             </page-feedback>
+            <page-other data-route="other"
+                           route="{{route}}"
+                           user="{{user}}"
+                           othername="{{othername}}">
+            </page-other>
           </iron-pages>
 
         </div>
