@@ -75,7 +75,8 @@
 
     </div>
 
-    <paper-dialog id="modal" modal>
+    <paper-dialog id="modal"
+                  on-iron-overlay-closed="_dialogContinue">
       <p>Your suggested activity has been added successfully!
       Now it's time for you to receive a suggested activity.
       First, tell us how you are feeling...</p>

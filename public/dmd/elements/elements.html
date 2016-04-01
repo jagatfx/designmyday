@@ -22476,7 +22476,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </paper-dialog-scrollable>
     </paper-dialog>
 
-    <paper-dialog id="firstmodal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal="">
+    <paper-dialog id="firstmodal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-closed="_dialogContinue">
       <paper-dialog-scrollable>
         <div class="centered-container">
           <h1>First User</h1>
@@ -26093,7 +26093,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
     </div>
 
-    <paper-dialog id="modal" modal="">
+    <paper-dialog id="modal" on-iron-overlay-closed="_dialogContinue">
       <p>Your suggested activity has been added successfully!
       Now it's time for you to receive a suggested activity.
       First, tell us how you are feeling...</p>
@@ -26567,7 +26567,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
     <span>{{_setupActivityExtras(user)}}</span>
 
-    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-opened="_patchOverlay" modal="">
+    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-closed="_dialogContinue">
       <p>{{_getModalText(route)}}</p>
       <div class="buttons">
         <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">{{_getModalButtonText(route)}}</paper-button>
@@ -26736,13 +26736,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         }
       },
 
-      // https://github.com/PolymerElements/paper-dialog/issues/7
-      _patchOverlay: function (e) {
-        if (e.currentTarget.withBackdrop) {
-          e.target.parentNode.insertBefore(e.currentTarget._backdrop, e.currentTarget);
-        }
-      },
-
     });
   </script>
 </dom-module>
@@ -26804,7 +26797,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
     </div>
 
-    <paper-dialog id="modal" modal="">
+    <paper-dialog id="modal" on-iron-overlay-closed="_dialogContinue">
       <p>Your suggested activity has been updated successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>
@@ -27411,7 +27404,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </activity-item>
     </div>
 
-    <paper-dialog id="modal" modal="">
+    <paper-dialog id="modal" on-iron-overlay-closed="_dialogContinue">
       <p>Your feedback has been submitted successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>

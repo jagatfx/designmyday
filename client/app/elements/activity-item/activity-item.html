@@ -226,7 +226,10 @@
 
     <span>{{_setupActivityExtras(user)}}</span>
 
-    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-opened="_patchOverlay" modal>
+    <paper-dialog id="modal"
+                  entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation"
+                  on-iron-overlay-closed="_dialogContinue">
       <p>{{_getModalText(route)}}</p>
       <div class="buttons">
         <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>{{_getModalButtonText(route)}}</paper-button>
@@ -392,13 +395,6 @@
         } else if (this.route === 'vote') {
           document.querySelector('app-router').go('/feeling');
         } else {
-        }
-      },
-
-      // https://github.com/PolymerElements/paper-dialog/issues/7
-      _patchOverlay: function (e) {
-        if (e.currentTarget.withBackdrop) {
-          e.target.parentNode.insertBefore(e.currentTarget._backdrop, e.currentTarget);
         }
       },
 

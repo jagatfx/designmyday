@@ -149,7 +149,10 @@
       </paper-dialog-scrollable>
     </paper-dialog>
 
-    <paper-dialog id="firstmodal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+    <paper-dialog id="firstmodal"
+                  entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation"
+                  on-iron-overlay-closed="_dialogContinue">
       <paper-dialog-scrollable>
         <div class="centered-container">
           <h1>First User</h1>

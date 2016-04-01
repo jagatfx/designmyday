@@ -58,7 +58,8 @@
       </activity-item>
     </div>
 
-    <paper-dialog id="modal" modal>
+    <paper-dialog id="modal"
+                  on-iron-overlay-closed="_dialogContinue">
       <p>Your feedback has been submitted successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap here to continue</paper-button>
