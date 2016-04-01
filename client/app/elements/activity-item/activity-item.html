@@ -116,9 +116,6 @@
       .activity-image {
         --iron-image-width: 208px;
       }
-      paper-dialog-scrollable {
-        @apply(--layout-flex);
-      }
     </style>
 
     <paper-card id="card[[activity._id]]" class="activity-card">
@@ -169,20 +166,16 @@
 
     <paper-dialog id="dialog">
       <paper-dialog-scrollable>
-        <div class="dialog-card horizontal justified wrap">
-          <div class="centered-container">
-            <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
-            <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
-            <h2>[[activity.specificLocation]]</h2>
-            <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
-          </div>
-          <p class="description">[[activity.description]]
-          <br />
+        <paper-item class="centered-container">[[activity.activityVerb]] [[activity.activity]]</paper-item>
+        <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
+        <h2>[[activity.specificLocation]]</h2>
+        <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
+        <paper-item class="description">[[activity.description]]</paper-item>
+        <paper-item class="centered-container">
           <template is="dom-if" if="{{activity.link}}">
             <a href="{{activity.link}}" target="_blank">Find out more information</a>
           </template>
-          </p>
-        </div>
+        </paper-item>
       </paper-dialog-scrollable>
     </paper-dialog>
 
