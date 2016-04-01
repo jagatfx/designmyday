@@ -51,7 +51,8 @@ function filterUser(user) {
     votesCast: user.votesCast,
     votesReceived: user.votesReceived,
     favorites: user.favorites,
-    completes: user.completes
+    completes: user.completes,
+    historicFeelings: user.historicFeelings
   };
 }
 
