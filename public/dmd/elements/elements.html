@@ -23443,6 +23443,10 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         padding: 10px;
         margin: 0 auto;
       }
+      table.profile {
+        margin: 0 auto;
+        text-align: left;
+      }
     </style>
 
     <div>
@@ -23464,10 +23468,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           </div>
           <div class="user-content">
             <div class="card-content">
-              <div>username: <span class="username">[[user.username]]</span></div>
-              <div>year born: <span class="yearborn">[[user.yearborn]]</span></div>
-              <div>city: <span class="city caps">[[user.city]]</span></div>
-              <div>country: <span class="country">[[user.country]]</span></div>
+              <table class="profile">
+                <tbody><tr><td><span class="caps">username:</span></td> <td><span class="username">[[user.username]]</span></td></tr>
+                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[user.yearborn]]</span></td></tr>
+                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></td></tr>
+                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></td></tr>
+              </tbody></table>
             </div>
           </div>
         </paper-card>
@@ -23496,7 +23502,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <div class="tab-title">My Selected Activities</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{profileActivities}}" as="activity">
-                <activity-item activity="{{activity}}" route="{{route}}" user="none">
+                <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}" tab="myactivities">
                 </activity-item>
               </template>
             </div>
@@ -26637,6 +26643,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         activity: Object,
         user: Object,
         route: String,
+        tab: String,
 
         favorite: {
           type: String,
@@ -26709,7 +26716,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       },
 
       _hideEdit: function() {
-        if (this.user != 'none' && this.route === 'profile' && this.activity.addedBy === this.user.username) {
+        if (this.tab != 'myactivities' && this.route === 'profile' && this.activity.addedBy === this.user.username) {
           return false;
         }
         return true;

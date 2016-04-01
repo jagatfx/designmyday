@@ -58,6 +58,10 @@
         padding: 10px;
         margin: 0 auto;
       }
+      table.profile {
+        margin: 0 auto;
+        text-align: left;
+      }
     </style>
 
     <div>
@@ -84,10 +88,12 @@
           </div>
           <div class="user-content">
             <div class="card-content">
-              <div>username: <span class="username">[[user.username]]</span></div>
-              <div>year born: <span class="yearborn">[[user.yearborn]]</span></div>
-              <div>city: <span class="city caps">[[user.city]]</span></div>
-              <div>country: <span class="country">[[user.country]]</span></div>
+              <table class="profile">
+                <tr><td><span class="caps">username:</span></td> <td><span class="username">[[user.username]]</span></td></tr>
+                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[user.yearborn]]</span></div></td></tr>
+                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></div></td></tr>
+                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></div></td></tr>
+              </table>
             </div>
           </div>
         </paper-card>
@@ -124,7 +130,8 @@
                         as="activity">
                 <activity-item activity="{{activity}}"
                                route="{{route}}"
-                               user="none">
+                               user="{{user}}"
+                               tab="myactivities">
                 </activity-item>
               </template>
             </div>
