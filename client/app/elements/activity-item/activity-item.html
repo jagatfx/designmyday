@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 
 <dom-module id="activity-item">
@@ -115,7 +116,9 @@
       .activity-image {
         --iron-image-width: 208px;
       }
-
+      paper-dialog-scrollable {
+        @apply(--layout-flex);
+      }
     </style>
 
     <paper-card id="card[[activity._id]]" class="activity-card">
@@ -165,20 +168,22 @@
     </paper-card>
 
     <paper-dialog id="dialog">
-      <div class="horizontal justified wrap">
-        <div class="centered-container">
-          <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
-          <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
-          <h2>[[activity.specificLocation]]</h2>
-          <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
+      <paper-dialog-scrollable>
+        <div class="dialog-card horizontal justified wrap">
+          <div class="centered-container">
+            <h2><span>[[activity.activityVerb]]</span> [[activity.activity]]</h2>
+            <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
+            <h2>[[activity.specificLocation]]</h2>
+            <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
+          </div>
+          <p class="description">[[activity.description]]
+          <br />
+          <template is="dom-if" if="{{activity.link}}">
+            <a href="{{activity.link}}" target="_blank">Find out more information</a>
+          </template>
+          </p>
         </div>
-        <p class="description">[[activity.description]]
-        <br />
-        <template is="dom-if" if="{{activity.link}}">
-          <a href="{{activity.link}}" target="_blank">Find out more information</a>
-        </template>
-        </p>
-      </div>
+      </paper-dialog-scrollable>
     </paper-dialog>
 
     <iron-ajax
