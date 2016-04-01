@@ -26816,6 +26816,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       }
       iron-autogrow-textarea {
         margin: 10px 0;
+        width: 250px;
+        display: block;
       }
       .activity-image {
         --iron-image-width: 208px;
@@ -26852,7 +26854,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <input type="hidden" id="imgurl" name="imgurl" value$="{{activity.img}}">
             <div class="vertical">
               <paper-item>Description:</paper-item>
-              <iron-autogrow-textarea rows="4" name="description" placeholder="Enter a full description of the activity here" value$="{{activity.description}}"></iron-autogrow-textarea>
+              <iron-autogrow-textarea class="fit" rows="4" name="description" placeholder="Enter a full description of the activity here" bind-value="{{activity.description}}"></iron-autogrow-textarea>
             </div>
           </paper-material>
         </paper-material>
