@@ -125,7 +125,6 @@ gulp.task('images', function() {
 gulp.task('copy', function() {
   var app = gulp.src([
     'app/*',
-    'app/elements/web-animations-next-lite.min.js.map',
     '!app/test',
     '!app/elements',
     '!app/bower_components',
@@ -154,6 +153,11 @@ gulp.task('fonts', function() {
     .pipe($.size({
       title: 'fonts'
     }));
+});
+
+gulp.task('web-animations', function() {
+  return gulp.src(['app/elements/web-animations-next-lite.min.js.map'])
+    .pipe(gulp.dest(dist('elements')));
 });
 
 // Scan your HTML for assets & optimize them
@@ -281,7 +285,7 @@ gulp.task('default', ['clean'], function(cb) {
   runSequence(
     ['ensureFiles', 'copy', 'styles'],
     'elements',
-    ['images', 'fonts', 'html'],
+    ['images', 'fonts', 'html', 'web-animations'],
     'vulcanize', // 'cache-config',
     cb);
 });
