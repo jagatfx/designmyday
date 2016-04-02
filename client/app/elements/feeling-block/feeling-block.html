@@ -14,22 +14,21 @@
         min-width: 45px;
       }
     </style>
-    <paper-material elevation="0">
-      <iron-image src$="{{feelingImg}}"></iron-image>
-      <paper-material elevation="0" class="range-select">
-        <paper-item class="slider-label">A LITTLE</paper-item>
-        <div class="flexchild">
-          <paper-slider class="severity-slider"
-                        min="1"
-                        max="10"
-                        value="{{user.lastSeverity}}"
-                        step="0.1"
-                        disabled>
-          </paper-slider>
-        </div>
-        <paper-item class="slider-label">A LOT</paper-item>
-      </paper-material>
-    </paper-material>
+
+    <iron-image src$="{{feelingImg}}"></iron-image>
+    <div class="range-select">
+      <paper-item class="slider-label">A LITTLE</paper-item>
+      <div class="flexchild">
+        <paper-slider class="severity-slider"
+                      min="1"
+                      max="10"
+                      value="{{user.lastSeverity}}"
+                      step="0.1"
+                      disabled>
+        </paper-slider>
+      </div>
+      <paper-item class="slider-label">A LOT</paper-item>
+    </div>
   </template>
   <script>
   (function() {
