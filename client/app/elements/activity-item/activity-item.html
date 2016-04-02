@@ -70,25 +70,12 @@
         padding: 0;
       }
 
-      .horizontal {
-        @apply(--layout-horizontal);
-      }
-      .justified {
-        @apply(--layout-justified);
-      }
-
       paper-icon-button {
         color: var(--paper-grey-600);
       }
       .vote-badge {
         --paper-badge-width: 40px;
         --paper-badge-height: 40px;
-      }
-      .description {
-        padding: 10px;
-      }
-      .description a {
-        color: var(--primary-color);
       }
       .favorite-yes {
         --iron-icon-fill-color: red;
@@ -101,6 +88,7 @@
       }
       a {
         text-decoration: none;
+        color: var(--primary-color);
       }
       .container > div {
         margin-top: 2px;
@@ -115,6 +103,9 @@
       }
       .activity-image {
         --iron-image-width: 208px;
+      }
+      .add-link {
+        margin-left: 3px;
       }
     </style>
 
@@ -166,16 +157,22 @@
 
     <paper-dialog id="dialog">
       <paper-dialog-scrollable>
-        <paper-item class="centered-container">[[activity.activityVerb]] [[activity.activity]]</paper-item>
-        <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
-        <paper-item class="centered-container">[[activity.specificLocation]]</paper-item>
-        <p>Added By: <a data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></p>
-        <paper-item class="description">[[activity.description]]</paper-item>
-        <paper-item class="centered-container">
-          <template is="dom-if" if="{{activity.link}}">
-            <a href="{{activity.link}}" target="_blank">Find out more information</a>
+        <div class="centered-container vertical">
+          <paper-item class="centered-container">[[activity.activityVerb]] [[activity.activity]]</paper-item>
+          <div class="centered-container">
+            <iron-image class="activity-image" src="[[activity.img]]"></iron-image>
+          </div>
+          <template is="dom-if" if="{{activity.specificLocation}}">
+            <paper-item class="centered-container">[[activity.specificLocation]]</paper-item>
           </template>
-        </paper-item>
+          <paper-item class="centered-container">Added By: <a class="add-link" data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></paper-item>
+          <paper-item class="description centered-container">[[activity.description]]</paper-item>
+          <paper-item class="centered-container">
+            <template is="dom-if" if="{{activity.link}}">
+              <a href="{{activity.link}}" target="_blank">Find out more information</a>
+            </template>
+          </paper-item>
+        </div>
       </paper-dialog-scrollable>
     </paper-dialog>
 
