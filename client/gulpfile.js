@@ -192,6 +192,7 @@ gulp.task('cache-config', function(callback) {
     'index.html',
     './',
     'bower_components/webcomponentsjs/webcomponents-lite.min.js',
+    'bower_components/web-animations-js/web-animations-next-lite.min.js',
     '{elements,scripts,styles}/**/*.*'],
     {cwd: dir}, function(error, files) {
     if (error) {
