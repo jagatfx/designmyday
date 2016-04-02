@@ -36,24 +36,28 @@ function isAdmin(req, res, next) {
 
 function filterUser(user) {
   var currentYear = new Date().getFullYear();
-  return {
-    _id: user._id,
-    username: user.username,
-    city: user.city,
-    country: user.country,
-    yearborn: user.yearborn,
-    age: user.yearborn ? currentYear - user.yearborn : 0,
-    lastSeverity: user.lastSeverity,
-    lastFeeling: user.lastFeeling,
-    lastChosenActivity: user.lastChosenActivity,
-    _voteUser: user._voteUser,
-    activitySelectSequence: user.activitySelectSequence,
-    votesCast: user.votesCast,
-    votesReceived: user.votesReceived,
-    favorites: user.favorites,
-    completes: user.completes,
-    historicFeelings: user.historicFeelings
-  };
+  if (user) {
+    return {
+      _id: user._id,
+      username: user.username,
+      city: user.city,
+      country: user.country,
+      yearborn: user.yearborn,
+      age: user.yearborn ? currentYear - user.yearborn : 0,
+      lastSeverity: user.lastSeverity,
+      lastFeeling: user.lastFeeling,
+      lastChosenActivity: user.lastChosenActivity,
+      _voteUser: user._voteUser,
+      activitySelectSequence: user.activitySelectSequence,
+      votesCast: user.votesCast,
+      votesReceived: user.votesReceived,
+      favorites: user.favorites,
+      completes: user.completes,
+      historicFeelings: user.historicFeelings
+    };
+  } else {
+    return user;
+  }
 }
 
 router.get('/user', loggedIn, function(req, res, next) {
@@ -673,7 +677,7 @@ router.get('/other/profileactivities/:othername', loggedIn, function(req, res) {
   var othername = req.params.othername;
   Account.findOne({username: othername})
   .exec(function (err, other) {
-    if (err) {
+    if (err || !other) {
       console.error(err);
       return res.json( {result: 'Error: getting other '+err} );
     }

@@ -36,6 +36,17 @@
         @apply(--layout-center-justified);
         text-align: center;
       }
+      .slider-label {
+        font-size: 10px;
+      }
+      .range-select {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        @apply(--layout-center);
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+      }
       paper-tabs {
         background-color: var(--light-accent-color);
         color: #000;
@@ -55,7 +66,22 @@
       </div>
       <div class="profile-container horizontal">
         <paper-card class="other-card">
-          <feeling-block user="{{user}}"></feeling-block>
+          <div>
+            <iron-image src$="{{feelingImg}}"></iron-image>
+            <div class="range-select">
+              <div class="slider-label">A LITTLE</div>
+              <div class="flexchild">
+                <paper-slider class="severity-slider"
+                              min="1"
+                              max="10"
+                              value="{{other.lastSeverity}}"
+                              step="0.1"
+                              disabled>
+                </paper-slider>
+              </div>
+              <div class="slider-label">A LOT</div>
+            </div>
+          </div>
           <div class="other-content">
             <div class="card-content">
               <table class="profile">
