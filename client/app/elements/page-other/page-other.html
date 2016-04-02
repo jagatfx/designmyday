@@ -7,43 +7,8 @@
       :host {
         display: block;
       }
-      paper-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        border-radius: 2px;
-        elevation: 3;
-        --paper-card-header: {
-            @apply(--layout-vertical);
-            @apply(--layout-center);
-        };
-      }
-      .other-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        text-align: center;
-        cursor: pointer;
-      }
-      .profile-container {
-        @apply(--layout-center-justified);
-      }
-      .other-content {
-        @apply(--layout-center-justified);
-        text-align: center;
-      }
       .slider-label {
         font-size: 10px;
-      }
-      .range-select {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
-        @apply(--layout-center);
-        padding: 10px;
       }
       paper-tabs {
         background-color: var(--light-accent-color);
@@ -57,43 +22,40 @@
         margin: 0 auto;
         text-align: left;
       }
+      .tab-container {
+        margin-top: 15px;
+      }
     </style>
     <div>
       <div class="page-header">
         <div class="page-title">Profile</div>
       </div>
-      <div class="profile-container horizontal">
-        <paper-card class="other-card">
-          <div>
-            <iron-image src$="{{feelingImg}}"></iron-image>
-            <div class="range-select">
-              <div class="slider-label">A LITTLE</div>
-              <div class="flexchild">
-                <paper-slider class="severity-slider"
-                              min="1"
-                              max="10"
-                              value="{{other.lastSeverity}}"
-                              step="0.1"
-                              disabled>
-                </paper-slider>
-              </div>
-              <div class="slider-label">A LOT</div>
-            </div>
+      <div class="centered-container vertical">
+        <div class="centered-container">
+          <iron-image src$="{{feelingImg}}"></iron-image>
+        </div>
+        <div class="range-select">
+          <div class="slider-label">A LITTLE</div>
+          <div class="flexchild">
+            <paper-slider class="severity-slider"
+                          min="1"
+                          max="10"
+                          value="{{other.lastSeverity}}"
+                          step="0.1"
+                          disabled>
+            </paper-slider>
           </div>
-          <div class="other-content">
-            <div class="card-content">
-              <table class="profile">
-                <tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
-                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></div></td></tr>
-                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></div></td></tr>
-                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></div></td></tr>
-              </table>
-            </div>
-          </div>
-        </paper-card>
+          <div class="slider-label">A LOT</div>
+        </div>
+        <table class="profile">
+          <tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
+          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></div></td></tr>
+          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></div></td></tr>
+          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></div></td></tr>
+        </table>
       </div>
 
-      <paper-tabs selected="{{selected}}">
+      <paper-tabs class="tab-container" selected="{{selected}}">
         <paper-tab>Suggestions</paper-tab>
         <paper-tab>Selected</paper-tab>
       </paper-tabs>
@@ -130,7 +92,6 @@
               </template>
             </div>
           </div>
-        </div>
         </div>
       </iron-pages>
     </div>

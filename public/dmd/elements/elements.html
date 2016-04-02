@@ -19687,7 +19687,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         --paper-slider-disabled-active-color: var(--accent-color);
         --paper-slider-knob-color: #000;
         --paper-slider-disabled-knob-color: #000;
-        min-width: 200px;
       }
     </style>
   </template>
@@ -21435,172 +21434,6 @@ if (!window.Promise) {
 </iron-iconset-svg>
 
 
-<dom-module id="paper-card" assetpath="../bower_components/paper-card/">
-  <template>
-    <style include="paper-material">
-      :host {
-        display: inline-block;
-        position: relative;
-        box-sizing: border-box;
-        background-color: var(--paper-card-background-color, --primary-background-color);
-        border-radius: 2px;
-
-        @apply(--paper-font-common-base);
-        @apply(--paper-card);
-      }
-
-      /* IE 10 support for HTML5 hidden attr */
-      [hidden] {
-        display: none !important;
-      }
-
-      .header {
-        position: relative;
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
-        overflow: hidden;
-
-        @apply(--paper-card-header);
-      }
-
-      .header iron-image {
-        width: 100%;
-        --iron-image-width: 100%;
-        pointer-events: none;
-
-        @apply(--paper-card-header-image);
-      }
-
-      .header .title-text {
-        padding: 16px;
-        font-size: 24px;
-        font-weight: 400;
-        color: var(--paper-card-header-color, #000);
-
-        @apply(--paper-card-header-text);
-      }
-
-      .header .title-text.over-image {
-        position: absolute;
-        bottom: 0px;
-
-        @apply(--paper-card-header-image-text);
-      }
-
-      :host ::content .card-content {
-        padding: 16px;
-        position:relative;
-
-        @apply(--paper-card-content);
-      }
-
-      :host ::content .card-actions {
-        border-top: 1px solid #e8e8e8;
-        padding: 5px 16px;
-        position:relative;
-
-        @apply(--paper-card-actions);
-      }
-    </style>
-
-    <div class="header">
-      <iron-image hidden$="[[!image]]" src="[[image]]" preload$="[[preloadImage]]" fade$="[[fadeImage]]"></iron-image>
-      <div hidden$="[[!heading]]" class$="[[_computeHeadingClass(image)]]">[[heading]]</div>
-    </div>
-
-    <content></content>
-  </template>
-
-  <script>
-    Polymer({
-      is: 'paper-card',
-
-      properties: {
-        /**
-         * The title of the card.
-         */
-        heading: {
-          type: String,
-          value: '',
-          observer: '_headingChanged'
-        },
-
-        /**
-         * The url of the title image of the card.
-         */
-        image: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * When `true`, any change to the image url property will cause the
-         * `placeholder` image to be shown until the image is fully rendered.
-         */
-        preloadImage: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
-         * When `preloadImage` is true, setting `fadeImage` to true will cause the
-         * image to fade into place.
-         */
-        fadeImage: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
-         * The z-depth of the card, from 0-5.
-         */
-        elevation: {
-          type: Number,
-          value: 1,
-          reflectToAttribute: true
-        },
-
-        /**
-         * Set this to true to animate the card shadow when setting a new
-         * `z` value.
-         */
-        animatedShadow: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
-         * Read-only property used to pass down the `animatedShadow` value to
-         * the underlying paper-material style (since they have different names).
-         */
-        animated: {
-          type: Boolean,
-          reflectToAttribute: true,
-          readOnly: true,
-          computed: '_computeAnimated(animatedShadow)'
-        }
-      },
-
-      _headingChanged: function(heading) {
-        var label = this.getAttribute('aria-label');
-        this.setAttribute('aria-label', heading);
-      },
-
-      _computeHeadingClass: function(image) {
-        var cls = 'title-text';
-        if (image)
-          cls += ' over-image';
-        return cls;
-      },
-
-      _computeAnimated: function(animatedShadow) {
-        return animatedShadow;
-      }
-    });
-  </script>
-</dom-module>
-
-
 <dom-module id="paper-button" assetpath="../bower_components/paper-button/">
   <template strip-whitespace="">
 
@@ -22362,44 +22195,10 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         min-height: 50px;
       }
 
-      paper-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        border-radius: 2px;
-        elevation: 2;
-        --paper-card-header: {
-            @apply(--layout-vertical);
-            @apply(--layout-center);
-        };
-      }
-      .user-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        text-align: center;
-        cursor: pointer;
-      }
-
-      .horizontal {
-        @apply(--layout-horizontal);
-      }
-      .justified {
-        @apply(--layout-justified);
-      }
-
       paper-icon-button {
         color: var(--paper-grey-600);
       }
 
-      .user-content {
-        @apply(--layout-center-justified);
-        text-align: center;
-      }
       .city {
         text-transform: capitalize;
         font-weight: bold;
@@ -22419,6 +22218,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       .logout {
         text-decoration: none;
       }
+      .button-container {
+        margin-top: 10px;
+      }
     </style>
 
     <div>
@@ -22426,27 +22228,21 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         <div class="page-title">Let's help someone <paper-icon-button class="help" icon="icons:help" data-dialog="dialog" on-tap="_showHelpDialog"></paper-icon-button></div>
       </div>
 
-      <div class="centered-container horizontal">
-        <paper-card class="user-card">
-          <div class="user-content">
-            <div class="card-content">
-              <div>
-                Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
-                <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
-              </div>
-              <feeling-block user="{{user.votee}}"></feeling-block>
-              <div>
-                Help give this person an idea of what to do today.
-              </div>
-              <div>
-                Click an activity below or suggest something new.
-              </div>
-            </div>
-          </div>
-        </paper-card>
+      <div class="centered-container vertical">
+        <div>
+          Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
+          <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
+        </div>
+        <feeling-block user="{{user.votee}}"></feeling-block>
+        <div>
+          Help give this person an idea of what to do today.
+        </div>
+        <div>
+          Click an activity below or suggest something new.
+        </div>
       </div>
 
-      <div class="centered-container">
+      <div class="centered-container button-container">
         <a href="#/addactivity">
           <paper-button raised="" class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
         </a>
@@ -22649,6 +22445,172 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         // TODO: ajax error handling
       },
 
+    });
+  </script>
+</dom-module>
+
+
+<dom-module id="paper-card" assetpath="../bower_components/paper-card/">
+  <template>
+    <style include="paper-material">
+      :host {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        background-color: var(--paper-card-background-color, --primary-background-color);
+        border-radius: 2px;
+
+        @apply(--paper-font-common-base);
+        @apply(--paper-card);
+      }
+
+      /* IE 10 support for HTML5 hidden attr */
+      [hidden] {
+        display: none !important;
+      }
+
+      .header {
+        position: relative;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+        overflow: hidden;
+
+        @apply(--paper-card-header);
+      }
+
+      .header iron-image {
+        width: 100%;
+        --iron-image-width: 100%;
+        pointer-events: none;
+
+        @apply(--paper-card-header-image);
+      }
+
+      .header .title-text {
+        padding: 16px;
+        font-size: 24px;
+        font-weight: 400;
+        color: var(--paper-card-header-color, #000);
+
+        @apply(--paper-card-header-text);
+      }
+
+      .header .title-text.over-image {
+        position: absolute;
+        bottom: 0px;
+
+        @apply(--paper-card-header-image-text);
+      }
+
+      :host ::content .card-content {
+        padding: 16px;
+        position:relative;
+
+        @apply(--paper-card-content);
+      }
+
+      :host ::content .card-actions {
+        border-top: 1px solid #e8e8e8;
+        padding: 5px 16px;
+        position:relative;
+
+        @apply(--paper-card-actions);
+      }
+    </style>
+
+    <div class="header">
+      <iron-image hidden$="[[!image]]" src="[[image]]" preload$="[[preloadImage]]" fade$="[[fadeImage]]"></iron-image>
+      <div hidden$="[[!heading]]" class$="[[_computeHeadingClass(image)]]">[[heading]]</div>
+    </div>
+
+    <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-card',
+
+      properties: {
+        /**
+         * The title of the card.
+         */
+        heading: {
+          type: String,
+          value: '',
+          observer: '_headingChanged'
+        },
+
+        /**
+         * The url of the title image of the card.
+         */
+        image: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * When `true`, any change to the image url property will cause the
+         * `placeholder` image to be shown until the image is fully rendered.
+         */
+        preloadImage: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * When `preloadImage` is true, setting `fadeImage` to true will cause the
+         * image to fade into place.
+         */
+        fadeImage: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * The z-depth of the card, from 0-5.
+         */
+        elevation: {
+          type: Number,
+          value: 1,
+          reflectToAttribute: true
+        },
+
+        /**
+         * Set this to true to animate the card shadow when setting a new
+         * `z` value.
+         */
+        animatedShadow: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Read-only property used to pass down the `animatedShadow` value to
+         * the underlying paper-material style (since they have different names).
+         */
+        animated: {
+          type: Boolean,
+          reflectToAttribute: true,
+          readOnly: true,
+          computed: '_computeAnimated(animatedShadow)'
+        }
+      },
+
+      _headingChanged: function(heading) {
+        var label = this.getAttribute('aria-label');
+        this.setAttribute('aria-label', heading);
+      },
+
+      _computeHeadingClass: function(image) {
+        var cls = 'title-text';
+        if (image)
+          cls += ' over-image';
+        return cls;
+      },
+
+      _computeAnimated: function(animatedShadow) {
+        return animatedShadow;
+      }
     });
   </script>
 </dom-module>
@@ -23378,35 +23340,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      paper-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        border-radius: 2px;
-        elevation: 3;
-        --paper-card-header: {
-            @apply(--layout-vertical);
-            @apply(--layout-center);
-        };
-      }
-      .user-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        text-align: center;
-        cursor: pointer;
-      }
-      .profile-container {
-        @apply(--layout-center-justified);
-      }
-      .user-content {
-        @apply(--layout-center-justified);
-        text-align: center;
-      }
       paper-tabs {
         background-color: var(--light-accent-color);
         color: #000;
@@ -23419,29 +23352,26 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         margin: 0 auto;
         text-align: left;
       }
+      .tab-container {
+        margin-top: 15px;
+      }
     </style>
 
     <div>
       <div class="page-header">
         <div class="page-title">Profile</div>
       </div>
-      <div class="profile-container horizontal">
-        <paper-card class="user-card">
-          <feeling-block user="{{user}}"></feeling-block>
-          <div class="user-content">
-            <div class="card-content">
-              <table class="profile">
-                <tbody><tr><td><span class="caps">username:</span></td> <td><span class="username">[[user.username]]</span></td></tr>
-                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[user.yearborn]]</span></td></tr>
-                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></td></tr>
-                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></td></tr>
-              </tbody></table>
-            </div>
-          </div>
-        </paper-card>
+      <div class="centered-container vertical">
+        <feeling-block user="{{user}}"></feeling-block>
+        <table class="profile">
+          <tbody><tr><td><span class="caps">username:</span></td> <td><span class="username">[[user.username]]</span></td></tr>
+          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[user.yearborn]]</span></td></tr>
+          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></td></tr>
+          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></td></tr>
+        </tbody></table>
       </div>
 
-      <paper-tabs selected="{{selected}}">
+      <paper-tabs class="tab-container" selected="{{selected}}">
         <paper-tab>My Suggestions</paper-tab>
         <paper-tab>My Selected</paper-tab>
       </paper-tabs>
@@ -23470,10 +23400,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             </div>
           </div>
         </div>
-        </iron-pages></div>
-      
+      </iron-pages>
 
-    
+    </div>
 
     <iron-ajax auto="" url="/api/profileactivities" method="get" on-response="_profileActivitiesLoaded" on-error="_ajaxError">
     </iron-ajax>
@@ -27455,43 +27384,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      paper-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        border-radius: 2px;
-        elevation: 3;
-        --paper-card-header: {
-            @apply(--layout-vertical);
-            @apply(--layout-center);
-        };
-      }
-      .other-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        text-align: center;
-        cursor: pointer;
-      }
-      .profile-container {
-        @apply(--layout-center-justified);
-      }
-      .other-content {
-        @apply(--layout-center-justified);
-        text-align: center;
-      }
       .slider-label {
         font-size: 10px;
-      }
-      .range-select {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
-        @apply(--layout-center);
-        padding: 10px;
       }
       paper-tabs {
         background-color: var(--light-accent-color);
@@ -27505,38 +27399,35 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         margin: 0 auto;
         text-align: left;
       }
+      .tab-container {
+        margin-top: 15px;
+      }
     </style>
     <div>
       <div class="page-header">
         <div class="page-title">Profile</div>
       </div>
-      <div class="profile-container horizontal">
-        <paper-card class="other-card">
-          <div>
-            <iron-image src$="{{feelingImg}}"></iron-image>
-            <div class="range-select">
-              <div class="slider-label">A LITTLE</div>
-              <div class="flexchild">
-                <paper-slider class="severity-slider" min="1" max="10" value="{{other.lastSeverity}}" step="0.1" disabled="">
-                </paper-slider>
-              </div>
-              <div class="slider-label">A LOT</div>
-            </div>
+      <div class="centered-container vertical">
+        <div class="centered-container">
+          <iron-image src$="{{feelingImg}}"></iron-image>
+        </div>
+        <div class="range-select">
+          <div class="slider-label">A LITTLE</div>
+          <div class="flexchild">
+            <paper-slider class="severity-slider" min="1" max="10" value="{{other.lastSeverity}}" step="0.1" disabled="">
+            </paper-slider>
           </div>
-          <div class="other-content">
-            <div class="card-content">
-              <table class="profile">
-                <tbody><tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
-                <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></td></tr>
-                <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></td></tr>
-                <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></td></tr>
-              </tbody></table>
-            </div>
-          </div>
-        </paper-card>
+          <div class="slider-label">A LOT</div>
+        </div>
+        <table class="profile">
+          <tbody><tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
+          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></td></tr>
+          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></td></tr>
+          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></td></tr>
+        </tbody></table>
       </div>
 
-      <paper-tabs selected="{{selected}}">
+      <paper-tabs class="tab-container" selected="{{selected}}">
         <paper-tab>Suggestions</paper-tab>
         <paper-tab>Selected</paper-tab>
       </paper-tabs>
@@ -27565,9 +27456,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             </div>
           </div>
         </div>
-        </iron-pages></div>
-      
-    
+      </iron-pages>
+    </div>
 
     <iron-ajax id="profileAjax" method="get" on-response="_profileLoaded" on-error="_ajaxError">
     </iron-ajax>
@@ -27656,7 +27546,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     </style>
 
     <iron-image src$="{{feelingImg}}"></iron-image>
-    <div class="range-select">
+    <div class="range-select slider-container">
       <paper-item class="slider-label">A LITTLE</paper-item>
       <div class="flexchild">
         <paper-slider class="severity-slider" min="1" max="10" value="{{user.lastSeverity}}" step="0.1" disabled="">

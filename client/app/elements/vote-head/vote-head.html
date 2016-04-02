@@ -3,7 +3,6 @@
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
@@ -20,44 +19,10 @@
         min-height: 50px;
       }
 
-      paper-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        border-radius: 2px;
-        elevation: 2;
-        --paper-card-header: {
-            @apply(--layout-vertical);
-            @apply(--layout-center);
-        };
-      }
-      .user-card {
-        display: inline-block;
-        background: white;
-        box-sizing: border-box;
-        margin: 16px;
-        padding: 16px;
-        text-align: center;
-        cursor: pointer;
-      }
-
-      .horizontal {
-        @apply(--layout-horizontal);
-      }
-      .justified {
-        @apply(--layout-justified);
-      }
-
       paper-icon-button {
         color: var(--paper-grey-600);
       }
 
-      .user-content {
-        @apply(--layout-center-justified);
-        text-align: center;
-      }
       .city {
         text-transform: capitalize;
         font-weight: bold;
@@ -77,6 +42,9 @@
       .logout {
         text-decoration: none;
       }
+      .button-container {
+        margin-top: 10px;
+      }
     </style>
 
     <div>
@@ -84,27 +52,21 @@
         <div class="page-title">Let's help someone <paper-icon-button class="help" icon="icons:help" data-dialog="dialog" on-tap="_showHelpDialog"></paper-icon-button></div>
       </div>
 
-      <div class="centered-container horizontal">
-        <paper-card class="user-card">
-          <div class="user-content">
-            <div class="card-content">
-              <div>
-                Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
-                <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
-              </div>
-              <feeling-block user="{{user.votee}}"></feeling-block>
-              <div>
-                Help give this person an idea of what to do today.
-              </div>
-              <div>
-                Click an activity below or suggest something new.
-              </div>
-            </div>
-          </div>
-        </paper-card>
+      <div class="centered-container vertical">
+        <div>
+          Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
+          <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
+        </div>
+        <feeling-block user="{{user.votee}}"></feeling-block>
+        <div>
+          Help give this person an idea of what to do today.
+        </div>
+        <div>
+          Click an activity below or suggest something new.
+        </div>
       </div>
 
-      <div class="centered-container">
+      <div class="centered-container button-container">
         <a href="#/addactivity">
           <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
         </a>
