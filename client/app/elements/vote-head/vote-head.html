@@ -33,12 +33,6 @@
       .username {
         font-weight: bold;
       }
-      .step {
-        font-weight: bold;
-      }
-      .modal-header {
-        font-weight: bold;
-      }
       .logout {
         text-decoration: none;
       }
@@ -74,36 +68,37 @@
     </div>
 
     <span>{{_showIntroDialog(user)}}</span>
-    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
-      <div class="centered-container">
-        <p><span class="modal-header">Welcome to Design My Day!</span><br />
-        Actionable ideas from a trusted community to brighten your day and help others do the same.<br />
-        Here's how it works in 3 easy steps:</p>
-      </div>
-      <paper-dialog-scrollable>
+    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+      <paper-dialog-scrollable id="helpscroll">
+        <div class="centered-container">
+          <paper-item>Welcome to Design My Day!<br />
+          Actionable ideas from a trusted community to brighten your day and help others do the same.<br />
+          Here's how it works in 3 easy steps:</paper-item>
+        </div>
+
         <div class="horizontal centered-container wrap">
-          <div>
+          <paper-material elevation="0">
             <h1>1</h1>
-            <p class="step">Help a member of your local tribe<br />
+            <paper-item>Help a member of your local tribe<br />
             by voting for the activity<br />
-            you think they should do today.</p>
+            you think they should do today.</paper-item>
             <iron-image src="/img/uploads/good-idea.jpg"></iron-image>
-          </div>
-          <div>
+          </paper-material>
+          <paper-material elevation="0">
             <h1>2</h1>
-            <p class="step">You receive ideas<br />
+            <paper-item>You receive ideas<br />
             for what to do today<br />
-            based on how you are feeling.</p>
+            based on how you are feeling.</paper-item>
             <iron-image src="/img/uploads/get-suggestion.jpg"></iron-image>
-          </div>
-          <div>
+          </paper-material>
+          <paper-material elevation="0">
             <h1>3</h1>
-            <p class="step">Go do something<br />
+            <paper-item>Go do something<br />
             feel better!<br />
             <br />
-            </p>
+            </paper-item>
             <iron-image src="/img/uploads/do-something-feel-better.jpg"></iron-image>
-          </div>
+          </paper-material>
         </div>
         <div class="buttons">
           <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap here to continue</paper-button>
@@ -154,6 +149,7 @@
 
       _showHelpDialog: function() {
         this.$.modal.open();
+        this.$.helpscroll.$.scrollable.scrollTop = 0;
       },
 
       _dialogContinue: function() {
