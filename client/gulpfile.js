@@ -125,6 +125,7 @@ gulp.task('images', function() {
 gulp.task('copy', function() {
   var app = gulp.src([
     'app/*',
+    'app/elements/web-animations-next-lite.min.js.map',
     '!app/test',
     '!app/elements',
     '!app/bower_components',
