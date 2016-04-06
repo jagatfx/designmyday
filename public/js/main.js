@@ -37,6 +37,7 @@ jQuery(document).ready(function($) {
 
   //open sign-up form
   mainNav.on('click', '#signup', signup_selected);
+  $('#lead-signup').on('click', signup_selected);
   //open login-form form
   mainNav.on('click', '#signin', login_selected);
 

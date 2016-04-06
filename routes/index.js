@@ -94,7 +94,7 @@ router.post('/register', function(req, res) {
     req.flash('error', 'You must pick a valid city/country');
     return res.redirect('/');
   }
-  // TODO: validate register input
+  console.log('pass:'+req.body.password);
   Account.register(new Account({
     username : req.body.username,
     email: req.body.email,
@@ -110,7 +110,8 @@ router.post('/register', function(req, res) {
     }
 
     passport.authenticate('local')(req, res, function () {
-      return res.redirect('/');
+      // return res.redirect('/');
+      assignVoteeUser(req, res);
     });
   });
 });
@@ -351,10 +352,32 @@ function getRandomUser (excludeUser, callback) {
 
 // TODO: think about keeping track of who voted for today and exclude those users as well
 function getMostUnvotedUser (excludeUser, callback) {
-  Account.count({city: excludeUser.city, username: { '$ne': excludeUser.username }})
+  Account.count({city: excludeUser.city, region: excludeUser.region,
+      country: excludeUser.country, username: { '$ne': excludeUser.username }})
   .exec(function(err, count) {
     if (count === 0) {
-      return callback("ERROR: no users from the voter's city");
+      console.log('no users from the voter city, creating one');
+      return callback("Error: no users from the voter city");
+      // var pass = (excludeUser.city).replace(/\s/g, '')+'1!';
+      // Account.register(new Account({
+      //   username: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, ''),
+      //   email: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, '')+'@designmyday.co',
+      //   city: excludeUser.city,
+      //   region: excludeUser.region,
+      //   country: excludeUser.country,
+      //   yearborn: 1981
+      // }), pass, function(err, account) {
+      //   console.log('account:'+account);
+      //   if (err) {
+      //     console.error(err);
+      //     return callback(err);
+      //   }
+      //   if (account._id) {
+      //     return callback(null, account);
+      //   } else {
+      //     return callback('Error creating first city account');
+      //   }
+      // });
     }
 
     Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
