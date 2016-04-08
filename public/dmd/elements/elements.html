@@ -21234,7 +21234,7 @@ if (!window.Promise) {
     <style>
     </style>
 
-    <iron-ajax auto="" url="/api/user" handle-as="json" debounce-duration="300" last-response="{{user}}" on-error="_ajaxError" verbose="true">
+    <iron-ajax auto="" id="userAjax" url="/api/user" handle-as="json" debounce-duration="300" last-response="{{user}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -21792,7 +21792,7 @@ if (!window.Promise) {
       </paper-header-panel>
     </paper-drawer-panel>
 
-    <dmd-data user="{{user}}" route="{{route}}">
+    <dmd-data user="{{user}}">
     </dmd-data>
 
   </template>
