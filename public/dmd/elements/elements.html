@@ -25575,33 +25575,13 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      .no-more-msg {
-        min-height: 40px;
-        font-family: 'Roboto Slab';
-        font-size: 20px;
-        color: #BDBDBD;
-        cursor: default;
-        padding-left: 67px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-      activity-item {
-        margin: 16px 0;
-      }
     </style>
-    <vote-head user="{{user}}"></vote-head>
-    <p class="no-more-msg" hidden="[[_activitiesEmpty(activities.length)]]">Loading...</p>
-
-    
-      <iron-list items="[[activities]]" as="activity">
-        <template>
-          <activity-item activity="[[activity]]" route="[[route]]" user="[[user]]">
-          </activity-item>
-        </template>
-      </iron-list>
-    
+    <div>
+      <vote-head user="{{user}}">
+      </vote-head>
+      <activity-list route="{{route}}" activities="{{activities}}" user="{{user}}">
+      </activity-list>
+    </div>
 
     <iron-ajax id="activityAjax" url="/api/activity" handle-as="json" debounce-duration="300" last-response="{{activities}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
@@ -25615,7 +25595,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       is: 'page-vote',
 
       properties: {
-        activities: Array,
         route: {
           type: String,
           observer: '_routeChanged'
@@ -25626,10 +25605,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         if (newval === 'vote') {
           this.$.activityAjax.generateRequest();
         }
-      },
-
-      _activitiesEmpty: function(length) {
-        return !!length;
       },
 
       _ajaxError: function(request, error) {
@@ -25646,37 +25621,14 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      .no-more-msg {
-        min-height: 40px;
-        font-family: 'Roboto Slab';
-        font-size: 20px;
-        color: #BDBDBD;
-        cursor: default;
-        padding-left: 67px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      activity-item {
-        margin: 16px 0;
-      }
     </style>
 
     <div class="page-header">
       <div class="page-title">Your Tribe Suggests</div>
       <div class="centered-container">you can help feeling [[user.lastFeeling]] by doing one of these activities (click your favorite)</div>
     </div>
-
-    <p class="no-more-msg" hidden="[[_activitiesEmpty(myactivities.length)]]">Loading...</p>
-
-    <iron-list items="{{myactivities}}" as="activity">
-      <template>
-        <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
-        </activity-item>
-      </template>
-    </iron-list>
+    <activity-list route="{{route}}" activities="{{myactivities}}" user="{{user}}">
+    </activity-list>
 
     <iron-ajax id="myactivitiesAjax" url="/api/myactivities" handle-as="json" debounce-duration="300" last-response="{{myactivities}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
@@ -25690,7 +25642,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       is: 'page-myactivities',
 
       properties: {
-        activities: Array,
         route: {
           type: String,
           observer: '_routeChanged'
@@ -25701,10 +25652,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         if (newval === 'myactivities') {
           this.$.myactivitiesAjax.generateRequest();
         }
-      },
-
-      _activitiesEmpty: function(length) {
-        return !!length;
       },
 
       _ajaxError: function(request, error) {
