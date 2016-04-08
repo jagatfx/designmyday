@@ -118,7 +118,8 @@
     <paper-card id="card[[activity._id]]" class="activity-card">
       <iron-image class="activity-image" src="[[activity.img]]"
                   on-tap="_doAjaxRequest"
-                  alt="[[activity.activityVerb]] [[activity.activity]]">
+                  alt="[[activity.activityVerb]] [[activity.activity]]"
+                  preload>
       </iron-image>
       <div class="card-content">
         <p><span>[[activity.activityVerb]]</span> [[activity.activity]]<br />

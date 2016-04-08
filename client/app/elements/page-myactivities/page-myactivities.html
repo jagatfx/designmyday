@@ -13,8 +13,18 @@
       <div class="page-title">Your Tribe Suggests</div>
       <div class="centered-container">you can help feeling [[user.lastFeeling]] by doing one of these activities (click your favorite)</div>
     </div>
-    <activity-list route="{{route}}" activities="{{activities}}" user="{{user}}">
+    <activity-list route="{{route}}" activities="{{myactivities}}" user="{{user}}">
     </activity-list>
+
+    <iron-ajax
+      id="myactivitiesAjax"
+      url="/api/myactivities"
+      handle-as="json"
+      debounce-duration="300"
+      last-response="{{myactivities}}"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
 
   </template>
   <script>
@@ -25,7 +35,21 @@
       is: 'page-myactivities',
 
       properties: {
-      }
+        route: {
+          type: String,
+          observer: '_routeChanged'
+        }
+      },
+
+      _routeChanged: function (newval, oldval) {
+        if (newval === 'myactivities') {
+          this.$.myactivitiesAjax.generateRequest();
+        }
+      },
+
+      _ajaxError: function(request, error) {
+      },
+
     });
   })();
   </script>

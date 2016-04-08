@@ -118,37 +118,6 @@
 
     <paper-drawer-panel id="paperDrawerPanel" drawer-width="0">
 
-<!--       <div drawer>
-        <paper-toolbar class="custom" id="drawerToolbar"></paper-toolbar>
-
-        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
-
-          <a is="pushstate-anchor" data-route="profile" href="#/profile" tabindex="-1" on-click="closeDrawer">
-            <span>Profile</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="addactivity" href="#/addactivity" tabindex="-1" on-click="closeDrawer">
-            <span>Add Activity</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
-            <span>Vote</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="feeling" href="#/feeling" tabindex="-1" on-click="closeDrawer">
-            <span>Feeling</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="severity" href="#/severity" tabindex="-1" on-click="closeDrawer">
-            <span>Severity</span>
-          </a>
-
-          <a is="pushstate-anchor" data-route="myactivities" href="#/myactivities" tabindex="-1" on-click="closeDrawer">
-            <span>MyActivities</span>
-          </a>
-        </paper-menu>
-      </div> -->
-
       <paper-header-panel main>
 
         <!-- Main Toolbar -->
@@ -180,7 +149,6 @@
           </a>
         </paper-toolbar>
 
-        <!-- Main Content -->
         <div class="content">
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
@@ -193,7 +161,6 @@
             </page-addactivity>
             <page-vote data-route="vote"
                        route="{{route}}"
-                       activities="{{activities}}"
                        user="{{user}}">
             </page-vote>
             <page-feeling data-route="feeling" user="{{user}}">
@@ -202,8 +169,7 @@
             </page-severity>
             <page-myactivities data-route="myactivities"
                                route="{{route}}"
-                               user="{{user}}"
-                               activities="{{activities}}">
+                               user="{{user}}">
             </page-myactivities>
             <page-editactivity data-route="edit"
                                route="{{route}}"
@@ -226,8 +192,7 @@
       </paper-header-panel>
     </paper-drawer-panel>
 
-    <dmd-data activities="{{activities}}"
-              user="{{user}}"
+    <dmd-data user="{{user}}"
               route="{{route}}">
     </dmd-data>
 
@@ -239,18 +204,10 @@
 
       properties: {
 
-        route: String,
-
-        activities: Array,
-
-        sideMenuVisible: {
-          type: Boolean,
-          value: false
-        }
+        route: String
 
       },
 
-      // Close drawer after menu item is selected if drawerPanel is narrow
       closeDrawer: function() {
       //   var drawerPanel = this.$.paperDrawerPanel;
       //   if (drawerPanel.narrow) {

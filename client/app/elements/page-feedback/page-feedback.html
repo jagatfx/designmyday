@@ -32,7 +32,7 @@
       </div>
 
       <div class="centered-container">
-        <form is="ajax-form" id="feedbackform" action$="/api/feedback/{{activityId}}" method="post" enctype="multipart/form-data">
+        <form is="ajax-form" id="feedbackform" action$="/api/feedback/{{activityid}}" method="post" enctype="multipart/form-data">
           <paper-material elevation="1" class="feedback">
             <paper-radio-group id="radio" selected="same">
               <paper-radio-button name="mworse">I felt much worse after</paper-radio-button>
@@ -66,10 +66,11 @@
       </div>
     </paper-dialog>
 
-    <iron-ajax auto
-      url="/api/activity/{{activityId}}"
+    <iron-ajax
+      id="feedbackAjax"
+      url="/api/activity/{{activityid}}"
       method="get"
-      on-response="_activityLoaded"
+      last-response="{{activity}}"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -83,8 +84,32 @@
       is: 'page-feedback',
 
       properties: {
+        activityid: {
+          type: String,
+          observer: '_idChanged'
+        },
         activity: Object,
-        user: Object
+        user: Object,
+        route: {
+          type: String,
+          observer: '_routeChanged'
+        }
+      },
+
+      _doAjaxIfReady: function() {
+        if (this.route === 'feedback' && this.activityid) {
+          this.$.feedbackAjax.generateRequest();
+        }
+      },
+
+      _idChanged: function(newval, oldval) {
+        this._doAjaxIfReady();
+      },
+
+      _routeChanged: function (newval, oldval) {
+        if (newval === 'feedback') {
+          this._doAjaxIfReady();
+        }
       },
 
       _submitForm: function(event) {
@@ -95,10 +120,6 @@
 
       _dialogContinue: function() {
         document.querySelector('app-router').go('/profile');
-      },
-
-      _activityLoaded: function(request) {
-        this.activity = request.detail.response;
       },
 
       _ajaxError: function(request, error) {

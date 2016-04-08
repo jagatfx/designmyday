@@ -83,14 +83,16 @@
 
     </div>
 
-    <iron-ajax auto
+    <iron-ajax
+      id="activitiesAjax"
       url="/api/profileactivities"
       method="get"
       on-response="_profileActivitiesLoaded"
       on-error="_ajaxError">
     </iron-ajax>
 
-    <iron-ajax auto
+    <iron-ajax
+      id="suggestionsAjax"
       url="/api/mysuggestions"
       method="get"
       on-response="_mySuggestionsLoaded"
@@ -107,6 +109,10 @@
       is: 'page-profile',
 
       properties: {
+        route: {
+          type: String,
+          observer: 'routeChanged'
+        },
         user: {
           type: Object,
           notify: true
@@ -116,6 +122,13 @@
         selected: {
           type: Number,
           value: 1
+        }
+      },
+
+      routeChanged: function (newval, oldval) {
+        if (newval === 'profile') {
+          this.$.activitiesAjax.generateRequest();
+          this.$.suggestionsAjax.generateRequest();
         }
       },
 

@@ -1,14 +1,3 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!-- <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html"> -->
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="dmd-data">
@@ -19,28 +8,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <iron-ajax auto
-      id="activityAjax"
-      url="/api/[[_getUrl(route)]]"
-      handle-as="json"
-      debounce-duration="300"
-      on-response="_remoteActivitiesLoaded"
-      on-error="_ajaxError"
-      verbose="true">
-    </iron-ajax>
-
-    <iron-ajax auto
       url="/api/user"
       handle-as="json"
       debounce-duration="300"
-      on-response="_remoteUserLoaded"
+      last-response="{{user}}"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
-
-<!--     <iron-localstorage name="polymer-activity"
-                       on-iron-localstorage-load="_localLoaded"
-                       value="{{localActivities}}">
-    </iron-localstorage> -->
 
   </template>
   <script>
@@ -49,54 +23,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'dmd-data',
 
       properties: {
-
-        activities: {
-          notify: true
-        },
-
         user: {
+          type: Object,
           notify: true
-        },
-
-        route: String,
-
-        _remoteActivitiesConnected: {
-          value: false
-        },
-
-        _remoteUserConnected: {
-          value: false
         }
-
       },
-
-      _getUrl: function(route) {
-        if (route === 'myactivities') {
-          return 'myactivities';
-        }
-        return 'activity';
-      },
-
-      _remoteActivitiesLoaded: function(request) {
-        this._remoteActivitiesConnected = true;
-        console.log('remote activities storage connected');
-        this.activities = request.detail.response;
-      },
-
-      _remoteUserLoaded: function(request) {
-        this._remoteUserConnected = true;
-        console.log('remote user storage connected');
-        this.user = request.detail.response;
-      },
-
-      _ajaxError: function(request, error) {
-      },
-
-      // _localLoaded: function() {
-      //   if (!this._remoteConnected) {
-      //     console.log('using local storage')
-      //   }
-      // },
 
     });
 

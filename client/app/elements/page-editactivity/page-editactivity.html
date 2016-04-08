@@ -66,11 +66,11 @@
       </div>
     </paper-dialog>
 
-    <iron-ajax auto
-      url="/api/activity/{{activityid}}"
+    <iron-ajax
       id="editAjax"
+      url="/api/activity/{{activityid}}"
       method="get"
-      on-response="_activityLoaded"
+      last-response="{{activity}}"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -84,21 +84,41 @@
       is: 'page-editactivity',
 
       properties: {
-        activityid: String,
+        activityid: {
+          type: String,
+          observer: '_idChanged'
+        },
         preview: {
           type: String,
           value: '/img/activity-group.gif'
         },
         user: Object,
-        activity: Object
+        activity: {
+          type: Object,
+          observer: '_updatePreview'
+        },
+        route: {
+          type: String,
+          observer: '_routeChanged'
+        }
       },
 
-      observers: [
-        '_updatePreview(activity)'
-      ],
+      _doAjaxIfReady: function() {
+        if (this.route === 'edit' && this.activityid) {
+          this.$.editAjax.generateRequest();
+        }
+      },
+
+      _idChanged: function(newval, oldval) {
+        this._doAjaxIfReady();
+      },
+
+      _routeChanged: function (newval, oldval) {
+        this._doAjaxIfReady();
+      },
 
       _updatePreview: function(activity) {
-        if (this.preview === '/img/activity-group.gif') {
+        if (activity && this.preview === '/img/activity-group.gif') {
           this.preview = activity.img;
         }
       },
@@ -151,10 +171,6 @@
           alert("Could not upload file.");
         };
         xhr.send(file);
-      },
-
-      _activityLoaded: function(request) {
-        this.activity = request.detail.response;
       },
 
       _ajaxError: function(request, error) {

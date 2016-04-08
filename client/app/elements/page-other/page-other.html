@@ -152,7 +152,9 @@
       ],
 
       updateOnOther: function(other) {
-        this.feelingImg = '/img/'+other.lastFeeling+'.gif';
+        if (other) {
+          this.feelingImg = '/img/'+other.lastFeeling+'.gif';
+        }
       },
 
       updateOnOthername: function(othername) {

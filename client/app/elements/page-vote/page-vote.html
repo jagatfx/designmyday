@@ -16,6 +16,17 @@
                      user="{{user}}">
       </activity-list>
     </div>
+
+    <iron-ajax
+      id="activityAjax"
+      url="/api/activity"
+      handle-as="json"
+      debounce-duration="300"
+      last-response="{{activities}}"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
+
   </template>
   <script>
   (function() {
@@ -25,7 +36,21 @@
       is: 'page-vote',
 
       properties: {
-      }
+        route: {
+          type: String,
+          observer: '_routeChanged'
+        }
+      },
+
+      _routeChanged: function (newval, oldval) {
+        if (newval === 'vote') {
+          this.$.activityAjax.generateRequest();
+        }
+      },
+
+      _ajaxError: function(request, error) {
+      },
+
     });
   })();
   </script>
