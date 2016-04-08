@@ -26,15 +26,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js" async></script>
   <!-- endbuild -->
 
-  <!-- Because this project uses vulcanize this should be your only html import
-       in this file. All other imports should go in elements.html -->
-  <link rel="import" href="elements/elements.html">
+  <link rel="import" href="elements/elements.html" async>
 </head>
 
-<body unresolved>
+<body>
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
