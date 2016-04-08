@@ -10,8 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-
-
 </head><body><div hidden="" by-vulcanize=""><script>(function () {
 function resolve() {
 document.body.removeAttribute('unresolved');
@@ -19340,6 +19338,534 @@ is separate from validation, and `allowed-pattern` does not affect how the input
   });
 
 </script>
+<script>
+  /**
+   * The `<platinum-sw-cache>` element makes it easy to precache specific resources, perform runtime
+   * caching, and serve your cached resources when a network is unavailable.
+   * Under the hood, the [sw-toolbox](https://github.com/googlechrome/sw-toolbox) library is used
+   * for all the caching and request handling logic.
+   * `<platinum-sw-cache>` needs to be a child element of `<platinum-sw-register>`.
+   * A simple, yet useful configuration is
+   *
+   *     <platinum-sw-register auto-register>
+   *       <platinum-sw-cache></platinum-sw-cache>
+   *     </platinum-sw-register>
+   *
+   * This is enough to have all of the resources your site uses cached at runtime, both local and
+   * cross-origin.
+   * (It uses the default `defaultCacheStrategy` of "networkFirst".)
+   * When there's a network available, visits to your site will go against the network copy of the
+   * resources, but if someone visits your site when they're offline, all the cached resources will
+   * be used.
+   *
+   * @demo demo/index.html An offline-capable eReader demo.
+   */
+  Polymer({
+    is: 'platinum-sw-cache',
+
+    properties: {
+      /**
+       * Used to configure `<platinum-sw-precache>` behavior via a JSON file instead of via
+       * attributes. This can come in handy when the configuration (e.g. which files to precache)
+       * depends on the results of a build script.
+       *
+       * If configuration for the same properties are provided in both the JSON file and via the
+       * element's attributes, then in general the JSON file's values take precedence. The one
+       * exception is the `precache` property. Any values in the element's `precache` attribute will
+       * be concatenated with the values in the JSON file's `precache` property and the set of files
+       * that are precached will be the union of the two.
+       *
+       * There's one additional option, `precacheFingerprint`, that can be set in the JSON. If using
+       * a build script that might output a large number of files to precache, its recommended
+       * that your build script generate a unique "fingerprint" of the files. Any changes to the
+       * `precacheFingerprint` value will result in the underlying service worker kicking off the
+       * process of caching the files listed in `precache`.
+       * While there are a few different strategies for generating an appropriate
+       * `precacheFingerprint` value, a process that makes sense is to use a stable hash of the
+       * serialized `precache` array. That way, any changes to the list of files in `precache`
+       * will result in a new `precacheFingerprint` value.
+       * If your build script is Node.js based, one way to generate this hash is:
+       *
+       *     var md5 = require('crypto').createHash('md5');
+       *     md5.update(JSON.stringify(precache));
+       *     var precacheFingerprint = md5.digest('hex');
+       *
+       * Alternatively, you could use something like the
+       * [SHA-1 signature](http://stackoverflow.com/questions/1161869/how-to-get-sha-of-the-latest-commit-from-remote-git-repository)
+       * of your latest `git` commit for the `precacheFingerprint` value.
+       *
+       * An example file may look like:
+       *
+       *     {
+       *       "cacheId": "my-cache-id",
+       *       "defaultCacheStrategy": "fastest",
+       *       "disabled": false,
+       *       "precache": ["file1.html", "file2.css"],
+       *       "precacheFingerprint": "FINGERPRINT_OF_FILES_IN_PRECACHE"
+       *     }
+       */
+      cacheConfigFile: String,
+
+      /**
+       * An id used to construct the name for the
+       * [Cache](https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#cache)
+       * in which all the resources will be stored.
+       *
+       * If nothing is provided, the default value set in
+       * [`toolbox.options.cacheName`](https://github.com/GoogleChrome/sw-toolbox/blob/8763dcc9fbc9352d58f184050e2131c42f7b6d68/lib/options.js#L28)
+       * will be used.
+       *
+       * The `cacheId` is combined with the service worker's scope to construct the cache name, so
+       * two `<platinum-sw-cache>` elements that are associated with different scopes will use
+       * different caches.
+       */
+      cacheId: String,
+
+      /**
+       * The caching strategy used for all requests, both for local and cross-origin resources.
+       *
+       * For a list of strategies, see the [`sw-toolbox` documentation](https://github.com/GoogleChrome/sw-toolbox#built-in-handlers).
+       * Specify a strategy as a string, without the "toolbox" prefix. E.g., for
+       * `toolbox.networkFirst`, set `defaultCacheStrategy` to "networkFirst".
+       *
+       * Note that the "cacheFirst" and "cacheOnly" strategies are not recommended, and may be
+       * explicitly prevented in a future release. More information can be found at
+       * https://github.com/PolymerElements/platinum-sw#cacheonly--cachefirst-defaultcachestrategy-considered-harmful
+       *
+       * @see {@link https://github.com/GoogleChrome/sw-toolbox#built-in-handlers}
+       */
+      defaultCacheStrategy: {
+        type: String,
+        value: 'networkFirst'
+      },
+
+      /**
+       * If set to true, this element will not set up service worker caching. This is useful to
+       * conditionally enable or disable caching depending on the build environment.
+       */
+      disabled: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Used to provide a list of URLs that are always precached as soon as the service worker is
+       * installed. Corresponds to  [`sw-toolbox`'s `precache()` method](https://github.com/GoogleChrome/sw-toolbox#toolboxprecachearrayofurls).
+       *
+       * This is useful for URLs that that wouldn't necessarily be picked up by runtime caching,
+       * i.e. a list of resources that are needed by one of the subpages of your site, or a list of
+       * resources that are only loaded via user interaction.
+       *
+       * `precache` can be used in conjunction with `cacheConfigFile`, and the two arrays will be
+       * concatenated.
+       *
+       * @see {@link https://github.com/GoogleChrome/sw-toolbox#toolboxprecachearrayofurls}
+       */
+      precache: {
+        type: Array,
+        value: function() { return []; }
+      }
+    },
+
+    _getParameters: function(baseURI) {
+      return new Promise(function(resolve) {
+        var params = {
+          importscriptLate: new URL('bootstrap/sw-toolbox-setup.js', baseURI).href,
+          defaultCacheStrategy: this.defaultCacheStrategy,
+          precache: this.precache
+        };
+
+        if (this.cacheConfigFile) {
+          params.cacheConfigFile = this.cacheConfigFile;
+          window.fetch(this.cacheConfigFile).then(function(response) {
+            if (!response.ok) {
+              throw Error('unable to load ' + this.cacheConfigFile);
+            }
+            return response.json();
+          }.bind(this)).then(function(config) {
+            this.disabled = config.disabled;
+            if (this.disabled) {
+              // Use an empty set of parameters to effectively disable caching.
+              params = {};
+            } else {
+              // If there's a hash of the list of files to precache provided in the config file,
+              // then copy that over to the params that will be used to construct the service worker
+              // URL. This works around the issue where a potentially large number of precache
+              // files could result in a longer URL than a browser will allow.
+              // The actual list of files to precache (in config.precache) will be dealt by the
+              // service worker during the install phase, so we can ignore it here.
+              // See https://github.com/PolymerElements/platinum-sw/issues/53
+              if (config.precacheFingerprint) {
+                params.precacheFingerprint = config.precacheFingerprint;
+              } else {
+                params.precache = params.precache.concat(config.precache);
+              }
+              params.cacheId = config.cacheId || params.cacheId;
+              params.defaultCacheStrategy = config.defaultCacheStrategy ||
+                params.defaultCacheStrategy;
+            }
+          }.bind(this)).catch(function(error) {
+            console.info('Skipping precaching: ' + error.message);
+          }).then(function() {
+            resolve(params);
+          });
+        } else {
+          resolve(params);
+        }
+      }.bind(this));
+    }
+  });
+</script>
+<script>
+  /**
+   * The `<platinum-sw-register>` element handles
+   * [service worker](http://www.html5rocks.com/en/tutorials/service-worker/introduction/)
+   * registration, reflects the overall service worker state, and coordinates the configuration
+   * provided by other Service Worker Elements.
+   * `<platinum-sw-register>` is used as a parent element for child elements in the
+   * `<platinum-sw-*>` group.
+   *
+   *     <platinum-sw-register skip-waiting
+   *                           clients-claim
+   *                           auto-register
+   *                           state="{{state}}"
+   *                           on-service-worker-error="handleSWError"
+   *                           on-service-worker-updated="handleSWUpdated"
+   *                           on-service-worker-installed="handleSWInstalled">
+   *       ...one or more <platinum-sw-*> children which share the service worker registration...
+   *     </platinum-sw-register>
+   *
+   * Please see https://github.com/PolymerElements/platinum-sw#top-level-sw-importjs for a
+   * *crucial* prerequisite file you must create before `<platinum-sw-register>` can be used!
+   *
+   * @demo demo/index.html An offline-capable eReader demo.
+   */
+  Polymer({
+    is: 'platinum-sw-register',
+
+    // Used as an "emergency" switch if we make breaking changes in the way <platinum-sw-register>
+    // talks to service-worker.js. Otherwise, it shouldn't need to change, and isn't meant to be
+    // kept in sync with the element's release number.
+    _version: '1.0',
+
+    /**
+     * Fired when the initial service worker installation completes successfully.
+     * The service worker will normally only be installed once, the first time a page with a
+     * `<platinum-sw-register>` element is visited in a given browser. If the same page is visited
+     * again, the existing service worker will be reused, and there won't be another
+     * `service-worker-installed` fired.
+     *
+     * @event service-worker-installed
+     * @param {String} A message indicating that the installation succeeded.
+     */
+
+    /**
+     * Fired when the service worker update flow completes successfully.
+     * If you make changes to your `<platinum-sw-register>` configuration (i.e. by adding in new
+     * `<platinum-sw-*>` child elements, or changing their attributes), users who had the old
+     * service worker installed will get the update installed when they see the modified elements.
+     *
+     * @event service-worker-updated
+     * @param {String} A message indicating that the update succeeded.
+     */
+
+    /**
+     * Fired when an error prevents the service worker installation from completing.
+     *
+     * @event service-worker-error
+     * @param {String} A message indicating what went wrong.
+     */
+
+    properties: {
+      /**
+       * Whether this element should automatically register the corresponding service worker as
+       * soon as its added to a page.
+       *
+       * If set to `false`, then the service worker won't be automatically registered, and you
+       * must call this element's `register()` method if you want service worker functionality.
+       * This is useful if, for example, the service worker needs to be configured using
+       * information that isn't immediately available at the time the page loads.
+       *
+       * If set to `true`, the service worker will be automatically registered without having to
+       * call any methods.
+       */
+      autoRegister: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The URI used as a base when constructing relative paths to service worker helper libraries
+       * that need to be loaded.
+       *
+       * This can normally be kept set to the default, which will use the directory containing this
+       * element as the base. However, if you [Vulcanize](https://github.com/polymer/vulcanize) your
+       * elements, then the default base might not be appropriate anymore. This will allow you to
+       * override it.
+       *
+       * See https://github.com/PolymerElements/platinum-sw#relative-paths--vulcanization for more
+       * information.
+       */
+      baseUri: {
+        type: String,
+        // Grab the URI of this file to use as a base when resolving relative paths.
+        // Fallback to './' as a default, though current browsers that don't support
+        // document.currentScript also don't support service workers.
+        value: document.currentScript ? document.currentScript.baseURI : './'
+      },
+
+      /**
+       * Whether the activated service worker should [take immediate control](https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#clients-claim-method)
+       * of any pages under its scope.
+       *
+       * If this is `false`, the service worker won't have any effect until the next time the page
+       * is visited/reloaded.
+       * If this is `true`, it will take control and start handling events for the current page
+       * (and any pages under the same scope open in other tabs/windows) as soon it's active.
+       * @see {@link https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#clients-claim-method}
+       */
+      clientsClaim: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The service worker script that is [registered](https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#navigator-service-worker-register).
+       * The script *should* be located at the top level of your site, to ensure that it is able
+       * to control all the pages on your site.
+       *
+       * It's *strongly* recommended that you create a top-level file named `sw-import.js`
+       * containing only:
+       *
+       * `importScripts('bower_components/platinum-sw/service-worker.js');`
+       *
+       * (adjust to match the path where your `platinum-sw` element directory can be found).
+       *
+       * This will ensure that your service worker script contains everything needed to play
+       * nicely with the Service Worker Elements group.
+       *
+       * @see {@link https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#navigator-service-worker-register}
+       */
+      href: {
+        type: String,
+        value: 'sw-import.js'
+      },
+
+      /**
+       * Whether the page should be automatically reloaded (via `window.location.reload()`) when
+       * the service worker is successfully installed.
+       *
+       * While it's perfectly valid to continue using a page with a freshly installed service
+       * worker, it's a common pattern to want to reload it immediately following the install.
+       * This ensures that, for example, if you're using a `<platinum-sw-cache>` with an on the
+       * fly caching strategy, it will get a chance to intercept all the requests needed to render
+       * your page and store them in the cache.
+       *
+       * If you don't immediately reload your page, then any resources that were loaded before the
+       * service worker was installed (e.g. this `platinum-sw-register.html` file) won't be present
+       * in the cache until the next time the page is loaded.
+       *
+       * Note that this reload will only happen when a service worker is installed for the first
+       * time. If the service worker is subsequently updated, it won't trigger another reload.
+       */
+      reloadOnInstall: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The scope of the service worker, relative to the registered service worker script.
+       * All pages that fall under this scope will be controlled by the registered service worker.
+       *
+       * Normally, this would not need to be changed, unless you want the service worker to only
+       * apply to a subset of your site.
+       *
+       * @see {@link https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#navigator-service-worker-register}
+       */
+      scope: {
+        type: String,
+        value: './'
+      },
+
+      /**
+       * Whether an updated service worker should [bypass the `waiting` state](https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#service-worker-global-scope-skipwaiting)
+       * and immediately become `active`.
+       *
+       * Normally, during an update, the new service worker stays in the
+       * `waiting` state until the current page and any other tabs/windows that are using the old
+       * service worker are unloaded.
+       *
+       * If this is `false`, an updated service worker won't be activated until all instances of
+       * the old server worker have been unloaded.
+       *
+       * If this is `true`, an updated service worker will become `active` immediately.
+       * @see {@link https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#service-worker-global-scope-skipwaiting}
+       */
+      skipWaiting: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The current state of the service worker registered by this element.
+       *
+       * One of:
+       * - 'installed'
+       * - 'updated'
+       * - 'error'
+       * - 'unsupported'
+       */
+      state: {
+        notify: true,
+        readOnly: true,
+        type: String
+      }
+    },
+
+    /**
+     * Registers the service worker based on the configuration options in this element and any
+     * child elements.
+     *
+     * If you set the `autoRegister` property to `true`, then this method is called automatically
+     * at page load.
+     * It can be useful to set `autoRegister` to `false` and then explicitly call this method if
+     * there are options that are only configured after the page is loaded.
+     */
+    register: function() {
+      if ('serviceWorker' in navigator) {
+        this._constructServiceWorkerUrl().then(function(serviceWorkerUrl) {
+          this._registerServiceWorker(serviceWorkerUrl);
+        }.bind(this));
+      } else {
+        this._setState('unsupported');
+        this.fire('service-worker-error', 'Service workers are not available in the current browser.');
+      }
+    },
+
+    _constructServiceWorkerUrl: function() {
+      var paramsPromises = [];
+      var children = Polymer.dom(this).children;
+      var baseUri = new URL(this.baseUri, window.location.href);
+
+      for (var i = 0; i < children.length; i++) {
+        if (typeof children[i]._getParameters === 'function') {
+          paramsPromises.push(children[i]._getParameters(baseUri));
+        }
+      }
+
+      return Promise.all(paramsPromises).then(function(paramsResolutions) {
+        var params = {
+          baseURI: baseUri,
+          version: this._version
+        };
+
+        paramsResolutions.forEach(function(childParams) {
+          Object.keys(childParams).forEach(function(key) {
+            if (Array.isArray(params[key])) {
+              params[key] = params[key].concat(childParams[key]);
+            } else {
+              params[key] = [].concat(childParams[key]);
+            }
+          });
+        });
+
+        return params;
+      }.bind(this)).then(function(params) {
+        if (params.importscriptLate) {
+          if (params.importscript) {
+            params.importscript = params.importscript.concat(params.importscriptLate);
+          } else {
+            params.importscript = params.importscriptLate;
+          }
+        }
+
+        if (params.importscript) {
+          params.importscript = this._unique(params.importscript);
+        }
+
+        // We've already concatenated importscriptLate, so don't include it in the serialized URL.
+        delete params.importscriptLate;
+
+        params.clientsClaim = this.clientsClaim;
+        params.skipWaiting = this.skipWaiting;
+
+        var serviceWorkerUrl = new URL(this.href, window.location);
+        // It's very important to ensure that the serialization is stable.
+        // Serializing the same settings should always produce the same URL.
+        // Serializing different settings should always produce a different URL.
+        // This ensures that the service worker upgrade flow is triggered when settings change.
+        serviceWorkerUrl.search = this._serializeUrlParams(params);
+
+        return serviceWorkerUrl;
+      }.bind(this));
+    },
+
+    _unique: function(arr) {
+      return arr.filter(function(item, index) {
+        return arr.indexOf(item) === index;
+      });
+    },
+
+    _serializeUrlParams: function(params) {
+      return Object.keys(params).sort().map(function(key) {
+        // encodeURIComponent(['a', 'b']) => 'a%2Cb',
+        // so this will still work when the values are Arrays.
+        // TODO: It won't work if the values in the Arrays have ',' characters in them.
+        return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+      }).join('&');
+    },
+
+    _registerServiceWorker: function(serviceWorkerUrl) {
+      navigator.serviceWorker.register(serviceWorkerUrl, {scope: this.scope}).then(function(registration) {
+        if (registration.active) {
+          this._setState('installed');
+        }
+
+        registration.onupdatefound = function() {
+          var installingWorker = registration.installing;
+          installingWorker.onstatechange = function() {
+            switch (installingWorker.state) {
+              case 'installed':
+                if (navigator.serviceWorker.controller) {
+                  this._setState('updated');
+                  this.fire('service-worker-updated',
+                    'A new service worker was installed, replacing the old service worker.');
+                } else {
+                  if (this.reloadOnInstall) {
+                    window.location.reload();
+                  } else {
+                    this._setState('installed');
+                    this.fire('service-worker-installed', 'A new service worker was installed.');
+                  }
+                }
+              break;
+
+              case 'redundant':
+                this._setState('error');
+                this.fire('service-worker-error', 'The installing service worker became redundant.');
+              break;
+            }
+          }.bind(this);
+        }.bind(this);
+      }.bind(this)).catch(function(error) {
+        this._setState('error');
+        this.fire('service-worker-error', error.toString());
+        if (error.name === 'NetworkError') {
+          var location = serviceWorkerUrl.origin + serviceWorkerUrl.pathname;
+          console.error('A valid service worker script was not found at ' + location + '\n' +
+            'To learn how to fix this, please see\n' +
+            'https://github.com/PolymerElements/platinum-sw#top-level-sw-importjs');
+        }
+      }.bind(this));
+    },
+
+    attached: function() {
+      if (this.autoRegister) {
+        this.async(this.register);
+      }
+    }
+  });
+</script>
 <script type="text/javascript">
 !function(t,e){function a(t,a,i){var r=e.createEvent("CustomEvent");return r.initCustomEvent(t,!1,!0,a),i.dispatchEvent(r)}function i(e){var i=m.parseUrl(t.location.href,e.getAttribute("mode"));if(i.hash!==A.hash&&i.path===A.path&&i.search===A.search&&i.isHashPath===A.isHashPath)return g(i.hash),void 0;A=i;var n={path:i.path};if(a("state-change",n,e)){for(var s=e.firstElementChild;s;){if("APP-ROUTE"===s.tagName&&m.testRoute(s.getAttribute("path"),i.path,e.getAttribute("trailingSlash"),s.hasAttribute("regex")))return r(e,s,i),void 0;s=s.nextSibling}a("not-found",n,e)}}function r(t,e,i){if(e.hasAttribute("redirect"))return t.go(e.getAttribute("redirect"),{replace:!0}),void 0;if(e!==t.activeRoute||"noop"!==e.getAttribute("onUrlChange")){var r={path:i.path,route:e,oldRoute:t.activeRoute};a("activate-route-start",r,t)&&a("activate-route-start",r,e)&&(t.loadingRoute=e,e===t.activeRoute&&"updateModel"===e.getAttribute("onUrlChange")?n(t,e,i,r):e.hasAttribute("import")?s(t,e.getAttribute("import"),e,i,r):e.hasAttribute("element")?u(t,e.getAttribute("element"),e,i,r):e.firstElementChild&&"TEMPLATE"===e.firstElementChild.tagName&&(e.isInlineTemplate=!0,h(t,e.firstElementChild,e,i,r)))}}function n(t,e,i,r){var n=l(t,e,i,r);e.hasAttribute("template")||e.isInlineTemplate?c(e.lastElementChild.templateInstance.model,n):c(e.firstElementChild,n),a("activate-route-end",r,t),a("activate-route-end",r,r.route)}function s(t,a,i,r,n){function s(){u.loaded=!0,o(t,u,a,i,r,n)}var u;b.hasOwnProperty(a)?(u=b[a],u.loaded?o(t,u,a,i,r,n):u.addEventListener("load",s)):(u=e.createElement("link"),u.setAttribute("rel","import"),u.setAttribute("href",a),u.setAttribute("async","async"),u.addEventListener("load",s),u.loaded=!1,e.head.appendChild(u),b[a]=u)}function o(t,e,a,i,r,n){if(i.importLink=e,i===t.loadingRoute)if(i.hasAttribute("template")){var s,o=i.getAttribute("template");s=o?e.import.getElementById(o):e.import.querySelector("template"),h(t,s,i,r,n)}else u(t,i.getAttribute("element")||a.split("/").slice(-1)[0].replace(".html",""),i,r,n)}function u(t,a,i,r,n){var s=e.createElement(a),o=l(t,i,r,n);c(s,o),p(t,s,r,n)}function h(t,a,i,r,n){var s;if("createInstance"in a){var o=l(t,i,r,n);s=a.createInstance(o)}else s=e.importNode(a.content,!0);p(t,s,r,n)}function l(t,e,i,r){var n=m.routeArguments(e.getAttribute("path"),i.path,i.search,e.hasAttribute("regex"),"auto"===t.getAttribute("typecast"));return(e.hasAttribute("bindRouter")||t.hasAttribute("bindRouter"))&&(n.router=t),r.model=n,a("before-data-binding",r,t),a("before-data-binding",r,r.route),r.model}function c(t,e){for(var a in e)e.hasOwnProperty(a)&&(t[a]=e[a])}function p(t,e,i,r){d(t.previousRoute),t.previousRoute=t.activeRoute,t.activeRoute=t.loadingRoute,t.loadingRoute=null,t.previousRoute&&t.previousRoute.removeAttribute("active"),t.activeRoute.setAttribute("active","active"),t.hasAttribute("core-animated-pages")&&r.route!==r.oldRoute||d(t.previousRoute),t.activeRoute.appendChild(e),t.hasAttribute("core-animated-pages")&&(t.coreAnimatedPages.selected=t.activeRoute.getAttribute("path")),i.hash&&!t.hasAttribute("core-animated-pages")&&g(i.hash),a("activate-route-end",r,t),a("activate-route-end",r,r.route)}function d(t){if(t){var e=t.firstChild;for(t.isInlineTemplate&&(e=t.querySelector("template").nextSibling);e;){var a=e;e=e.nextSibling,t.removeChild(a)}}}function g(t){t&&setTimeout(function(){var a=e.querySelector("html /deep/ "+t)||e.querySelector('html /deep/ [name="'+t.substring(1)+'"]');a&&a.scrollIntoView&&a.scrollIntoView(!0)},0)}function v(t,e,a,i,r){var n=t[e],s=a[i];if("**"===n&&e===t.length-1)return!0;if("undefined"==typeof n||"undefined"==typeof s)return n===s;if(n===s||"*"===n||":"===n.charAt(0))return":"===n.charAt(0)&&"undefined"!=typeof r&&(r[n.substring(1)]=a[i]),v(t,e+1,a,i+1,r);if("**"===n)for(var o=i;o<a.length;o++)if(v(t,e+1,a,o,r))return!0;return!1}var m={},b={},f="ActiveXObject"in t,A={},E=Object.create(HTMLElement.prototype);E.util=m,e.registerElement("app-route",{prototype:Object.create(HTMLElement.prototype)}),E.attachedCallback=function(){"manual"!==this.getAttribute("init")&&this.init()},E.init=function(){var a=this;a.isInitialized||(a.isInitialized=!0,a.hasAttribute("trailingSlash")||a.setAttribute("trailingSlash","strict"),a.hasAttribute("mode")||a.setAttribute("mode","auto"),a.hasAttribute("typecast")||a.setAttribute("typecast","auto"),a.hasAttribute("core-animated-pages")&&(a.createShadowRoot(),a.coreAnimatedPages=e.createElement("core-animated-pages"),a.coreAnimatedPages.appendChild(e.createElement("content")),a.coreAnimatedPages.style.position="static",a.coreAnimatedPages.setAttribute("valueattr","path"),a.coreAnimatedPages.setAttribute("transitions",a.getAttribute("transitions")),a.shadowRoot.appendChild(a.coreAnimatedPages),a.coreAnimatedPages.addEventListener("core-animated-pages-transition-end",function(){a.previousRoute&&!a.previousRoute.hasAttribute("active")&&d(a.previousRoute)})),a.stateChangeHandler=i.bind(null,a),t.addEventListener("popstate",a.stateChangeHandler,!1),f&&t.addEventListener("hashchange",a.stateChangeHandler,!1),i(a))},E.detachedCallback=function(){t.removeEventListener("popstate",this.stateChangeHandler,!1),f&&t.removeEventListener("hashchange",this.stateChangeHandler,!1)},E.go=function(a,i){"pushstate"!==this.getAttribute("mode")&&(a="hashbang"===this.getAttribute("mode")?"#!"+a:"#"+a),i&&i.replace===!0?t.history.replaceState(null,null,a):t.history.pushState(null,null,a);try{var r=new PopStateEvent("popstate",{bubbles:!1,cancelable:!1,state:{}});"dispatchEvent_"in t?t.dispatchEvent_(r):t.dispatchEvent(r)}catch(n){var s=e.createEvent("CustomEvent");s.initCustomEvent("popstate",!1,!1,{state:{}}),t.dispatchEvent(s)}},m.parseUrl=function(t,a){var i={isHashPath:"hash"===a};if("function"==typeof URL){var r=new URL(t);i.path=r.pathname,i.hash=r.hash,i.search=r.search}else{var n=e.createElement("a");n.href=t,i.path=n.pathname,"/"!==i.path.charAt(0)&&(i.path="/"+i.path),i.hash=n.hash,i.search=n.search}if("pushstate"!==a&&("#/"===i.hash.substring(0,2)?(i.isHashPath=!0,i.path=i.hash.substring(1)):"#!/"===i.hash.substring(0,3)?(i.isHashPath=!0,i.path=i.hash.substring(2)):i.isHashPath&&(i.path=0===i.hash.length?"/":i.hash.substring(1)),i.isHashPath)){i.hash="";var s=i.path.indexOf("#");-1!==s&&(i.hash=i.path.substring(s),i.path=i.path.substring(0,s));var o=i.path.indexOf("?");-1!==o&&(i.search=i.path.substring(o),i.path=i.path.substring(0,o))}return i},m.testRoute=function(t,e,a,i){return"ignore"===a&&("/"===e.slice(-1)&&(e=e.slice(0,-1)),"/"!==t.slice(-1)||i||(t=t.slice(0,-1))),i?m.testRegExString(t,e):t===e||"*"===t?!0:("/"!==t.charAt(0)&&(t="/**/"+t),v(t.split("/"),1,e.split("/"),1))},m.routeArguments=function(t,e,a,i,r){var n={};i||("/"!==t.charAt(0)&&(t="/**/"+t),v(t.split("/"),1,e.split("/"),1,n));var s=a.substring(1).split("&");1===s.length&&""===s[0]&&(s=[]);for(var o=0;o<s.length;o++){var u=s[o],h=u.split("=");n[h[0]]=h.splice(1,h.length-1).join("=")}if(r)for(var l in n)n[l]=m.typecast(n[l]);return n},m.typecast=function(t){return"true"===t?!0:"false"===t?!1:isNaN(t)||""===t||"0"===t.charAt(0)?decodeURIComponent(t):+t},m.testRegExString=function(t,e){if("/"!==t.charAt(0))return!1;t=t.slice(1);var a="";if("/"===t.slice(-1))t=t.slice(0,-1);else{if("/i"!==t.slice(-2))return!1;t=t.slice(0,-2),a="i"}return new RegExp(t,a).test(e)},e.registerElement("app-router",{prototype:E})}(window,document);
 </script>
@@ -20714,7 +21240,6 @@ if (!window.Promise) {
     <iron-ajax auto="" url="/api/user" handle-as="json" debounce-duration="300" on-response="_remoteUserLoaded" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
-    
 
 
   </template>

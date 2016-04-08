@@ -37,11 +37,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       verbose="true">
     </iron-ajax>
 
-    <!-- Backfill activities from localstorage. This prevents an initial flash while
-         we're waiting to hear from Firebase, and it lets the user see their
-         old activities if they start the app offline.
-         This SHOULD NOT write to Firebase. If the user has cleared their
-         localstorage, it should not nullify everything saved in Firebase. -->
 <!--     <iron-localstorage name="polymer-activity"
                        on-iron-localstorage-load="_localLoaded"
                        value="{{localActivities}}">
