@@ -404,35 +404,35 @@ function getMostUnvotedUser (excludeUser, callback) {
   .exec(function(err, count) {
     if (count === 0) {
       console.log('no users from the voter city, creating one');
-      return callback("Error: no users from the voter city");
-      // var pass = (excludeUser.city).replace(/\s/g, '')+'1!';
-      // Account.register(new Account({
-      //   username: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, ''),
-      //   email: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, '')+'@designmyday.co',
-      //   city: excludeUser.city,
-      //   region: excludeUser.region,
-      //   country: excludeUser.country,
-      //   yearborn: 1981
-      // }), pass, function(err, account) {
-      //   console.log('account:'+account);
-      //   if (err) {
-      //     console.error(err);
-      //     return callback(err);
-      //   }
-      //   if (account._id) {
-      //     return callback(null, account);
-      //   } else {
-      //     return callback('Error creating first city account');
-      //   }
-      // });
+      // return callback("Error: no users from the voter city");
+      var pass = (excludeUser.city).replace(/\s/g, '')+'1!';
+      Account.register(new Account({
+        username: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, ''),
+        email: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, '')+'@designmyday.co',
+        city: excludeUser.city,
+        region: excludeUser.region,
+        country: excludeUser.country,
+        yearborn: 1981
+      }), pass, function(err, account) {
+        console.log('account:'+account);
+        if (err) {
+          console.error(err);
+          return callback(err);
+        }
+        if (account._id) {
+          return callback(null, account);
+        } else {
+          return callback('Error creating first city account');
+        }
+      });
+    } else {
+      Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
+        country: excludeUser.country, username: { '$ne': excludeUser.username }},
+        "$orderby":{ "votesReceived": 1 }})
+      .exec(function (err, selectedAccount) {
+        callback(null, selectedAccount);
+      });
     }
-
-    Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
-      country: excludeUser.country, username: { '$ne': excludeUser.username }},
-      "$orderby":{ "votesReceived": 1 }})
-    .exec(function (err, selectedAccount) {
-      callback(null, selectedAccount);
-    });
   });
 }
 
