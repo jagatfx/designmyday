@@ -1,10 +1,17 @@
-      <div id="cd-signup"> <!-- sign up form -->
+  <% layout( 'layout' ) -%>
+
+<% if(!valid) { %>
+  <section>
+    <div class="container" style="min-height: 400px;">
+      Invalid invite link provided. Please check the link and try again. If you still have problems fill out the contact form with details.
+    </div>
+  </section>
+<% } else { %>
+  <section>
+    <div class="container">
+      <h1>Design My Day</h1>
+      <div>
         <form class="cd-form" role="form" action="/register" method="post" accept-charset="utf-8">
-          <p class="fieldset">
-            <label class="image-replace cd-email" for="email">Email:</label>
-            <input type="text" name="email" class="full-width has-padding has-border" id="email" placeholder="email" required autofocus />
-            <span class="cd-error-message">Error!</span>
-          </p>
           <p class="fieldset">
             <label class="image-replace cd-username" for="username">Username:</label>
             <input type="text" name="username" class="full-width has-padding has-border" id="username" placeholder="username" required />
@@ -30,6 +37,17 @@
             <input type="text" name="yearborn" class="full-width has-padding has-border" id="yearborn" placeholder="yearborn" required />
             <span class="cd-error-message">Error!</span>
           </p>
+          <hr />
+          <p class="fieldset">
+            <label class="image-replace cd-password" for="code">Invitation Code:</label>
+            <input type="text" name="code" class="full-width has-padding has-border" id="code" value="<%= code %>" required />
+            <span class="cd-error-message">Error!</span>
+          </p>
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="email">Email:</label>
+            <input type="text" name="email" class="full-width has-padding has-border" id="email" value="<%= email %>" required />
+            <span class="cd-error-message">Error!</span>
+          </p>
           <p class="fieldset">
             <input id="signup-submit" type="submit" value="Sign Up" class="full-width has-padding" />
           </p>
@@ -37,5 +55,7 @@
           By clicking Sign Up you agree to the Design My Day <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/tos" target="_blank">Terms of Service</a>.
           </p>
         </form>
-        <!-- <a href="#0" class="cd-close-form">Close</a> -->
-      </div> <!-- cd-signup -->
+      </div>
+    </div>
+  </section>
+<% } %>

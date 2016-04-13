@@ -6,10 +6,13 @@ var crypto        = require('crypto');
 var nodemailer    = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var aws           = require('aws-sdk');
+var crypto        = require('crypto');
 
 var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
 var S3_BUCKET      = process.env.S3_BUCKET;
+
+var PREFINERY_DECODER_KEY = process.env.PREFINERY_DECODER_KEY;
 
 var Account  = require('../models/account');
 
@@ -39,8 +42,36 @@ router.get('/', function (req, res) {
   res.render('index', { user : req.user });
 });
 
-router.get('/register', function(req, res) {
-  res.render('register', { });
+function sha1(code) {
+  return crypto.createHash('sha1').update(code).digest('hex');
+}
+
+function codeIsValid(code, email) {
+  var invitationCode = sha1(PREFINERY_DECODER_KEY+email);
+  invitationCode = invitationCode.slice(0, 10);
+  if (invitationCode === code) {
+    // valid code provided
+    return true;
+  }
+  return false;
+}
+
+router.get('/signup', function(req, res) {
+  var code = req.query.code;
+  var email = req.query.email;
+
+  Account.findOne({ email: email }, function(err, user) {
+    if (user) {
+      req.flash('error', 'An account with the email address '+email+' already exists.');
+      return res.redirect('/');
+    }
+
+    res.render('register-page', {
+      code: code,
+      email: email,
+      valid: codeIsValid(code, email)
+    });
+  });
 });
 
 router.get('/team', function(req, res) {
@@ -73,6 +104,14 @@ router.get('/dmd', loggedIn, function(req, res, next) {
 
 router.post('/register', function(req, res) {
   console.log('got /register POST');
+  var code = req.body.code;
+  var email = req.body.email;
+  if (!codeIsValid(code, email)) {
+    var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
+    console.error(err);
+    req.flash('error', 'Problem registering account: '+err);
+    return res.redirect('/');
+  }
   var citycountry = req.body.citycountry;
   var city;
   var region;
@@ -94,10 +133,10 @@ router.post('/register', function(req, res) {
     req.flash('error', 'You must pick a valid city/country');
     return res.redirect('/');
   }
-  console.log('pass:'+req.body.password);
+
   Account.register(new Account({
     username : req.body.username,
-    email: req.body.email,
+    email: email,
     city: city,
     region: region,
     country: country,

@@ -24331,6 +24331,20 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       .button-container {
         margin-top: 10px;
       }
+      paper-card {
+        width: 279px;
+        --paper-card-header-color: #fff;
+      }
+      paper-item {
+        font-size: 14px;
+        padding: 5px;
+      }
+      paper-item.intro-header {
+        font-size: 2em;
+      }
+      paper-item.intro-subheader {
+        font-size: 1.3em;
+      }
     </style>
 
     <div>
@@ -24361,36 +24375,27 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
     <span>{{_showIntroDialog(user)}}</span>
     <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-      <paper-dialog-scrollable id="helpscroll">
-        <div class="centered-container">
-          <paper-item>Welcome to Design My Day!<br>
-          Actionable ideas from a trusted community to brighten your day and help others do the same.<br>
-          Here's how it works in 3 easy steps:</paper-item>
-        </div>
+      <paper-dialog-scrollable id="helpscroll" class="centered-container">
+        <paper-item class="intro-header">Welcome to Design My Day!</paper-item>
+        <paper-item class="intro-subheader">Actionable ideas from a trusted community to brighten your day and help others do the same.</paper-item>
+        <paper-item>Here's how it works in 3 easy steps:</paper-item>
 
         <div class="horizontal centered-container wrap">
-          <paper-material elevation="0">
-            <h1>1</h1>
-            <paper-item>Help a member of your local tribe<br>
-            by voting for the activity<br>
-            you think they should do today.</paper-item>
-            <iron-image src="/img/uploads/good-idea.jpg"></iron-image>
-          </paper-material>
-          <paper-material elevation="0">
-            <h1>2</h1>
-            <paper-item>You receive ideas<br>
-            for what to do today<br>
-            based on how you are feeling.</paper-item>
-            <iron-image src="/img/uploads/get-suggestion.jpg"></iron-image>
-          </paper-material>
-          <paper-material elevation="0">
-            <h1>3</h1>
-            <paper-item>Go do something<br>
-            feel better!<br>
-            <br>
-            </paper-item>
-            <iron-image src="/img/uploads/do-something-feel-better.jpg"></iron-image>
-          </paper-material>
+          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460065643311_good-idea.jpg">
+              <div class="card-content">
+                Voting for the activity you think another user should do today.
+              </div>
+          </paper-card>
+          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460065522205_girl-choose.jpg">
+              <div class="card-content">
+                Tell how you are feeling and receive idea suggestions for what to do today.
+              </div>
+          </paper-card>
+          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460066191489_biking.jpg">
+              <div class="card-content">
+                Go do something feel better!
+              </div>
+          </paper-card>
         </div>
         <div class="buttons">
           <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>
@@ -24398,7 +24403,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </paper-dialog-scrollable>
     </paper-dialog>
 
-    <paper-dialog id="firstmodal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-closed="_dialogContinue">
+    <paper-dialog id="firstmodal" modal="" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-closed="_dialogContinue">
       <paper-dialog-scrollable>
         <div class="centered-container">
           <h1>First User</h1>
