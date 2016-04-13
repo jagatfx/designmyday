@@ -7,6 +7,7 @@
     <thead>
       <tr>
         <th>_id</th>
+        <th>activated</th>
         <th>metaActivity</th>
         <th>activityVerb</th>
         <th>activity</th>
@@ -29,6 +30,7 @@
     <% activities.forEach( function( activity ){ %>
       <tr>
         <td><%= activity._id %></td>
+        <td><%= activity.activated %></td>
         <td><%= activity.metaActivity %></td>
         <td><%= activity.activityVerb %></td>
         <td class="medium"><%= activity.activity %></td>
