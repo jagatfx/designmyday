@@ -83,19 +83,28 @@
 
     </div>
 
+    <iron-localstorage name="profileactivities-storage"
+                       value="{{profileActivities}}">
+    </iron-localstorage>
+
+    <iron-localstorage name="myactivities-storage"
+                       value="{{mySuggestions}}">
+    </iron-localstorage>
+
     <iron-ajax
       id="activitiesAjax"
       url="/api/profileactivities"
       method="get"
-      on-response="_profileActivitiesLoaded"
-      on-error="_ajaxError">
+      last-response="{{profileActivities}}"
+      on-error="_ajaxError"
+      verbose="true">
     </iron-ajax>
 
     <iron-ajax
       id="suggestionsAjax"
       url="/api/mysuggestions"
       method="get"
-      on-response="_mySuggestionsLoaded"
+      last-response="{{mySuggestions}}"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -117,8 +126,6 @@
           type: Object,
           notify: true
         },
-        profileActivities: Object,
-        mySuggestions: Object,
         selected: {
           type: Number,
           value: 1
@@ -130,14 +137,6 @@
           this.$.activitiesAjax.generateRequest();
           this.$.suggestionsAjax.generateRequest();
         }
-      },
-
-      _profileActivitiesLoaded: function(request) {
-        this.profileActivities = request.detail.response;
-      },
-
-      _mySuggestionsLoaded: function(request) {
-        this.mySuggestions = request.detail.response;
       },
 
       _ajaxError: function() {

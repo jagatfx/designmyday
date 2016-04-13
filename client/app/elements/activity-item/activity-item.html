@@ -113,6 +113,9 @@
       div#scrollable {
         padding: 0;
       }
+      iron-image {
+        background-color: #fff;
+      }
     </style>
 
     <paper-card id="card[[activity._id]]" class="activity-card">
@@ -162,12 +165,17 @@
       </div>
     </paper-card>
 
-    <paper-dialog id="dialog">
+    <paper-dialog id="dialog"
+                  entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation">
       <paper-dialog-scrollable>
         <div class="centered-container vertical">
           <paper-item class="centered-container">[[activity.activityVerb]] [[activity.activity]]</paper-item>
           <div class="centered-container">
-            <iron-image class="dialog-activity-image" src="[[activity.img]]"></iron-image>
+            <iron-image class="dialog-activity-image" src="[[activity.img]]"
+                        alt="[[activity.activityVerb]] [[activity.activity]]"
+                        preload>
+            </iron-image>
           </div>
           <template is="dom-if" if="{{activity.specificLocation}}">
             <paper-item class="centered-container">[[activity.specificLocation]]</paper-item>

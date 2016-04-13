@@ -17,6 +17,10 @@
       </activity-list>
     </div>
 
+    <iron-localstorage name="activity-storage"
+                       value="{{activities}}">
+    </iron-localstorage>
+
     <iron-ajax
       id="activityAjax"
       url="/api/activity"
