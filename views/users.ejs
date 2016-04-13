@@ -1,0 +1,46 @@
+  <% layout( 'layout' ) -%>
+
+<section>
+<div>
+  <table class="table table-hover table-striped">
+    <thead>
+      <tr>
+        <th>user #</th>
+        <th>email</th>
+        <th>username</th>
+        <th>city</th>
+        <th>region</th>
+        <th>country</th>
+        <th>yearborn</th>
+        <th>role</th>
+        <th>votesCast</th>
+        <th>votesReceived</th>
+        <th>lastFeeling</th>
+        <th>lastSeverity</th>
+        <th>lastSeverity</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% accounts.forEach( function( account, index ){ %>
+      <tr>
+        <td><%= index+1 %></td>
+        <td><%= account.email %></td>
+        <td><%= account.username %></td>
+        <td><%= account.city %></td>
+        <td><%= account.region %></td>
+        <td><%= account.country %></td>
+        <td><%= account.yearborn %></td>
+        <td><%= account.role %></td>
+        <td><%= account.votesCast %></td>
+        <td><%= account.votesReceived %></td>
+        <td><%= account.lastFeeling %></td>
+        <td><%= account.lastSeverity %></td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <div style="padding: 15px;">
+    <a class="btn btn-primary" href="/admin/signup">Add a new account</a>
+  </div>
+</div>
+</section>

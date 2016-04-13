@@ -11,7 +11,16 @@
     <div class="container">
       <h1>Design My Day</h1>
       <div>
+<% if(user.role === 'admin') { %>
+        <form class="cd-form" role="form" action="/api/register" method="post" accept-charset="utf-8">
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="email">Email:</label>
+            <input type="text" name="email" class="full-width has-padding has-border" id="email" value="" placeholder="email" required />
+            <span class="cd-error-message">Error!</span>
+          </p>
+<% } else { %>
         <form class="cd-form" role="form" action="/register" method="post" accept-charset="utf-8">
+<% } %>
           <p class="fieldset">
             <label class="image-replace cd-username" for="username">Username:</label>
             <input type="text" name="username" class="full-width has-padding has-border" id="username" placeholder="username" required />
@@ -37,6 +46,7 @@
             <input type="text" name="yearborn" class="full-width has-padding has-border" id="yearborn" placeholder="yearborn" required />
             <span class="cd-error-message">Error!</span>
           </p>
+<% if(user.role !== 'admin') { %>
           <hr />
           <p class="fieldset">
             <label class="image-replace cd-password" for="code">Invitation Code:</label>
@@ -45,9 +55,10 @@
           </p>
           <p class="fieldset">
             <label class="image-replace cd-email" for="email">Email:</label>
-            <input type="text" name="email" class="full-width has-padding has-border" id="email" value="<%= email %>" required />
+            <input type="text" name="email" class="full-width has-padding has-border" id="email" value="<%= email %>" placeholder="email" required />
             <span class="cd-error-message">Error!</span>
           </p>
+<% } %>
           <p class="fieldset">
             <input id="signup-submit" type="submit" value="Sign Up" class="full-width has-padding" />
           </p>

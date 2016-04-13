@@ -21,8 +21,15 @@ function isAdmin(req, res, next) {
   }
 }
 
+router.get('/signup', isAdmin, function(req, res) {
+  res.render('register-page', {
+    user: req.user,
+    valid: true
+  });
+});
+
 router.get('/users', isAdmin, function(req, res) {
-  Account.find({}).exec(function (err, accounts) {
+  Account.find({}).sort({city: 1}).exec(function (err, accounts) {
     if (err) {
       console.error(err);
       return res.json( {result: 'Error: '+err} );
@@ -43,7 +50,10 @@ router.get('/users', isAdmin, function(req, res) {
       };
       return filterAccount;
     });
-    return res.json(filteredAccounts);
+    res.render( 'users', {
+      user: req.user,
+      accounts: filteredAccounts
+    });
   });
 });
 

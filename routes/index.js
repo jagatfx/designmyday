@@ -67,6 +67,7 @@ router.get('/signup', function(req, res) {
     }
 
     res.render('register-page', {
+      user: {},
       code: code,
       email: email,
       valid: codeIsValid(code, email)
@@ -116,6 +117,11 @@ router.post('/register', function(req, res) {
   var city;
   var region;
   var country;
+  if (req.body.password !== req.body.confirm) {
+    console.error('/register Passwords do not match');
+    req.flash('error', '/register Passwords do not match');
+    return res.redirect('/');
+  }
   var regex = /([^,]+), ([^,]+), (.+)/;
   if (citycountry) {
     var fields = regex.exec(citycountry);

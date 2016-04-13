@@ -34,6 +34,49 @@ function isAdmin(req, res, next) {
   }
 }
 
+router.post('/register', isAdmin, function(req, res) {
+  console.log('got api /register POST');
+  var citycountry = req.body.citycountry;
+  var city;
+  var region;
+  var country;
+  if (req.body.password !== req.body.confirm) {
+    console.error('/register Passwords do not match');
+    return res.json( {result: '/register Passwords do not match'} );
+  }
+  var regex = /([^,]+), ([^,]+), (.+)/;
+  if (citycountry) {
+    var fields = regex.exec(citycountry);
+    if (fields.length === 4) {
+      city = fields[1];
+      region = fields[2];
+      country = fields[3];
+    } else {
+      console.error('Invalid citycountry:'+citycountry);
+      return res.json( {result: 'You must pick a valid city/country'} );
+    }
+  } else {
+    console.error('citycountry field was empty');
+    return res.json( {result: 'citycountry field was empty'} );
+  }
+
+  Account.register(new Account({
+    username : req.body.username,
+    email: req.body.email,
+    city: city,
+    region: region,
+    country: country,
+    yearborn: req.body.yearborn
+  }), req.body.password, function(err, account) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: err} );
+    }
+
+    res.json( {result: 'OK'} );
+  });
+});
+
 function filterUser(user) {
   var currentYear = new Date().getFullYear();
   if (user) {
@@ -111,25 +154,19 @@ router.get('/activity', loggedIn, function(req, res, next) {
   var results = req.query.results;
   var type = req.query.type;
   var user = req.user;
-  var city;
-  if (user) {
-    city = user.city;
-  }
+
   // TODO: implement pagination
   // var page = req.query.page;
   var maxResults = 0;
-  var findParam = {};
-  if (type) {
-    findParam.type = type;
-  }
-  if (city) {
-    console.log('filtering city: '+city);
-    findParam.city = city;
-  }
   if (results) {
     maxResults = results;
   }
-  Activity.find().or([{city: city},{city: ''}]).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
+  Activity.find().and([
+    { $or: [{city: user.city},{city: ''}] },
+    { $or: [{region: user.region},{region: ''}] },
+    { $or: [{country: user.country},{country: ''}] },
+    { activated: true }
+    ]).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
     if (err) {
       console.error(err);
       return res.json( {result: err} );
@@ -294,8 +331,7 @@ router.post('/activity/:id', loggedIn, function (req, res) {
   });
 });
 
-// TODO: protect delete with authentication / rights
-router.get('/activity/delete/:id', loggedIn, function (req, res) {
+router.get('/activity/delete/:id', isAdmin, function (req, res) {
   Activity.findById(req.params.id, function (err, activity) {
     activity.remove( function (err, activity) {
       if (err) {
@@ -508,7 +544,12 @@ function getMyMostVotedActivities(user, callback) {
       _id: {
         $nin: user.activitySelectSequence.map(function(activity) { return new ObjectId(activity.activity); })
       },
-      $or: [{city: city}, {city: ''}]
+      $and: [
+        { $or: [{city: user.city},{city: ''}] },
+        { $or: [{region: user.region},{region: ''}] },
+        { $or: [{country: user.country},{country: ''}] },
+        { activated: true }
+      ]
     }
   };
 
