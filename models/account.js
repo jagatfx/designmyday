@@ -12,7 +12,7 @@ var Account = new Schema({
   country: { type: String, trim: true },
   yearborn: { type: Number, default: -1 },
   isAdmin: { type: Boolean, default: false },
-  role: { type: String, default: 'beta' },
+  role: { type: String, default: 'user' },
   votesCast: { type: Number, default: 0 },
   votesReceived: { type: Number, default: 0 },
   lastFeeling: { type: String, default: 'fine', lowercase: true, trim: true },
