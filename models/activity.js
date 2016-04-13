@@ -16,6 +16,8 @@ var Activity = new Schema({
   targetIntensity: { type: Number, default: 5 },
   targetFeelings: { type: String, default: '' },
   restrictions: { type: String, default: '' },
+  expires: { type: Boolean, default: false },
+  expirationDatetime: { type: Date },
   activated: { type: Boolean, default: false },
   addedBy: { type: String, default: '' },
   numVotes: { type: Number, default: 0 },

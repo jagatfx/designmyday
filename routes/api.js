@@ -84,6 +84,7 @@ function filterUser(user) {
       _id: user._id,
       username: user.username,
       city: user.city,
+      region: user.region,
       country: user.country,
       yearborn: user.yearborn,
       age: user.yearborn ? currentYear - user.yearborn : 0,
@@ -186,46 +187,31 @@ router.get('/activity/:id', loggedIn, function(req, res, next) {
 });
 
 router.post('/activity', loggedIn, function (req, res) {
-  // look for existing activity with same URL
-  Activity.findById(req.params.id, function(err, activity) {
-    if(activity) {
-      console.log('todo: update existing activity');
-      // TODO: do update
-      activity.updated_at  = Date.now();
-      activity.save( function ( err, activity, count ) {
-        if (err) {
-          console.error(err);
-          return res.json( {result: err} );
-        } else {
-          console.log('saved activity: '+activity.link);
-          res.json( {result: 'OK'} );
-        }
-      });
+  // TODO: check for duplicate activity
+  new Activity({
+    metaActivity     : req.body.metaActivity,
+    activityVerb     : req.body.activityVerb,
+    activity         : req.body.activity,
+    specificLocation : req.body.specificLocation,
+    expires          : req.body.expires,
+    needPass         : req.body.needPass,
+    city             : req.body.city,
+    region           : req.body.region,
+    country          : req.body.country,
+    description      : req.body.description,
+    link             : req.body.link,
+    img              : req.body.img,
+    targetIntensity  : req.body.targetIntensity,
+    targetFeelings   : req.body.targetFeelings,
+    restrictions     : req.body.restrictions,
+    updated_at       : Date.now()
+  }).save( function( err, activity, count ) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: err} );
     } else {
-      new Activity({
-        metaActivity     : req.body.metaActivity,
-        activityVerb     : req.body.activityVerb,
-        activity         : req.body.activity,
-        specificLocation : req.body.specificLocation,
-        needPass         : req.body.needPass,
-        city             : req.body.city,
-        country          : req.body.country,
-        description      : req.body.description,
-        link             : req.body.link,
-        img              : req.body.img,
-        targetIntensity  : req.body.targetIntensity,
-        targetFeelings   : req.body.targetFeelings,
-        restrictions     : req.body.restrictions,
-        updated_at       : Date.now()
-      }).save( function( err, activity, count ) {
-        if (err) {
-          console.error(err);
-          return res.json( {result: err} );
-        } else {
-          console.log('saved activity: '+activity.link);
-          res.json( {result: 'OK'} );
-        }
-      });
+      console.log('saved activity: '+activity.link);
+      res.json( {result: 'OK'} );
     }
   });
 });
@@ -238,13 +224,27 @@ router.post('/activityform', loggedIn, function(req, res) {
     // if (err) {
     //   console.error('upload error when adding activity image:'+err);
     // }
-
+    var city = user.city;
+    var region = user.region;
+    var country = user.country;
+    var cityspecific = req.body.cityspecific;
+    if (cityspecific === 'false') {
+      city = '';
+      region = '';
+      country = '';
+    } else if (city === '') {
+      city = user.city;
+      region = user.region;
+      country = user.country;
+    }
     new Activity({
       activityVerb     : req.body.activityVerb,
       activity         : req.body.activity,
       specificLocation : req.body.specificLocation,
-      city             : user.city,
-      country          : user.country,
+      expires          : req.body.expires,
+      city             : city,
+      region           : region,
+      country          : country,
       description      : req.body.description,
       link             : req.body.link,
       img              : req.body.imgurl,
@@ -275,9 +275,26 @@ router.post('/activityform/:id', loggedIn, function(req, res) {
     Activity.findById(req.params.id, function(err, activity) {
       if (activity) {
         if (user.username === activity.addedBy) {
+          var city = activity.city;
+          var region = activity.region;
+          var country = activity.country;
+          var cityspecific = req.body.cityspecific;
+          if (cityspecific === 'false') {
+            city = '';
+            region = '';
+            country = '';
+          } else if (city === '') {
+            city = user.city;
+            region = user.region;
+            country = user.country;
+          }
           activity.activityVerb     = req.body.activityVerb;
           activity.activity         = req.body.activity;
           activity.specificLocation = req.body.specificLocation;
+          activity.expires          = req.body.expires;
+          activity.city             = city;
+          activity.region           = region;
+          activity.country          = country;
           activity.description      = req.body.description;
           activity.link             = req.body.link;
           activity.img              = req.body.imgurl;
@@ -306,8 +323,10 @@ router.post('/activity/:id', loggedIn, function (req, res) {
       activity.activityVerb     = req.body.activityVerb;
       activity.activity         = req.body.activity;
       activity.specificLocation = req.body.specificLocation;
+      activity.expires          = req.body.expires;
       activity.needPass         = req.body.needPass;
       activity.city             = req.body.city;
+      activity.region           = req.body.region;
       activity.country          = req.body.country;
       activity.description      = req.body.description;
       activity.link             = req.body.link;
@@ -535,7 +554,6 @@ function getMyMostVotedActivities(user, callback) {
   var sortParam = {
     score: 'desc'
   };
-  var city = user.city;
 
   // filter results to those not picked previously and those either in no city or
   // in the user's city

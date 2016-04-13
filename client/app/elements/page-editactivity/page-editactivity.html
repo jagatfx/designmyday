@@ -1,4 +1,15 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../node_modules/ajax-form/ajax-form.html">
 
 <dom-module id="page-editactivity">
   <template>
@@ -34,6 +45,12 @@
           <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)" value$="{{activity.activityVerb}}"></paper-input>
           <paper-input name="activity" label="What is the activity?" value$="{{activity.activity}}"></paper-input>
           <paper-input name="specificLocation" label="Where (place/business name)?" value$="{{activity.specificLocation}}"></paper-input>
+          <div class="vertical">
+            <paper-checkbox checked="{{citySpecific}}">Uncheck if this activity is not specific to [[user.city]], [[user.country]]</paper-checkbox>
+            <input type="hidden" id="cityspecific" name="cityspecific" value="{{citySpecific}}" />
+            <paper-checkbox checked="{{expires}}">Check here if this activity expires after a certain date</paper-checkbox>
+            <input type="hidden" id="expires" name="expires" value="{{expires}}" />
+          </div>
           <paper-input name="link" label="Official link to activity" value$="{{activity.link}}"></paper-input>
           <paper-material elevation="1" class="vertical" class="activity">
             <div class="vertical upload">
@@ -71,6 +88,7 @@
       url="/api/activity/{{activityid}}"
       method="get"
       last-response="{{activity}}"
+      on-response="_handleResponse"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -100,12 +118,24 @@
         route: {
           type: String,
           observer: '_routeChanged'
+        },
+        citySpecific: {
+          type: Boolean,
+          value: true,
+          notify: true
         }
       },
 
       _doAjaxIfReady: function() {
         if (this.route === 'edit' && this.activityid) {
           this.$.editAjax.generateRequest();
+        }
+      },
+
+      _handleResponse: function(event) {
+        var activity = event.detail.response;
+        if (activity.city === '') {
+          this.citySpecific = false;
         }
       },
 

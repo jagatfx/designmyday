@@ -166,7 +166,7 @@ function assignVoteeUser(req, res) {
   getMostUnvotedUser(user, function(err, selectedUser) {
     if (err) {
       console.error(err);
-      Account.count({city: user.city}, function(countErr, count) {
+      Account.count({city: user.city, region: user.region, country: user.country}, function(countErr, count) {
         if (countErr) {
           console.error(countErr);
         }
@@ -380,14 +380,16 @@ router.get('/sign_s3', function(req, res){
 
 // TODO: move to more appropriate place
 function getRandomUser (excludeUser, callback) {
-  Account.count({city: excludeUser.city, username: { '$ne': excludeUser.username }})
+  Account.count({city: excludeUser.city, region: excludeUser.region,
+    country: excludeUser.country, username: { '$ne': excludeUser.username }})
   .exec(function(err, count) {
     if (count === 0) {
       return callback("ERROR: no users from the voter's city");
     }
     var random = Math.floor(Math.random() * count);
 
-    Account.findOne({city: excludeUser.city, username: { '$ne': excludeUser.username }})
+    Account.findOne({city: excludeUser.city, region: excludeUser.region,
+    country: excludeUser.country, username: { '$ne': excludeUser.username }})
     .skip(random)
     .exec(function (err, selectedAccount) {
       callback(null, selectedAccount);

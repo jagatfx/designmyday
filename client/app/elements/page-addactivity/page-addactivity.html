@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../node_modules/ajax-form/ajax-form.html">
 
 <dom-module id="page-addactivity">
@@ -33,6 +34,9 @@
       .page-container {
         padding-bottom: 20px;
       }
+      .italic {
+        font-style: italic;
+      }
     </style>
     <div class="page-container">
       <div class="page-header">
@@ -48,9 +52,16 @@
 
       <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
         <paper-material elevation="1" class="activity">
-          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
-          <paper-input name="activity" label="What is the activity?"></paper-input>
+          <div class="italic">* fields are required</div>
+          <paper-input name="activityVerb" label="* What is the action? (For example: go, do, see, watch, ...)"></paper-input>
+          <paper-input name="activity" label="* What is the activity?"></paper-input>
           <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
+          <div class="vertical">
+            <paper-checkbox checked="{{citySpecific}}">Uncheck if this activity is not specific to [[user.city]], [[user.country]]</paper-checkbox>
+            <input type="hidden" id="cityspecific" name="cityspecific" value="{{citySpecific}}" />
+            <paper-checkbox checked="{{expires}}">Check here if this activity expires after a certain date</paper-checkbox>
+            <input type="hidden" id="expires" name="expires" value="{{expires}}" />
+          </div>
           <paper-input name="link" label="Official link to activity"></paper-input>
           <paper-material elevation="1" class="vertical" class="activity">
             <div class="vertical upload">
@@ -97,6 +108,11 @@
         preview: {
           type: String,
           value: '/img/activity-group.gif'
+        },
+        citySpecific: {
+          type: Boolean,
+          value: true,
+          notify: true
         }
       },
 

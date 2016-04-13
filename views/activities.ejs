@@ -1,6 +1,5 @@
 <% if(user) { %>
 <% layout( 'login-layout' ) -%>
-<%- partial('login-nav') %>
 
 <section>
 <div>
@@ -14,6 +13,7 @@
         <th>specificLocation</th>
         <th>needPass</th>
         <th>city</th>
+        <th>region</th>
         <th>country</th>
         <th>description</th>
         <th>link</th>
@@ -35,6 +35,7 @@
         <td><%= activity.specificLocation %></td>
         <td><%= activity.needPass %></td>
         <td><%= activity.city %></td>
+        <td><%= activity.region %></td>
         <td><%= activity.country %></td>
         <td class="longer"><%= activity.description %></td>
         <td><%= activity.link %></td>

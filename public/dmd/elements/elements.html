@@ -20163,6 +20163,382 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 <script>
 
   /**
+   * Use `Polymer.IronCheckedElementBehavior` to implement a custom element
+   * that has a `checked` property, which can be used for validation if the
+   * element is also `required`. Element instances implementing this behavior
+   * will also be registered for use in an `iron-form` element.
+   *
+   * @demo demo/index.html
+   * @polymerBehavior Polymer.IronCheckedElementBehavior
+   */
+  Polymer.IronCheckedElementBehaviorImpl = {
+
+    properties: {
+      /**
+       * Fired when the checked state changes.
+       *
+       * @event iron-change
+       */
+
+      /**
+       * Gets or sets the state, `true` is checked and `false` is unchecked.
+       */
+      checked: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+        notify: true,
+        observer: '_checkedChanged'
+      },
+
+      /**
+       * If true, the button toggles the active state with each tap or press
+       * of the spacebar.
+       */
+      toggles: {
+        type: Boolean,
+        value: true,
+        reflectToAttribute: true
+      },
+
+      /* Overriden from Polymer.IronFormElementBehavior */
+      value: {
+        type: String,
+        value: 'on',
+        observer: '_valueChanged'
+      }
+    },
+
+    observers: [
+      '_requiredChanged(required)'
+    ],
+
+    created: function() {
+      // Used by `iron-form` to handle the case that an element with this behavior
+      // doesn't have a role of 'checkbox' or 'radio', but should still only be
+      // included when the form is serialized if `this.checked === true`.
+      this._hasIronCheckedElementBehavior = true;
+    },
+
+    /**
+     * Returns false if the element is required and not checked, and true otherwise.
+     * @param {*=} _value Ignored.
+     * @return {boolean} true if `required` is false, or if `required` and `checked` are both true.
+     */
+    _getValidity: function(_value) {
+      return this.disabled || !this.required || (this.required && this.checked);
+    },
+
+    /**
+     * Update the aria-required label when `required` is changed.
+     */
+    _requiredChanged: function() {
+      if (this.required) {
+        this.setAttribute('aria-required', 'true');
+      } else {
+        this.removeAttribute('aria-required');
+      }
+    },
+
+    /**
+     * Fire `iron-changed` when the checked state changes.
+     */
+    _checkedChanged: function() {
+      this.active = this.checked;
+      this.fire('iron-change');
+    },
+
+    /**
+     * Reset value to 'on' if it is set to `undefined`.
+     */
+    _valueChanged: function() {
+      if (this.value === undefined || this.value === null) {
+        this.value = 'on';
+      }
+    }
+  };
+
+  /** @polymerBehavior Polymer.IronCheckedElementBehavior */
+  Polymer.IronCheckedElementBehavior = [
+    Polymer.IronFormElementBehavior,
+    Polymer.IronValidatableBehavior,
+    Polymer.IronCheckedElementBehaviorImpl
+  ];
+
+</script>
+<script>
+
+  /**
+   * Use `Polymer.PaperCheckedElementBehavior` to implement a custom element
+   * that has a `checked` property similar to `Polymer.IronCheckedElementBehavior`
+   * and is compatible with having a ripple effect.
+   * @polymerBehavior Polymer.PaperCheckedElementBehavior
+   */
+  Polymer.PaperCheckedElementBehaviorImpl = {
+
+    /**
+     * Synchronizes the element's checked state with its ripple effect.
+     */
+    _checkedChanged: function() {
+      Polymer.IronCheckedElementBehaviorImpl._checkedChanged.call(this);
+      if (this.hasRipple()) {
+        if (this.checked) {
+          this._ripple.setAttribute('checked', '');
+        } else {
+          this._ripple.removeAttribute('checked');
+        }
+      }
+    },
+
+    /**
+     * Synchronizes the element's `active` and `checked` state.
+     */
+    _buttonStateChanged: function() {
+      Polymer.PaperRippleBehavior._buttonStateChanged.call(this);
+      if (this.disabled) {
+        return;
+      }
+      if (this.isAttached) {
+        this.checked = this.active;
+      }
+    }
+
+  };
+
+  /** @polymerBehavior Polymer.PaperCheckedElementBehavior */
+  Polymer.PaperCheckedElementBehavior = [
+    Polymer.PaperInkyFocusBehavior,
+    Polymer.IronCheckedElementBehavior,
+    Polymer.PaperCheckedElementBehaviorImpl
+  ];
+
+</script>
+
+
+<dom-module id="paper-checkbox" assetpath="../bower_components/paper-checkbox/">
+  <template strip-whitespace="">
+    <style>
+      :host {
+        display: inline-block;
+        white-space: nowrap;
+        cursor: pointer;
+        --calculated-paper-checkbox-size: var(--paper-checkbox-size, 18px);
+        @apply(--paper-font-common-base);
+        line-height: 0;
+      }
+
+      :host(:focus) {
+        outline: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #checkboxContainer {
+        display: inline-block;
+        position: relative;
+        width: var(--calculated-paper-checkbox-size);
+        height: var(--calculated-paper-checkbox-size);
+        min-width: var(--calculated-paper-checkbox-size);
+        vertical-align: middle;
+        background-color: var(--paper-checkbox-unchecked-background-color, transparent);
+      }
+
+      #ink {
+        position: absolute;
+
+        /* Center the ripple in the checkbox by negative offsetting it by
+         * (inkWidth - rippleWidth) / 2 */
+        top: calc(0px - (2.66 * var(--calculated-paper-checkbox-size) - var(--calculated-paper-checkbox-size)) / 2);
+        left: calc(0px - (2.66 * var(--calculated-paper-checkbox-size) - var(--calculated-paper-checkbox-size)) / 2);
+        width: calc(2.66 * var(--calculated-paper-checkbox-size));
+        height: calc(2.66 * var(--calculated-paper-checkbox-size));
+        color: var(--paper-checkbox-unchecked-ink-color, --primary-text-color);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      :host-context([dir="rtl"]) #ink {
+        right: calc(0px - (2.66 * var(--calculated-paper-checkbox-size) - var(--calculated-paper-checkbox-size)) / 2);
+        left: auto;
+      }
+
+      #ink[checked] {
+        color: var(--paper-checkbox-checked-ink-color, --primary-color);
+      }
+
+      #checkbox {
+        position: relative;
+        box-sizing: border-box;
+        height: 100%;
+        border: solid 2px;
+        border-color: var(--paper-checkbox-unchecked-color, --primary-text-color);
+        border-radius: 2px;
+        pointer-events: none;
+        -webkit-transition: background-color 140ms, border-color 140ms;
+        transition: background-color 140ms, border-color 140ms;
+      }
+
+      /* checkbox checked animations */
+      #checkbox.checked #checkmark {
+        -webkit-animation: checkmark-expand 140ms ease-out forwards;
+        animation: checkmark-expand 140ms ease-out forwards;
+      }
+
+      @-webkit-keyframes checkmark-expand {
+        0% {
+          -webkit-transform: scale(0, 0) rotate(45deg);
+        }
+        100% {
+          -webkit-transform: scale(1, 1) rotate(45deg);
+        }
+      }
+
+      @keyframes checkmark-expand {
+        0% {
+          transform: scale(0, 0) rotate(45deg);
+        }
+        100% {
+          transform: scale(1, 1) rotate(45deg);
+        }
+      }
+
+      #checkbox.checked {
+        background-color: var(--paper-checkbox-checked-color, --primary-color);
+        border-color: var(--paper-checkbox-checked-color, --primary-color);
+      }
+
+      #checkmark {
+        position: absolute;
+        width: 36%;
+        height: 70%;
+        border-style: solid;
+        border-top: none;
+        border-left: none;
+        border-right-width: calc(2/15 * var(--calculated-paper-checkbox-size));
+        border-bottom-width: calc(2/15 * var(--calculated-paper-checkbox-size));
+        border-color: var(--paper-checkbox-checkmark-color, white);
+        -webkit-transform-origin: 97% 86%;
+        transform-origin: 97% 86%;
+        box-sizing: content-box; /* protect against page-level box-sizing */
+      }
+
+      :host-context([dir="rtl"]) #checkmark {
+        -webkit-transform-origin: 50% 14%;
+        transform-origin: 50% 14%;
+      }
+
+      /* label */
+      #checkboxLabel {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: var(--paper-checkbox-label-spacing, 8px);
+        white-space: normal;
+        line-height: normal;
+        color: var(--paper-checkbox-label-color, --primary-text-color);
+      }
+
+      :host-context([dir="rtl"]) #checkboxLabel {
+        padding-right: var(--paper-checkbox-label-spacing, 8px);
+        padding-left: 0;
+      }
+
+      #checkboxLabel[hidden] {
+        display: none;
+      }
+
+      /* disabled state */
+
+      :host([disabled]) #checkbox {
+        opacity: 0.5;
+        border-color: var(--paper-checkbox-unchecked-color, --primary-text-color);
+      }
+
+      :host([disabled][checked]) #checkbox {
+        background-color: var(--paper-checkbox-unchecked-color, --primary-text-color);
+        opacity: 0.5;
+      }
+
+      :host([disabled]) #checkboxLabel  {
+        opacity: 0.65;
+      }
+
+      /* invalid state */
+      #checkbox.invalid:not(.checked) {
+        border-color: var(--paper-checkbox-error-color, --error-color);
+      }
+    </style>
+
+    <div id="checkboxContainer">
+      <div id="checkbox" class$="[[_computeCheckboxClass(checked, invalid)]]">
+        <div id="checkmark" class$="[[_computeCheckmarkClass(checked)]]"></div>
+      </div>
+    </div>
+
+    <div id="checkboxLabel"><content></content></div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-checkbox',
+
+      behaviors: [
+        Polymer.PaperCheckedElementBehavior
+      ],
+
+      hostAttributes: {
+        role: 'checkbox',
+        'aria-checked': false,
+        tabindex: 0
+      },
+
+      properties: {
+        /**
+         * Fired when the checked state changes due to user interaction.
+         *
+         * @event change
+         */
+
+        /**
+         * Fired when the checked state changes.
+         *
+         * @event iron-change
+         */
+        ariaActiveAttribute: {
+          type: String,
+          value: 'aria-checked'
+        }
+      },
+
+      _computeCheckboxClass: function(checked, invalid) {
+        var className = '';
+        if (checked) {
+          className += 'checked ';
+        }
+        if (invalid) {
+          className += 'invalid';
+        }
+        return className;
+      },
+
+      _computeCheckmarkClass: function(checked) {
+        return checked ? '' : 'hidden';
+      },
+
+      // create ripple inside the checkboxContainer
+      _createRipple: function() {
+        this._rippleContainer = this.$.checkboxContainer;
+        return Polymer.PaperInkyFocusBehaviorImpl._createRipple.call(this);
+      }
+
+    });
+  </script>
+</dom-module>
+<script>
+
+  /**
    * Use `Polymer.NeonAnimationBehavior` to implement an animation.
    * @polymerBehavior
    */
@@ -28149,6 +28525,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       .page-container {
         padding-bottom: 20px;
       }
+      .italic {
+        font-style: italic;
+      }
     </style>
     <div class="page-container">
       <div class="page-header">
@@ -28164,9 +28543,16 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
       <form is="ajax-form" id="activityform" action="/api/activityform" method="post" enctype="multipart/form-data">
         <paper-material elevation="1" class="activity">
-          <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)"></paper-input>
-          <paper-input name="activity" label="What is the activity?"></paper-input>
+          <div class="italic">* fields are required</div>
+          <paper-input name="activityVerb" label="* What is the action? (For example: go, do, see, watch, ...)"></paper-input>
+          <paper-input name="activity" label="* What is the activity?"></paper-input>
           <paper-input name="specificLocation" label="Where (place/business name)?"></paper-input>
+          <div class="vertical">
+            <paper-checkbox checked="{{citySpecific}}">Uncheck if this activity is not specific to [[user.city]], [[user.country]]</paper-checkbox>
+            <input type="hidden" id="cityspecific" name="cityspecific" value="{{citySpecific}}">
+            <paper-checkbox checked="{{expires}}">Check here if this activity expires after a certain date</paper-checkbox>
+            <input type="hidden" id="expires" name="expires" value="{{expires}}">
+          </div>
           <paper-input name="link" label="Official link to activity"></paper-input>
           <paper-material elevation="1" class="vertical">
             <div class="vertical upload">
@@ -28212,6 +28598,11 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         preview: {
           type: String,
           value: '/img/activity-group.gif'
+        },
+        citySpecific: {
+          type: Boolean,
+          value: true,
+          notify: true
         }
       },
 
@@ -28874,6 +29265,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           <paper-input name="activityVerb" label="What is the action? (For example: go, do, see, watch, ...)" value$="{{activity.activityVerb}}"></paper-input>
           <paper-input name="activity" label="What is the activity?" value$="{{activity.activity}}"></paper-input>
           <paper-input name="specificLocation" label="Where (place/business name)?" value$="{{activity.specificLocation}}"></paper-input>
+          <div class="vertical">
+            <paper-checkbox checked="{{citySpecific}}">Uncheck if this activity is not specific to [[user.city]], [[user.country]]</paper-checkbox>
+            <input type="hidden" id="cityspecific" name="cityspecific" value="{{citySpecific}}">
+            <paper-checkbox checked="{{expires}}">Check here if this activity expires after a certain date</paper-checkbox>
+            <input type="hidden" id="expires" name="expires" value="{{expires}}">
+          </div>
           <paper-input name="link" label="Official link to activity" value$="{{activity.link}}"></paper-input>
           <paper-material elevation="1" class="vertical">
             <div class="vertical upload">
@@ -28905,7 +29302,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </div>
     </paper-dialog>
 
-    <iron-ajax id="editAjax" url="/api/activity/{{activityid}}" method="get" last-response="{{activity}}" on-error="_ajaxError" verbose="true">
+    <iron-ajax id="editAjax" url="/api/activity/{{activityid}}" method="get" last-response="{{activity}}" on-response="_handleResponse" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -28933,12 +29330,24 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         route: {
           type: String,
           observer: '_routeChanged'
+        },
+        citySpecific: {
+          type: Boolean,
+          value: true,
+          notify: true
         }
       },
 
       _doAjaxIfReady: function() {
         if (this.route === 'edit' && this.activityid) {
           this.$.editAjax.generateRequest();
+        }
+      },
+
+      _handleResponse: function(event) {
+        var activity = event.detail.response;
+        if (activity.city === '') {
+          this.citySpecific = false;
         }
       },
 
@@ -29013,159 +29422,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
   })();
   </script>
 </dom-module>
-<script>
-
-  /**
-   * Use `Polymer.IronCheckedElementBehavior` to implement a custom element
-   * that has a `checked` property, which can be used for validation if the
-   * element is also `required`. Element instances implementing this behavior
-   * will also be registered for use in an `iron-form` element.
-   *
-   * @demo demo/index.html
-   * @polymerBehavior Polymer.IronCheckedElementBehavior
-   */
-  Polymer.IronCheckedElementBehaviorImpl = {
-
-    properties: {
-      /**
-       * Fired when the checked state changes.
-       *
-       * @event iron-change
-       */
-
-      /**
-       * Gets or sets the state, `true` is checked and `false` is unchecked.
-       */
-      checked: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true,
-        notify: true,
-        observer: '_checkedChanged'
-      },
-
-      /**
-       * If true, the button toggles the active state with each tap or press
-       * of the spacebar.
-       */
-      toggles: {
-        type: Boolean,
-        value: true,
-        reflectToAttribute: true
-      },
-
-      /* Overriden from Polymer.IronFormElementBehavior */
-      value: {
-        type: String,
-        value: 'on',
-        observer: '_valueChanged'
-      }
-    },
-
-    observers: [
-      '_requiredChanged(required)'
-    ],
-
-    created: function() {
-      // Used by `iron-form` to handle the case that an element with this behavior
-      // doesn't have a role of 'checkbox' or 'radio', but should still only be
-      // included when the form is serialized if `this.checked === true`.
-      this._hasIronCheckedElementBehavior = true;
-    },
-
-    /**
-     * Returns false if the element is required and not checked, and true otherwise.
-     * @param {*=} _value Ignored.
-     * @return {boolean} true if `required` is false, or if `required` and `checked` are both true.
-     */
-    _getValidity: function(_value) {
-      return this.disabled || !this.required || (this.required && this.checked);
-    },
-
-    /**
-     * Update the aria-required label when `required` is changed.
-     */
-    _requiredChanged: function() {
-      if (this.required) {
-        this.setAttribute('aria-required', 'true');
-      } else {
-        this.removeAttribute('aria-required');
-      }
-    },
-
-    /**
-     * Fire `iron-changed` when the checked state changes.
-     */
-    _checkedChanged: function() {
-      this.active = this.checked;
-      this.fire('iron-change');
-    },
-
-    /**
-     * Reset value to 'on' if it is set to `undefined`.
-     */
-    _valueChanged: function() {
-      if (this.value === undefined || this.value === null) {
-        this.value = 'on';
-      }
-    }
-  };
-
-  /** @polymerBehavior Polymer.IronCheckedElementBehavior */
-  Polymer.IronCheckedElementBehavior = [
-    Polymer.IronFormElementBehavior,
-    Polymer.IronValidatableBehavior,
-    Polymer.IronCheckedElementBehaviorImpl
-  ];
-
-</script>
-<script>
-
-  /**
-   * Use `Polymer.PaperCheckedElementBehavior` to implement a custom element
-   * that has a `checked` property similar to `Polymer.IronCheckedElementBehavior`
-   * and is compatible with having a ripple effect.
-   * @polymerBehavior Polymer.PaperCheckedElementBehavior
-   */
-  Polymer.PaperCheckedElementBehaviorImpl = {
-
-    /**
-     * Synchronizes the element's checked state with its ripple effect.
-     */
-    _checkedChanged: function() {
-      Polymer.IronCheckedElementBehaviorImpl._checkedChanged.call(this);
-      if (this.hasRipple()) {
-        if (this.checked) {
-          this._ripple.setAttribute('checked', '');
-        } else {
-          this._ripple.removeAttribute('checked');
-        }
-      }
-    },
-
-    /**
-     * Synchronizes the element's `active` and `checked` state.
-     */
-    _buttonStateChanged: function() {
-      Polymer.PaperRippleBehavior._buttonStateChanged.call(this);
-      if (this.disabled) {
-        return;
-      }
-      if (this.isAttached) {
-        this.checked = this.active;
-      }
-    }
-
-  };
-
-  /** @polymerBehavior Polymer.PaperCheckedElementBehavior */
-  Polymer.PaperCheckedElementBehavior = [
-    Polymer.PaperInkyFocusBehavior,
-    Polymer.IronCheckedElementBehavior,
-    Polymer.PaperCheckedElementBehaviorImpl
-  ];
-
-</script>
 
 
 <dom-module id="paper-radio-button" assetpath="../bower_components/paper-radio-button/">
