@@ -40,6 +40,8 @@ var Activity = new Schema({
   lowSeverityVotes: { type: Number, default: 50 },
   medSeverityVotes: { type: Number, default: 50 },
   highSeverityVotes: { type: Number, default: 50 }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Activity', Activity);

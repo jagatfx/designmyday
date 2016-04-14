@@ -27,6 +27,8 @@ var Account = new Schema({
   historicFeelings: [Schema.Types.Mixed],
   historicSeverity: [Schema.Types.Mixed],
   feedbackReports: [Schema.Types.Mixed]
+}, {
+  timestamps: true
 });
 
 Account.plugin(passportLocalMongoose);
