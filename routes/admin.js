@@ -46,7 +46,9 @@ router.get('/users', isAdmin, function(req, res) {
         votesCast: account.votesCast,
         votesReceived: account.votesReceived,
         lastFeeling: account.lastFeeling,
-        lastSeverity: account.lastSeverity
+        lastSeverity: account.lastSeverity,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt
       };
       return filterAccount;
     });
