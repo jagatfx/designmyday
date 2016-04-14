@@ -113,50 +113,56 @@ router.post('/register', function(req, res) {
     req.flash('error', 'Problem registering account: '+err);
     return res.redirect('/');
   }
-  var citycountry = req.body.citycountry;
-  var city;
-  var region;
-  var country;
-  if (req.body.password !== req.body.confirm) {
-    console.error('/register Passwords do not match');
-    req.flash('error', '/register Passwords do not match');
-    return res.redirect('/');
-  }
-  var regex = /([^,]+), ([^,]+), (.+)/;
-  if (citycountry) {
-    var fields = regex.exec(citycountry);
-    if (fields.length === 4) {
-      city = fields[1];
-      region = fields[2];
-      country = fields[3];
+  Account.findOne({ email: email }, function(err, user) {
+    if (user) {
+      req.flash('error', 'An account with the email address '+email+' already exists.');
+      return res.redirect('/');
+    }
+
+    var citycountry = req.body.citycountry;
+    var city;
+    var region;
+    var country;
+    if (req.body.password !== req.body.confirm) {
+      console.error('/register Passwords do not match');
+      req.flash('error', '/register Passwords do not match');
+      return res.redirect('/');
+    }
+    var regex = /([^,]+), ([^,]+), (.+)/;
+    if (citycountry) {
+      var fields = regex.exec(citycountry);
+      if (fields.length === 4) {
+        city = fields[1];
+        region = fields[2];
+        country = fields[3];
+      } else {
+        console.error('Invalid citycountry:'+citycountry);
+        req.flash('error', 'You must pick a valid city/country');
+        return res.redirect('/');
+      }
     } else {
-      console.error('Invalid citycountry:'+citycountry);
+      console.error('citycountry field was empty');
       req.flash('error', 'You must pick a valid city/country');
       return res.redirect('/');
     }
-  } else {
-    console.error('citycountry field was empty');
-    req.flash('error', 'You must pick a valid city/country');
-    return res.redirect('/');
-  }
 
-  Account.register(new Account({
-    username : req.body.username,
-    email: email,
-    city: city,
-    region: region,
-    country: country,
-    yearborn: req.body.yearborn
-  }), req.body.password, function(err, account) {
-    if (err) {
-      console.error(err);
-      req.flash('error', 'Problem registering account: '+err);
-      return res.redirect('/');
-    }
+    Account.register(new Account({
+      username : req.body.username,
+      email: email,
+      city: city,
+      region: region,
+      country: country,
+      yearborn: req.body.yearborn
+    }), req.body.password, function(err, account) {
+      if (err) {
+        console.error(err);
+        req.flash('error', 'Problem registering account');
+        return res.redirect('/');
+      }
 
-    passport.authenticate('local')(req, res, function () {
-      // return res.redirect('/');
-      assignVoteeUser(req, res);
+      passport.authenticate('local')(req, res, function () {
+        assignVoteeUser(req, res);
+      });
     });
   });
 });

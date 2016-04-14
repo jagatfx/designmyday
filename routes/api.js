@@ -36,6 +36,7 @@ function isAdmin(req, res, next) {
 
 router.post('/register', isAdmin, function(req, res) {
   console.log('got api /register POST');
+  var email = req.body.email;
   var citycountry = req.body.citycountry;
   var city;
   var region;
@@ -44,36 +45,43 @@ router.post('/register', isAdmin, function(req, res) {
     console.error('/register Passwords do not match');
     return res.json( {result: '/register Passwords do not match'} );
   }
-  var regex = /([^,]+), ([^,]+), (.+)/;
-  if (citycountry) {
-    var fields = regex.exec(citycountry);
-    if (fields.length === 4) {
-      city = fields[1];
-      region = fields[2];
-      country = fields[3];
+  Account.findOne({ email: email }, function(err, user) {
+    if (user) {
+      req.flash('error', 'An account with the email address '+email+' already exists.');
+      return res.redirect('/');
+    }
+
+    var regex = /([^,]+), ([^,]+), (.+)/;
+    if (citycountry) {
+      var fields = regex.exec(citycountry);
+      if (fields.length === 4) {
+        city = fields[1];
+        region = fields[2];
+        country = fields[3];
+      } else {
+        console.error('Invalid citycountry:'+citycountry);
+        return res.json( {result: 'You must pick a valid city/country'} );
+      }
     } else {
-      console.error('Invalid citycountry:'+citycountry);
-      return res.json( {result: 'You must pick a valid city/country'} );
-    }
-  } else {
-    console.error('citycountry field was empty');
-    return res.json( {result: 'citycountry field was empty'} );
-  }
-
-  Account.register(new Account({
-    username : req.body.username,
-    email: req.body.email,
-    city: city,
-    region: region,
-    country: country,
-    yearborn: req.body.yearborn
-  }), req.body.password, function(err, account) {
-    if (err) {
-      console.error(err);
-      return res.json( {result: err} );
+      console.error('citycountry field was empty');
+      return res.json( {result: 'citycountry field was empty'} );
     }
 
-    res.json( {result: 'OK'} );
+    Account.register(new Account({
+      username : req.body.username,
+      email: email,
+      city: city,
+      region: region,
+      country: country,
+      yearborn: req.body.yearborn
+    }), req.body.password, function(err, account) {
+      if (err) {
+        console.error(err);
+        return res.json( {result: err} );
+      }
+
+      res.json( {result: 'OK'} );
+    });
   });
 });
 
