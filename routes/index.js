@@ -107,61 +107,83 @@ router.post('/register', function(req, res) {
   console.log('got /register POST');
   var code = req.body.code;
   var email = req.body.email;
+  var username = req.body.username;
+
+  if (username) {
+    // get rid of spaces
+    username = username.replace(/\s/g, '');
+  }
+
   if (!codeIsValid(code, email)) {
     var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
     console.error(err);
     req.flash('error', 'Problem registering account: '+err);
     return res.redirect('/');
   }
+  if (req.body.password !== req.body.confirm) {
+    console.error('/register Passwords do not match');
+    req.flash('error', '/register Passwords do not match');
+    return res.redirect('/');
+  }
+
   Account.findOne({ email: email }, function(err, user) {
     if (user) {
       req.flash('error', 'An account with the email address '+email+' already exists.');
       return res.redirect('/');
     }
 
-    var citycountry = req.body.citycountry;
-    var city;
-    var region;
-    var country;
-    if (req.body.password !== req.body.confirm) {
-      console.error('/register Passwords do not match');
-      req.flash('error', '/register Passwords do not match');
-      return res.redirect('/');
-    }
-    var regex = /([^,]+), ([^,]+), (.+)/;
-    if (citycountry) {
-      var fields = regex.exec(citycountry);
-      if (fields.length === 4) {
-        city = fields[1];
-        region = fields[2];
-        country = fields[3];
+    Account.findOne({ username: username }, function(err, user) {
+      if (user) {
+        req.flash('error', 'An account with the username '+username+' already exists.');
+        return res.redirect('/');
+      }
+
+      var citycountry = req.body.citycountry;
+      var city;
+      var region;
+      var country;
+
+      var regex = /([^,]+), ([^,]+), (.+)/;
+      if (citycountry) {
+        var fields = regex.exec(citycountry);
+        if (fields.length === 4) {
+          city = fields[1];
+          region = fields[2];
+          country = fields[3];
+        } else {
+          console.error('Invalid citycountry:'+citycountry);
+          req.flash('error', 'You must pick a valid city/country');
+          return res.redirect('/');
+        }
       } else {
-        console.error('Invalid citycountry:'+citycountry);
+        console.error('citycountry field was empty');
         req.flash('error', 'You must pick a valid city/country');
         return res.redirect('/');
       }
-    } else {
-      console.error('citycountry field was empty');
-      req.flash('error', 'You must pick a valid city/country');
-      return res.redirect('/');
-    }
 
-    Account.register(new Account({
-      username : req.body.username,
-      email: email,
-      city: city,
-      region: region,
-      country: country,
-      yearborn: req.body.yearborn
-    }), req.body.password, function(err, account) {
-      if (err) {
-        console.error(err);
-        req.flash('error', 'Problem registering account');
-        return res.redirect('/');
-      }
+      Account.register(new Account({
+        username : username,
+        email: email,
+        city: city,
+        region: region,
+        country: country,
+        yearborn: req.body.yearborn
+      }), req.body.password, function(err, account) {
+        if (err) {
+          console.error(err);
+          req.flash('error', 'Problem registering account');
+          return res.redirect('/');
+        }
 
-      passport.authenticate('local')(req, res, function () {
-        assignVoteeUser(req, res);
+        passport.authenticate('local')(req, res, function () {
+          sendWelcomeEmail(email, username, function(err, response) {
+            if (err) {
+              console.error('Error sending welcome email:'+err);
+              // just ignore emailing error and keep going
+            }
+            assignVoteeUser(req, res);
+          });
+        });
       });
     });
   });
@@ -356,6 +378,35 @@ router.post('/reset/:token', function(req, res) {
     res.redirect('/dmd/#/vote');
   });
 });
+
+function sendWelcomeEmail(email, username, callback) {
+  var subject = 'Design My Day - Registration';
+  var text = 'Hello,\n\n' +
+        'Welcome! This is a confirmation that you successfully registered an account on Design My Day with email ' +
+        email + ' and username ' +
+        username + '\n\n' +
+        'Visit http://www.designmyday.co and sign in. Presently the app is in the beta testing stage. We would love your' +
+        ' feedback and ideas. Use the website contact form or email info@designmyday.co with questions or comments.';
+  sendEmail(email, subject, text, callback);
+}
+
+function sendEmail(toEmail, subject, text, callback) {
+  var options = {
+    service: process.env.MAIL_SERVICE,
+    auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD
+    }
+  };
+  var transporter = nodemailer.createTransport(smtpTransport(options));
+  var mailOptions = {
+    to: toEmail,
+    from: 'Design My Day <info@designmyday.co>',
+    subject: subject,
+    text: text
+  };
+  transporter.sendMail(mailOptions, callback);
+}
 
 router.get('/sign_s3', function(req, res){
   aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
