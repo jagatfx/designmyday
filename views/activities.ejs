@@ -22,6 +22,9 @@
         <th>targetIntensity</th>
         <th>targetFeelings</th>
         <th>restrictions</th>
+        <th>createdAt</th>
+        <th>updatedAt</th>
+        <th>Activate</th>
         <th>Edit</th>
         <th>Delete</th>
       </tr>
@@ -45,7 +48,10 @@
         <td><%= activity.targetIntensity %></td>
         <td><%= activity.targetFeelings %></td>
         <td><%= activity.restrictions %></td>
-        <td><a href="/admin/activity/edit/<%= activity._id %>" title="Update">Edit</a></td>
+        <td><%= activity.createdAt %></td>
+        <td><%= activity.updatedAt %></td>
+        <td><a href="/api/activate/<%= activity._id %>" title="Activate">Activate</a></td>
+        <td><a href="/admin/activity/edit/<%= activity._id %>" title="Edit">Edit</a></td>
         <td><a href="/api/activity/delete/<%= activity._id %>" title="Delete">Delete</a></td>
       </tr>
     <% }); %>

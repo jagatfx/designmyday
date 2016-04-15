@@ -194,6 +194,25 @@ router.get('/activity/:id', loggedIn, function(req, res, next) {
   });
 });
 
+router.get('/activate/:id', loggedIn, function(req, res, next) {
+  Activity.findById(req.params.id, function (err, activity) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: err} );
+    }
+    activity.activated = true;
+    activity.save( function ( err, activity, count ) {
+      if (err) {
+        console.error(err);
+        return res.json( {result: err} );
+      } else {
+        console.log('saved activity: '+activity._id);
+        res.json(activity);
+      }
+    });
+  });
+});
+
 router.post('/activity', loggedIn, function (req, res) {
   // TODO: check for duplicate activity
   new Activity({
