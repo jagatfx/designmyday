@@ -146,7 +146,7 @@ router.post('/register', function(req, res) {
       var regex = /([^,]+), ([^,]+), (.+)/;
       if (citycountry) {
         var fields = regex.exec(citycountry);
-        if (fields.length === 4) {
+        if (fields && fields.length === 4) {
           city = fields[1];
           region = fields[2];
           country = fields[3];
