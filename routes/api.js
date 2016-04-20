@@ -175,7 +175,7 @@ router.get('/activity', loggedIn, function(req, res, next) {
     { $or: [{region: user.region},{region: ''}] },
     { $or: [{country: user.country},{country: ''}] },
     { activated: true }
-    ]).sort({ 'created_at' : -1 }).limit(maxResults).exec(function (err, activities) {
+    ]).sort({ 'createdAt' : -1 }).limit(maxResults).exec(function (err, activities) {
     if (err) {
       console.error(err);
       return res.json( {result: err} );
