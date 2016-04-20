@@ -23417,6 +23417,15 @@ if (!window.Promise) {
         font-style: italic;
         font-weight: bold;
       }
+      paper-button.menu-btn {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+      @media (max-width: 600px) {
+        paper-button.menu-btn {
+          font-size: 12px;
+        }
+      }
 
     </style>
 
@@ -23440,11 +23449,11 @@ if (!window.Promise) {
           <span class="flex-child"></span>
 
           <a class="flex-center-align" href="/contact">
-            <paper-button class="dmd-btn">Contact</paper-button>
+            <paper-button class="dmd-btn menu-btn">Contact</paper-button>
           </a>
 
           <a class="flex-center-align" href="/logout">
-            <paper-button class="dmd-btn">Logout</paper-button>
+            <paper-button class="dmd-btn menu-btn">Logout</paper-button>
           </a>
 
           <a class="profile-icon flex-center-align" href="#/profile">
