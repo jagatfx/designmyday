@@ -22,7 +22,9 @@
       </tr>
     </thead>
     <tbody>
-    <% accounts.forEach( function( account, index ){ %>
+    <% accounts.forEach( function( account, index ) {
+    if (account.email.indexOf("designmyday.co") == -1) {
+    %>
       <tr>
         <td><%= index+1 %></td>
         <td><%= account.email %></td>
@@ -39,7 +41,7 @@
         <td><%= account.createdAt %></td>
         <td><%= account.updatedAt %></td>
       </tr>
-    <% }); %>
+    <% } } ); %>
     </tbody>
   </table>
   <div style="padding: 15px;">

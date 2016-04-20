@@ -60,36 +60,6 @@
   <div id="add-activity">
     <a class="button-link" href="/admin/activity">Add a new activity</a>
   </div>
-  <table class="table table-hover table-striped">
-    <thead>
-      <tr>
-        <th>_id</th>
-        <th>metaActivity</th>
-        <th>ageu18Votes</th>
-        <th>age1824Votes</th>
-        <th>age2534Votes</th>
-        <th>age3544Votes</th>
-        <th>age4554Votes</th>
-        <th>age5564Votes</th>
-        <th>ageo65Votes</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% activities.forEach( function( activity ){ %>
-      <tr>
-        <td><%= activity._id %></td>
-        <td><%= activity.metaActivity %></td>
-        <td><%= activity.ageu18Votes %></td>
-        <td><%= activity.age1824Votes %></td>
-        <td><%= activity.age2534Votes %></td>
-        <td><%= activity.age3544Votes %></td>
-        <td><%= activity.age4554Votes %></td>
-        <td><%= activity.age5564Votes %></td>
-        <td><%= activity.ageo65Votes %></td>
-      </tr>
-    <% }); %>
-    </tbody>
-  </table>
 </div>
 </section>
 <% } else { %>
