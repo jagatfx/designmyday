@@ -53,6 +53,14 @@
       paper-item.intro-subheader {
         font-size: 1.3em;
       }
+      .header-text {
+        font-size: 16px;
+      }
+      @media (max-width: 600px) {
+        .header-text {
+          font-size: 13px!important;
+        }
+      }
     </style>
 
     <div>
@@ -60,7 +68,7 @@
         <div class="page-title">Let's help someone <paper-icon-button class="help" icon="icons:help" data-dialog="dialog" on-tap="_showHelpDialog"></paper-icon-button></div>
       </div>
 
-      <div class="centered-container vertical">
+      <div class="centered-container vertical header-text">
         <div>
           Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
           <span class="city">[[user.votee.city]]</span> and feeling <span class="feeling">[[user.votee.lastFeeling]]</span>.
