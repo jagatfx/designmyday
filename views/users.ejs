@@ -22,11 +22,12 @@
       </tr>
     </thead>
     <tbody>
-    <% accounts.forEach( function( account, index ) {
+    <% var i=0; accounts.forEach( function( account, index ) {
     if (account.email.indexOf("designmyday.co") == -1) {
+    i++;
     %>
       <tr>
-        <td><%= index+1 %></td>
+        <td><%= i %></td>
         <td><%= account.email %></td>
         <td><%= account.username %></td>
         <td><%= account.city %></td>
