@@ -175,7 +175,7 @@ router.get('/activity', loggedIn, function(req, res, next) {
     { $or: [{region: user.region},{region: ''}] },
     { $or: [{country: user.country},{country: ''}] },
     { activated: true }
-    ]).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
+    ]).sort({ 'created_at' : -1 }).limit(maxResults).exec(function (err, activities) {
     if (err) {
       console.error(err);
       return res.json( {result: err} );
@@ -315,14 +315,14 @@ router.post('/activityform/:id', loggedIn, function(req, res) {
             region = user.region;
             country = user.country;
           }
-          activity.activityVerb     = req.body.activityVerb;
-          activity.activity         = req.body.activity;
-          activity.specificLocation = req.body.specificLocation;
+          activity.activityVerb     = req.body.activityVerb ? req.body.activityVerb : '';
+          activity.activity         = req.body.activity ? req.body.activity : '';
+          activity.specificLocation = req.body.specificLocation ? req.body.specificLocation : '';
           activity.expires          = req.body.expires;
           activity.city             = city;
           activity.region           = region;
           activity.country          = country;
-          activity.description      = req.body.description;
+          activity.description      = req.body.description ? req.body.description : '';
           activity.link             = req.body.link;
           activity.img              = req.body.imgurl;
           activity.updated_at       = Date.now();
