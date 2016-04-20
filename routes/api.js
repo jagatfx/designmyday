@@ -584,10 +584,13 @@ function getMyMostVotedActivities(user, callback) {
 
   // filter results to those not picked previously and those either in no city or
   // in the user's city
+  var excludeList = [];
+  excludeList = excludeList.concat(user.activitySelectSequence.map(function(activity) { return new ObjectId(activity.activity); }),
+    user.completes.map(function (activityId) { return new ObjectId(activityId)}));
   var match = {
     $match: {
       _id: {
-        $nin: user.activitySelectSequence.map(function(activity) { return new ObjectId(activity.activity); })
+        $nin: excludeList
       },
       $and: [
         { $or: [{city: user.city},{city: ''}] },
