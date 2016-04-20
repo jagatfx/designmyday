@@ -53,12 +53,18 @@
       paper-item.intro-subheader {
         font-size: 1.3em;
       }
-      .header-text {
-        font-size: 16px;
+      .click-note {
+        padding-top: 10px;
+        color: #6c59b4;
+      }
+      .note {
+        font-size: 14px;
+        padding-top: 10px;
+        font-style: italic;
       }
       @media (max-width: 600px) {
-        .header-text {
-          font-size: 13px!important;
+        .note {
+          font-size: 11px!important;
         }
       }
     </style>
@@ -75,10 +81,10 @@
         </div>
         <feeling-block user="{{user.votee}}"></feeling-block>
         <div>
-          Help give this person an idea of what to do today.
+          Help give this person an idea of what to do today to escape their funk. The more we add ideas and the more we vote the better the recommendations get.
         </div>
-        <div>
-          Click an activity below or suggest something new.
+        <div class="note">
+          Note: Try to think about this specific person and what would help the most. Your tribe is counting on you!
         </div>
       </div>
 
@@ -87,6 +93,10 @@
           <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
         </a>
       </div>
+    </div>
+
+    <div class="centered-container click-note">
+      Click an activity image below or suggest something new to proceed
     </div>
 
     <span>{{_showIntroDialog(user)}}</span>

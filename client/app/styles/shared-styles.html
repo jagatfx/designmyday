@@ -20,8 +20,20 @@
         }
       }
 
+      paper-item {
+        min-height: 0;
+      }
+
       .page-header {
         @apply(--layout-center-justified);
+      }
+      .header-text {
+        font-size: 16px;
+      }
+      @media (max-width: 600px) {
+        .header-text {
+          font-size: 13px!important;
+        }
       }
 
       .centered-container {
