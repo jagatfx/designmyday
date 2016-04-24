@@ -99,6 +99,10 @@ router.get('/contact', function(req, res) {
   res.render('contact', { user : req.user });
 });
 
+router.get('/postsubmit', function(req, res) {
+  res.render('postsubmit', { user : req.user });
+});
+
 router.get('/dmd', loggedIn, function(req, res, next) {
   next();
 });
