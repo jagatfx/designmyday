@@ -7,6 +7,7 @@ var nodemailer    = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var aws           = require('aws-sdk');
 var crypto        = require('crypto');
+var dmdMail       = require('../util/mail');
 
 var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
@@ -180,7 +181,7 @@ router.post('/register', function(req, res) {
         }
 
         passport.authenticate('local')(req, res, function () {
-          sendWelcomeEmail(email, username, function(err, response) {
+          dmdMail.sendWelcomeEmail(email, username, function(err, response) {
             if (err) {
               console.error('Error sending welcome email:'+err);
               // just ignore emailing error and keep going
@@ -382,35 +383,6 @@ router.post('/reset/:token', function(req, res) {
     res.redirect('/dmd/#/vote');
   });
 });
-
-function sendWelcomeEmail(email, username, callback) {
-  var subject = 'Design My Day - Registration';
-  var text = 'Hello,\n\n' +
-        'Welcome! This is a confirmation that you successfully registered an account on Design My Day with email ' +
-        email + ' and username ' +
-        username + '\n\n' +
-        'Visit http://www.designmyday.co and sign in. Presently the app is in the beta testing stage. We would love your' +
-        ' feedback and ideas. Use the website contact form or email info@designmyday.co with questions or comments.';
-  sendEmail(email, subject, text, callback);
-}
-
-function sendEmail(toEmail, subject, text, callback) {
-  var options = {
-    service: process.env.MAIL_SERVICE,
-    auth: {
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD
-    }
-  };
-  var transporter = nodemailer.createTransport(smtpTransport(options));
-  var mailOptions = {
-    to: toEmail,
-    from: 'Design My Day <info@designmyday.co>',
-    subject: subject,
-    text: text
-  };
-  transporter.sendMail(mailOptions, callback);
-}
 
 router.get('/sign_s3', function(req, res){
   aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});

@@ -73,7 +73,7 @@
       paper-icon-button {
         color: var(--paper-grey-600);
       }
-      .vote-count {
+      .vote-count, .date-added {
         font-size: 13px;
         padding-top: 10px;
       }
@@ -172,6 +172,9 @@
       <paper-item class="vote-count centered-container" hidden="[[_hideVotes(route)]]">
         [[activity.score]] votes
       </paper-item>
+      <paper-item class="date-added centered-container" hidden="[[_hideDateAdded(route)]]">
+        Added {{dateAdded}}
+      </paper-item>
     </paper-card>
 
     <paper-dialog id="dialog"
@@ -267,7 +270,9 @@
 
       properties: {
 
-        activity: Object,
+        activity: {
+          type: Object
+        },
         user: Object,
         route: String,
         tab: String,
@@ -284,9 +289,16 @@
         doneClass: {
           type: String,
           value: 'done-no'
+        },
+        dateAdded: {
+          type: String
         }
 
       },
+
+      observers: [
+        '_activityChanged(activity)'
+      ],
 
       _setupActivityExtras: function(user) {
         if (user && user.favorites && user.completes) {
@@ -317,6 +329,12 @@
         }
       },
 
+      _activityChanged: function() {
+        if (this.activity && this.activity.createdAt) {
+          this.dateAdded = this.activity.createdAt.substr(0, 10);
+        }
+      },
+
       _voteReqComplete: function() {
         this.$.modal.open();
       },
@@ -340,6 +358,13 @@
           return false;
         }
         return true;
+      },
+
+      _hideDateAdded: function() {
+        if (this.route === 'myactivities' || this.route === 'vote') {
+          return true;
+        }
+        return false;
       },
 
       _hideEdit: function() {

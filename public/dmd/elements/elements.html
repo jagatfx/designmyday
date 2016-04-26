@@ -28619,7 +28619,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       paper-icon-button {
         color: var(--paper-grey-600);
       }
-      .vote-count {
+      .vote-count, .date-added {
         font-size: 13px;
         padding-top: 10px;
       }
@@ -28711,6 +28711,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       <paper-item class="vote-count centered-container" hidden="[[_hideVotes(route)]]">
         [[activity.score]] votes
       </paper-item>
+      <paper-item class="date-added centered-container" hidden="[[_hideDateAdded(route)]]">
+        Added {{dateAdded}}
+      </paper-item>
     </paper-card>
 
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
@@ -28769,7 +28772,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
       properties: {
 
-        activity: Object,
+        activity: {
+          type: Object
+        },
         user: Object,
         route: String,
         tab: String,
@@ -28786,9 +28791,16 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         doneClass: {
           type: String,
           value: 'done-no'
+        },
+        dateAdded: {
+          type: String
         }
 
       },
+
+      observers: [
+        '_activityChanged(activity)'
+      ],
 
       _setupActivityExtras: function(user) {
         if (user && user.favorites && user.completes) {
@@ -28819,6 +28831,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         }
       },
 
+      _activityChanged: function() {
+        if (this.activity && this.activity.createdAt) {
+          this.dateAdded = this.activity.createdAt.substr(0, 10);
+        }
+      },
+
       _voteReqComplete: function() {
         this.$.modal.open();
       },
@@ -28842,6 +28860,13 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           return false;
         }
         return true;
+      },
+
+      _hideDateAdded: function() {
+        if (this.route === 'myactivities' || this.route === 'vote') {
+          return true;
+        }
+        return false;
       },
 
       _hideEdit: function() {
@@ -29442,7 +29467,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     </style>
     <div class="page-container">
       <div class="page-header">
-        <div class="page-title">After Activity Feedback</div>
+        <div class="page-title">After Activity Testimonial</div>
       </div>
 
       <div class="centered-container">
@@ -29458,7 +29483,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <input type="hidden" id="choice" name="choice">
             <iron-autogrow-textarea rows="4" name="comment" placeholder="Enter comments about your experience"></iron-autogrow-textarea>
             <div>
-              <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Submit Feedback</paper-button>
+              <paper-button class="dmd-btn" raised="" on-tap="_submitForm">Submit Testimonial</paper-button>
             </div>
           </paper-material>
         </form>
@@ -29471,7 +29496,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     </div>
 
     <paper-dialog id="modal" on-iron-overlay-closed="_dialogContinue">
-      <p>Your feedback has been submitted successfully!</p>
+      <p>Your testimonial has been submitted successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm="" on-tap="_dialogContinue" autofocus="">Tap here to continue</paper-button>
       </div>

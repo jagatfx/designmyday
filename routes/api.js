@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Account  = require('../models/account');
 var Activity = require('../models/activity');
 var ObjectId = mongoose.Types.ObjectId;
+var dmdMail  = require('../util/mail');
 var multer   = require('multer');
 
 var storage = multer.diskStorage({
@@ -105,7 +106,8 @@ function filterUser(user) {
       votesReceived: user.votesReceived,
       favorites: user.favorites,
       completes: user.completes,
-      historicFeelings: user.historicFeelings
+      historicFeelings: user.historicFeelings,
+      feedbackReports: user.feedbackReports
     };
   } else {
     return user;
@@ -659,6 +661,12 @@ router.get('/choose/:id', loggedIn, function (req, res) {
   });
   // TODO: think about tracking the other two choices that were not selected as well
   console.log('activity chosen:'+activityId);
+  dmdMail.sendActivitySelectionEmail(user.email, user.username, activityId, function(err, response) {
+    if (err) {
+      console.error('Error sending activity selection email:'+err);
+      // just ignore emailing error and keep going
+    }
+  });
   user.save( function ( err, savedAccount, count ) {
     if (err) {
       return res.json( {result: err} );
@@ -683,6 +691,7 @@ router.post('/feedback/:id', loggedIn, function (req, res) {
       choice: req.body.choice,
       comment: req.body.comment
     });
+    user.completes.push(activityId);
     // TODO: think about tracking the other two choices that were not selected as well
     console.log('feedback recorded:'+activityId);
     user.save( function ( err, savedAccount, count ) {

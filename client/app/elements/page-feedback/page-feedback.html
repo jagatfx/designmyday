@@ -28,7 +28,7 @@
     </style>
     <div class="page-container">
       <div class="page-header">
-        <div class="page-title">After Activity Feedback</div>
+        <div class="page-title">After Activity Testimonial</div>
       </div>
 
       <div class="centered-container">
@@ -44,7 +44,7 @@
             <input type="hidden" id="choice" name="choice" />
             <iron-autogrow-textarea rows="4" name="comment" placeholder="Enter comments about your experience"></iron-autogrow-textarea>
             <div>
-              <paper-button class="dmd-btn" raised on-tap="_submitForm">Submit Feedback</paper-button>
+              <paper-button class="dmd-btn" raised on-tap="_submitForm">Submit Testimonial</paper-button>
             </div>
           </paper-material>
         </form>
@@ -60,7 +60,7 @@
 
     <paper-dialog id="modal"
                   on-iron-overlay-closed="_dialogContinue">
-      <p>Your feedback has been submitted successfully!</p>
+      <p>Your testimonial has been submitted successfully!</p>
       <div class="buttons">
         <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap here to continue</paper-button>
       </div>
