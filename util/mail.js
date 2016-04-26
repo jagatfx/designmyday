@@ -21,7 +21,7 @@ function sendActivitySelectionEmail(email, username, activityId, callback) {
         'how doing the activity made you feel after doing it. This helps our community grow.' +
         '\n\n' +
         'When you are ready, visit this testimonial link http://www.designmyday.co/dmd/#/feedback?activityid='+activityId+' ' +
-        'and leave your thoughts. You can also do the same from your profile in the Design My Day app.';
+        'and leave your thoughts.'; //You can also do the same from your profile in the Design My Day app.';
   // TODO: add html version
   var html = undefined;
   sendEmail(email, subject, text, html, callback);
