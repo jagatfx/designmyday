@@ -45,6 +45,7 @@ router.get('/users', isAdmin, function(req, res) {
         role: account.role,
         votesCast: account.votesCast,
         votesReceived: account.votesReceived,
+        activitiesSelected: account.activitySelectSequence ? account.activitySelectSequence.length : 0,
         lastFeeling: account.lastFeeling,
         lastSeverity: account.lastSeverity,
         createdAt: account.createdAt,
