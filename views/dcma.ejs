@@ -1,5 +1,10 @@
-<% layout( 'layout' ) -%>
-<%- partial('nav') %>
+<% if(!user) { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } else { %>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
+<% } %>
 
 <div class="tos">
 <h1>Design My Day DMCA Copyright Policy</h1>

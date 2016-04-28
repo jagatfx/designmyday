@@ -85,15 +85,15 @@ router.get('/news', function(req, res) {
 });
 
 router.get('/tos', function(req, res) {
-  res.render('tos', { });
+  res.render('tos', { user : req.user });
 });
 
 router.get('/privacy', function(req, res) {
-  res.render('privacy', { });
+  res.render('privacy', { user : req.user });
 });
 
 router.get('/dcma', function(req, res) {
-  res.render('dcma', { });
+  res.render('dcma', { user : req.user });
 });
 
 router.get('/contact', function(req, res) {
