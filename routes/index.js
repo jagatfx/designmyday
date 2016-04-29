@@ -116,7 +116,7 @@ router.post('/register', function(req, res) {
 
   if (username) {
     // get rid of spaces
-    username = username.replace(/\s/g, '');
+    username = username.replace(/\s/g, '').toLowerCase();
   }
 
   if (!codeIsValid(code, email)) {
