@@ -174,15 +174,18 @@ jQuery(document).ready(function($) {
     }
   });
 
-  //REMOVE THIS - it's just to show error messages
   formLogin.find('input[type="submit"]').on('click', function(event){
-    // event.preventDefault();
+    event.preventDefault();
+    var username = formLogin.find('#username');
+    username.val(username.val().toLowerCase());
+    formLogin.find('form').submit();
+    // error msg handling
     // formLogin.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');
   });
-  formSignup.find('input[type="submit"]').on('click', function(event){
-    // event.preventDefault();
-    // formSignup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');
-  });
+  // formSignup.find('input[type="submit"]').on('click', function(event){
+  //   event.preventDefault();
+  //   formSignup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');
+  // });
 
 
   //IE9 placeholder fallback
