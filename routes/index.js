@@ -35,6 +35,16 @@ function isAdmin(req, res, next) {
   }
 }
 
+function filterRegistration(req, res, next) {
+  if (req.user) {
+    req.user.username = req.user.username.replace(/\s/g, '').toLowerCase();
+  }
+  if (req.body.username) {
+    req.body.username = req.body.username.replace(/\s/g, '').toLowerCase();
+  }
+  next();
+}
+
 router.get('/', function (req, res) {
   var user = req.user;
   if (user && (user.role === 'admin' || user.role === 'beta')) {
@@ -108,16 +118,11 @@ router.get('/dmd', loggedIn, function(req, res, next) {
   next();
 });
 
-router.post('/register', function(req, res) {
+router.post('/register', filterRegistration, function(req, res) {
   console.log('got /register POST');
   var code = req.body.code;
   var email = req.body.email;
   var username = req.body.username;
-
-  if (username) {
-    // get rid of spaces
-    username = username.replace(/\s/g, '').toLowerCase();
-  }
 
   if (!codeIsValid(code, email)) {
     var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
