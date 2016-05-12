@@ -23460,15 +23460,11 @@ if (!window.Promise) {
 
           <span class="flex-child"></span>
 
-          <a class="flex-center-align" href="/contact">
-            <paper-button class="dmd-btn menu-btn">Contact</paper-button>
+          <a class="flex-center-align" href="#/dashboard">
+            <paper-button class="dmd-btn menu-btn">Return to Dashboard</paper-button>
           </a>
 
-          <a class="flex-center-align" href="/logout">
-            <paper-button class="dmd-btn menu-btn">Logout</paper-button>
-          </a>
-
-          <a class="profile-icon flex-center-align" href="#/profile">
+          <a class="profile-icon flex-center-align" href="#/dashboard">
             <iron-icon icon="icons:account-circle"></iron-icon>
           </a>
         </paper-toolbar>
@@ -23476,6 +23472,8 @@ if (!window.Promise) {
         <div class="content">
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <page-dashboard data-route="dashboard" route="{{route}}" user="{{user}}">
+            </page-dashboard>
             <page-profile data-route="profile" route="{{route}}" user="{{user}}">
             </page-profile>
             <page-addactivity data-route="addactivity" user="{{user}}">
@@ -25526,6 +25524,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       .tab-container {
         margin-top: 15px;
       }
+      .cancel {
+        font-size: 12px;
+      }
     </style>
 
     <div>
@@ -25540,6 +25541,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></td></tr>
           <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></td></tr>
         </tbody></table>
+        <div class="cancel">
+          To cancel your account <a href="/contact">send us a note</a>.
+        </div>
       </div>
 
       <paper-tabs class="tab-container" selected="{{selected}}">

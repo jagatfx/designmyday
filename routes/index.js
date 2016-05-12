@@ -7,7 +7,7 @@ var nodemailer    = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var aws           = require('aws-sdk');
 var crypto        = require('crypto');
-var dmdMail       = require('../util/mail');
+var dmdMail       = require('../services/mail');
 
 var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
@@ -238,6 +238,10 @@ router.post('/login', function(req, res) {
     if (!user) {
       console.error('/login no user redirect');
       req.flash('error', 'Problem with user or password');
+      return res.redirect('/');
+    } else if (user.role === 'deactivated') {
+      req.flash('error', 'User has been deactivated. Contact us if you believe this is incorrect.');
+      req.logout();
       return res.redirect('/');
     }
     req.logIn(user, function(err) {

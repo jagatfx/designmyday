@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Account  = require('../models/account');
 var Activity = require('../models/activity');
 var ObjectId = mongoose.Types.ObjectId;
-var dmdMail  = require('../util/mail');
+var dmdMail  = require('../services/mail');
 var multer   = require('multer');
 
 var storage = multer.diskStorage({
@@ -133,6 +133,52 @@ router.get('/user', loggedIn, function(req, res, next) {
     var retUser = filterUser(user);
     retUser.votee = votee;
     return res.json(retUser);
+  });
+});
+
+// reactivate a user's account
+router.get('/reactivateuser/:username', isAdmin, function(req, res, next) {
+  Account.findOne({username: req.params.username}, function (err, account) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: err} );
+    } else if (!account) {
+      var err = '/reactivate could not find account';
+      console.error(err);
+      return res.json( {result: err} );
+    }
+    account.role = 'beta';
+    account.save( function ( err, savedAccount, count ) {
+      if (err) {
+        console.error(err);
+        return res.json( {result: err} );
+      } else {
+        return res.json( {result: 'OK'} );
+      }
+    });
+  });
+});
+
+// deactivate a user's account
+router.get('/deactivateuser/:username', isAdmin, function(req, res, next) {
+  Account.findOne({username: req.params.username}, function (err, account) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: err} );
+    } else if (!account) {
+      var err = '/deactivate could not find account';
+      console.error(err);
+      return res.json( {result: err} );
+    }
+    account.role = 'deactivated';
+    account.save( function ( err, savedAccount, count ) {
+      if (err) {
+        console.error(err);
+        return res.json( {result: err} );
+      } else {
+        return res.json( {result: 'OK'} );
+      }
+    });
   });
 });
 
