@@ -73,7 +73,7 @@ router.get('/activities', isAdmin, function(req, res) {
   if (results) {
     maxResults = results;
   }
-  Activity.find(findParam).sort({title: 'asc'}).limit(maxResults).exec(function (err, activities) {
+  Activity.find(findParam).sort({'createdAt' : -1}).limit(maxResults).exec(function (err, activities) {
     if (err) {
       return console.error(err);
     }
