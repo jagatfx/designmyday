@@ -26,13 +26,18 @@
         margin-top: 15px;
       }
       .cancel {
+        margin-top: 10px;
         font-size: 12px;
+        font-family: 'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
+      .profile-extras {
+        margin-top: 15px;
       }
     </style>
 
-    <div>
+    <div class="page-container">
       <div class="page-header">
-        <div class="page-title">Profile</div>
+        <div class="page-title">My Profile</div>
       </div>
       <div class="centered-container vertical">
         <feeling-block user="{{user}}"></feeling-block>
@@ -47,14 +52,13 @@
         </div>
       </div>
 
-      <paper-tabs class="tab-container" selected="{{selected}}">
+<!--       <paper-tabs class="tab-container" selected="{{selected}}">
         <paper-tab>My Suggestions</paper-tab>
-        <paper-tab>My Selected</paper-tab>
-      </paper-tabs>
+      </paper-tabs> -->
 
-      <iron-pages selected="{{selected}}">
-        <div>
-          <div class="centered-container">
+      <!-- <iron-pages selected="{{selected}}"> -->
+        <div class="profile-extras">
+          <div hidden="[[_activitiesEmpty(mySuggestions.length)]]" class="centered-container">
             <div class="tab-title">My Activity Suggestions</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
@@ -68,43 +72,13 @@
             </div>
           </div>
         </div>
-
-        <div>
-          <div class="centered-container">
-            <div class="tab-title">My Selected Activities</div>
-            <div class="centered-container horizontal wrap">
-              <template is="dom-repeat"
-                        items="{{profileActivities}}"
-                        as="activity">
-                <activity-item activity="{{activity}}"
-                               route="{{route}}"
-                               user="{{user}}"
-                               tab="myactivities">
-                </activity-item>
-              </template>
-            </div>
-          </div>
-        </div>
-      </iron-pages>
+      <!-- </iron-pages> -->
 
     </div>
 
-    <iron-localstorage name="profileactivities-storage"
-                       value="{{profileActivities}}">
-    </iron-localstorage>
-
-    <iron-localstorage name="myactivities-storage"
+    <iron-localstorage name="mysuggestions-storage"
                        value="{{mySuggestions}}">
     </iron-localstorage>
-
-    <iron-ajax
-      id="activitiesAjax"
-      url="/api/profileactivities"
-      method="get"
-      last-response="{{profileActivities}}"
-      on-error="_ajaxError"
-      verbose="true">
-    </iron-ajax>
 
     <iron-ajax
       id="suggestionsAjax"
@@ -134,15 +108,18 @@
         },
         selected: {
           type: Number,
-          value: 1
+          value: 0
         }
       },
 
       routeChanged: function (newval, oldval) {
         if (newval === 'profile') {
-          this.$.activitiesAjax.generateRequest();
           this.$.suggestionsAjax.generateRequest();
         }
+      },
+
+      _activitiesEmpty: function(length) {
+        return !length;
       },
 
       _ajaxError: function() {

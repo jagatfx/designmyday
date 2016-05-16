@@ -851,6 +851,23 @@ form#contactForm input {
   background-color: #ccc;
 }
 
+
+.faqHeader {
+  font-size: 27px;
+  margin: 20px;
+}
+
+.panel-heading [data-toggle="collapse"]:after {
+  float: right;
+  color: #F58723;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.panel-heading [data-toggle="collapse"].collapsed:after {
+  color: #454444;
+}
+
 /*!--------------------------------------------------------------------------------
 
     Theme Name: Landio HTML

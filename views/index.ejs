@@ -1,39 +1,26 @@
 <% if(!user) { %>
   <% layout( 'layout' ) -%>
   <%- partial('nav') %>
-
   <section class="lead-button">
-<!--     <a id="lead-signup" href="#0">
+  <!--     <a id="lead-signup" href="#0">
       <button type="button" class="btn btn-primary btn-lg btn-block">Signup here for early access!</button>
     </a> -->
     <div class='prefinery-form-embed'></div>
   </section>
-
-  <header class="jumbotron bg-inverse text-xs-center center-vertically" role="banner">
-  </header>
-
-  <%- partial('intro') %>
-  <%- partial('features') %>
-  <%- partial('video') %>
-  <%- partial('how-it-works') %>
-  <%- partial('testimonials') %>
-  <%- partial('home-news') %>
-  <%- partial('home-signup') %>
-
 <% } else { %>
   <% layout( 'login-layout' ) -%>
   <%- partial('login-nav') %>
-
-  <%- partial('video-fix') %>
-
-  <section id="layout">
-    <div class="container team-container">
-      <h2 class="team">Limited Beta Opening Soon!</h2>
-      <p>We are busy finalizing the app and are not quite ready for you but we'll let you know when you are good to go.</p>
-    </div>
-    <div class="video">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/9CWL3DrGo1g?rel=0" frameborder="0" allowfullscreen></iframe>
-    </div>
+  <section style="margin-top: 25px;">
   </section>
-
 <% } %>
+
+<header class="jumbotron bg-inverse text-xs-center center-vertically" role="banner">
+</header>
+
+<%- partial('intro') %>
+<%- partial('features') %>
+<%- partial('video') %>
+<%- partial('how-it-works') %>
+<%- partial('testimonials') %>
+<%- partial('home-news') %>
+<%- partial('home-signup') %>
