@@ -7,7 +7,7 @@ var nodemailer    = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var aws           = require('aws-sdk');
 var crypto        = require('crypto');
-var dmdMail       = require('../util/mail');
+var dmdMail       = require('../services/mail');
 
 var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
@@ -35,7 +35,7 @@ function isAdmin(req, res, next) {
   }
 }
 
-function filterRegistration(req, res, next) {
+function filterUsername(req, res, next) {
   if (req.user) {
     req.user.username = req.user.username.replace(/\s/g, '').toLowerCase();
   }
@@ -46,10 +46,10 @@ function filterRegistration(req, res, next) {
 }
 
 router.get('/', function (req, res) {
-  var user = req.user;
-  if (user && (user.role === 'admin' || user.role === 'beta')) {
-    return res.redirect('/dmd/#/vote');
-  }
+  // var user = req.user;
+  // if (user && (user.role === 'admin' || user.role === 'beta')) {
+  //   return res.redirect('/dmd/#/vote');
+  // }
   res.render('index', { user : req.user });
 });
 
@@ -110,6 +110,10 @@ router.get('/contact', function(req, res) {
   res.render('contact', { user : req.user });
 });
 
+router.get('/faq', function(req, res) {
+  res.render('faq', { user : req.user });
+});
+
 router.get('/postsubmit', function(req, res) {
   res.render('postsubmit', { user : req.user });
 });
@@ -118,7 +122,7 @@ router.get('/dmd', loggedIn, function(req, res, next) {
   next();
 });
 
-router.post('/register', filterRegistration, function(req, res) {
+router.post('/register', filterUsername, function(req, res) {
   console.log('got /register POST');
   var code = req.body.code;
   var email = req.body.email;
@@ -208,7 +212,7 @@ function assignVoteeUser(req, res) {
         if (countErr) {
           console.error(countErr);
         }
-        return res.redirect('/dmd/#/vote');
+        return res.redirect('/dmd/#/dashboard');
       });
     } else {
       user._voteUser = selectedUser._id;
@@ -218,7 +222,7 @@ function assignVoteeUser(req, res) {
         } else {
           console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
         }
-        return res.redirect('/dmd/#/vote');
+        return res.redirect('/dmd/#/dashboard');
       });
     }
   });
@@ -228,7 +232,7 @@ router.get('/votee', loggedIn, function(req, res, next) {
   assignVoteeUser(req, res);
 });
 
-router.post('/login', function(req, res) {
+router.post('/login', filterUsername, function(req, res) {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
       console.error(err);
@@ -238,6 +242,10 @@ router.post('/login', function(req, res) {
     if (!user) {
       console.error('/login no user redirect');
       req.flash('error', 'Problem with user or password');
+      return res.redirect('/');
+    } else if (user.role === 'deactivated') {
+      req.flash('error', 'User has been deactivated. Contact us if you believe this is incorrect.');
+      req.logout();
       return res.redirect('/');
     }
     req.logIn(user, function(err) {

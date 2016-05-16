@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-meet">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      .button-container {
+        margin-top: 10px;
+      }
+    </style>
+      <div class="centered-container vertical header-text">
+        <div class="page-header">
+          <div class="page-title">Meet <span class="username">[[user.votee.username]]!</span></div>
+        </div>
+        <div>
+          Around [[user.votee.age]] years old, lives in [[user.votee.city]] and feeling
+        </div>
+        <feeling-block user="{{user.votee}}"></feeling-block>
+        <div>
+          Help give this person an idea of what to do today to escape a funk.
+        </div>
+      </div>
+      <div class="centered-container button-container">
+        <paper-button raised class="dmd-btn" on-tap="_handleContinue">Continue</paper-button>
+      </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'page-meet',
+
+      properties: {
+      },
+
+      _handleContinue: function() {
+        document.querySelector('app-router').go('/vote');
+      }
+    });
+  })();
+  </script>
+</dom-module>

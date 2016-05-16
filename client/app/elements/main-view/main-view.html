@@ -139,7 +139,7 @@
           <!-- <paper-icon-button id="paperToggle" icon="icons:menu" paper-drawer-toggle></paper-icon-button> -->
 
           <div class="app-name">
-            <a data-route="vote" href="#/vote" tabindex="-1" on-click="closeDrawer">
+            <a data-route="home" href="/" tabindex="-1" on-click="closeDrawer">
               <paper-icon-button class="toolbar"
                    src="/img/dmd-logo-40x40.jpg"
                    alt="Design My Day"
@@ -148,16 +148,10 @@
             </a>
           </div>
 
-          <!-- <paper-item id="betamsg">beta</paper-item> -->
-
           <span class="flex-child"></span>
 
-          <a class="flex-center-align" href="/contact">
-            <paper-button class="dmd-btn menu-btn">Contact</paper-button>
-          </a>
-
-          <a class="flex-center-align" href="/logout">
-            <paper-button class="dmd-btn menu-btn">Logout</paper-button>
+          <a class="flex-center-align" href="#/dashboard">
+            <paper-button class="dmd-btn menu-btn">Return to Menu</paper-button>
           </a>
 
           <a class="profile-icon flex-center-align" href="#/profile">
@@ -168,6 +162,10 @@
         <div class="content">
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <page-dashboard data-route="dashboard"
+                          route="{{route}}"
+                          user="{{user}}">
+            </page-dashboard>
             <page-profile data-route="profile"
                           route="{{route}}"
                           user="{{user}}">
@@ -175,6 +173,10 @@
             <page-addactivity data-route="addactivity"
                               user="{{user}}">
             </page-addactivity>
+            <page-meet data-route="meet"
+                       route="{{route}}"
+                       user="{{user}}">
+            </page-meet>
             <page-vote data-route="vote"
                        route="{{route}}"
                        user="{{user}}">
@@ -187,6 +189,10 @@
                                route="{{route}}"
                                user="{{user}}">
             </page-myactivities>
+            <page-chosen data-route="chosen"
+                               route="{{route}}"
+                               user="{{user}}">
+            </page-chosen>
             <page-editactivity data-route="edit"
                                route="{{route}}"
                                user="{{user}}"
@@ -202,6 +208,10 @@
                            user="{{user}}"
                            othername="{{othername}}">
             </page-other>
+            <page-calculating data-route="calculating"
+                           route="{{route}}"
+                           user="{{user}}">
+            </page-calculating>
           </iron-pages>
 
         </div>

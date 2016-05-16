@@ -8,20 +8,15 @@
       <tr>
         <th>_id</th>
         <th>activated</th>
-        <th>metaActivity</th>
         <th>activityVerb</th>
         <th>activity</th>
         <th>specificLocation</th>
-        <th>needPass</th>
         <th>city</th>
         <th>region</th>
         <th>country</th>
         <th>description</th>
         <th>link</th>
         <th>img</th>
-        <th>targetIntensity</th>
-        <th>targetFeelings</th>
-        <th>restrictions</th>
         <th>createdAt</th>
         <th>updatedAt</th>
         <th>Activate</th>
@@ -34,20 +29,15 @@
       <tr>
         <td><%= activity._id %></td>
         <td><%= activity.activated %></td>
-        <td><%= activity.metaActivity %></td>
         <td><%= activity.activityVerb %></td>
         <td class="medium"><%= activity.activity %></td>
         <td><%= activity.specificLocation %></td>
-        <td><%= activity.needPass %></td>
         <td><%= activity.city %></td>
         <td><%= activity.region %></td>
         <td><%= activity.country %></td>
         <td class="longer"><%= activity.description %></td>
         <td><%= activity.link %></td>
         <td><%= activity.img %></td>
-        <td><%= activity.targetIntensity %></td>
-        <td><%= activity.targetFeelings %></td>
-        <td><%= activity.restrictions %></td>
         <td><%= activity.createdAt %></td>
         <td><%= activity.updatedAt %></td>
         <td><a href="/api/activate/<%= activity._id %>" title="Activate">Activate</a></td>

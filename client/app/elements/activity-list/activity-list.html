@@ -9,7 +9,7 @@
         display: block;
       }
 
-      .no-more-msg {
+      .loading-msg {
         min-height: 40px;
         font-family: 'Roboto Slab';
         font-size: 20px;
@@ -21,15 +21,11 @@
         -ms-user-select: none;
         user-select: none;
       }
-
-      activity-item {
-        margin: 16px 0;
-      }
     </style>
 
-    <p class="no-more-msg" hidden="[[_activitiesEmpty(activities.length)]]">Loading...</p>
+    <p class="loading-msg" hidden="[[_activitiesEmpty(activities.length)]]">Loading...</p>
 
-    <div class="centered-container horizontal wrap">
+    <div class="page-container centered-container horizontal wrap">
       <template is="dom-repeat"
                 items="{{activities}}"
                 as="activity">

@@ -1,12 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
-<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 
 <dom-module id="vote-head">
 
@@ -18,113 +11,27 @@
         box-sizing: border-box;
         min-height: 50px;
       }
-
-      paper-icon-button {
-        color: var(--paper-grey-600);
-      }
-
-      .city {
-        text-transform: capitalize;
-        font-weight: bold;
-      }
-      .feeling {
-        font-weight: bold;
-      }
-      .username {
-        font-weight: bold;
-      }
-      .logout {
-        text-decoration: none;
-      }
       .button-container {
         margin-top: 10px;
-      }
-      paper-card {
-        width: 279px;
-        --paper-card-header-color: #fff;
-      }
-      paper-item {
-        font-size: 14px;
-        padding: 5px;
-      }
-      paper-item.intro-header {
-        font-size: 2em;
-      }
-      paper-item.intro-subheader {
-        font-size: 1.3em;
+        margin-bottom: 10px;
       }
       .click-note {
         padding-top: 10px;
-        color: #6c59b4;
-      }
-      .note {
-        font-size: 14px;
-        padding-top: 10px;
-        font-style: italic;
-      }
-      @media (max-width: 600px) {
-        .note {
-          font-size: 11px!important;
-        }
+        /*color: #6c59b4;*/
       }
     </style>
 
-    <div>
+    <div class="centered-container">
       <div class="page-header">
-        <div class="page-title">Let's help someone <paper-icon-button class="help" icon="icons:help" data-dialog="dialog" on-tap="_showHelpDialog"></paper-icon-button></div>
+        <div class="page-title">Vote</div>
       </div>
-
-      <div class="centered-container vertical header-text">
-        <div>
-          Meet <span class="username">[[user.votee.username]]</span>, [[user.votee.age]] years old, lives in
-          <span class="city">[[user.votee.city]]</span> and feeling
-        </div>
-        <feeling-block user="{{user.votee}}"></feeling-block>
-        <div>
-          Help give this person an idea of what to do today to escape their funk.
-        </div>
-      </div>
-
-      <div class="centered-container button-container">
-        <a href="#/addactivity">
-          <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
-        </a>
+      <div class="header-text click-note">
+        Vote by clicking an activity image below or <a href="#/addactivity">click here to suggest something new</a>.
       </div>
     </div>
-
-    <div class="centered-container click-note">
-      Click an activity image below or suggest something new to proceed
-    </div>
-
-    <span>{{_showIntroDialog(user)}}</span>
-    <paper-dialog id="modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-      <paper-dialog-scrollable id="helpscroll" class="centered-container">
-        <paper-item class="intro-header">Welcome to Design My Day!</paper-item>
-        <paper-item class="intro-subheader">Actionable ideas from a trusted community to brighten your day and help others do the same.</paper-item>
-        <paper-item>Here's how it works in 3 easy steps:</paper-item>
-
-        <div class="horizontal centered-container wrap">
-          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460065643311_good-idea.jpg">
-              <div class="card-content">
-                Voting for the activity you think another user should do today.
-              </div>
-          </paper-card>
-          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460065522205_girl-choose.jpg">
-              <div class="card-content">
-                Tell how you are feeling and receive idea suggestions for what to do today.
-              </div>
-          </paper-card>
-          <paper-card image="//designmyday.s3.amazonaws.com/foo33_1460066191489_biking.jpg">
-              <div class="card-content">
-                Go do something feel better!
-              </div>
-          </paper-card>
-        </div>
-        <div class="buttons">
-          <paper-button dialog-confirm on-tap="_dialogContinue" autofocus>Tap here to continue</paper-button>
-        </div>
-      </paper-dialog-scrollable>
-    </paper-dialog>
+<!--     <div class="centered-container button-container">
+      <paper-button raised class="dmd-btn" on-tap="_handleNew">Suggest Something New</paper-button>
+    </div> -->
 
   </template>
   <script>
@@ -137,22 +44,9 @@
         user: Object
       },
 
-      _showIntroDialog: function(user) {
-        if (!this.user.votee) {
-          this.$.firstmodal.open();
-        }
-        else if (this.user && this.user.votesCast < 1) {
-          this.$.modal.open();
-        }
-      },
-
-      _showHelpDialog: function() {
-        this.$.modal.open();
-      },
-
-      _dialogContinue: function() {
-        this.$.modal.close();
-      },
+      // _handleNew: function() {
+      //   document.querySelector('app-router').go('/addactivity');
+      // }
 
     });
   </script>

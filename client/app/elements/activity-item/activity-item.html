@@ -21,26 +21,6 @@
         min-height: 50px;
       }
 
-      .row {
-        position: relative;
-        padding: 16px 16px 16px 22px;
-      }
-
-      .btn-cancel {
-        opacity: 0;
-        /* Same as paper-material shadow */
-        /*https://github.com/PolymerElements/paper-styles/blob/master/shadow.html#L17*/
-        transition: opacity 0.28s;
-        /* Odd hack to fix cropped paper-ripple focus state */
-        /* https://github.com/PolymerElements/paper-icon-button/issues/33 */
-        font-size: 15px;
-      }
-
-      :host:hover .btn-cancel,
-      :host([active]) .btn-cancel {
-        opacity: 1;
-      }
-
       paper-card {
         display: inline-block;
         background: white;
@@ -50,21 +30,22 @@
         border-radius: 2px;
       }
       paper-card {
-          --paper-card-header: {
-              @apply(--layout-vertical);
-              @apply(--layout-center);
-          };
+        --paper-card-header: {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        };
       }
       .activity-card {
         display: inline-block;
         background: white;
         box-sizing: border-box;
         width: 240px;
-        margin: 16px;
+        margin: 10px 5px;
         padding: 16px;
         text-align: center;
         cursor: pointer;
         elevation: 2;
+        min-height: 405px;
       }
       .card-content {
         padding: 0;
@@ -76,6 +57,7 @@
       .vote-count, .date-added {
         font-size: 13px;
         padding-top: 10px;
+        font-style: italic;
       }
       .favorite-yes {
         --iron-icon-fill-color: red;
@@ -102,10 +84,12 @@
         --iron-icon-fill-color: inherit;
       }
       .activity-image {
-        --iron-image-width: 208px;
+        width: 208px;
+        --iron-image-width: 100%;
       }
       .dialog-activity-image {
-        --iron-image-width: 190px;
+        width: 190px;
+        --iron-image-width: 100%;
       }
       .add-link {
         margin-left: 3px;
@@ -126,6 +110,9 @@
         .description {
           font-size: 13px!important;
         }
+      }
+      .info-dialog {
+        min-width: 80%;
       }
     </style>
 
@@ -177,7 +164,8 @@
       </paper-item>
     </paper-card>
 
-    <paper-dialog id="dialog"
+    <paper-dialog class="info-dialog"
+                  id="dialog"
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation">
       <paper-dialog-scrollable>
@@ -423,7 +411,7 @@
 
       _getModalButtonText() {
         if (this.route === 'myactivities') {
-          return "Still want to help more people, tap here";
+          return "Tap here to continue";
         } else if (this.route === 'vote') {
           return "Tap here to continue";
         } else {
@@ -432,7 +420,7 @@
       },
 
       _voteeReqComplete: function() {
-        document.querySelector('app-router').go('/vote');
+        document.querySelector('app-router').go('/dashboard');
       },
 
       _dialogContinue: function() {
