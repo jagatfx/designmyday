@@ -1,0 +1,54 @@
+<% if(!user) { %>
+<% layout( 'layout' ) -%>
+<%- partial('nav') %>
+<% } else { %>
+<% layout( 'login-layout' ) -%>
+<%- partial('login-nav') %>
+<% } %>
+
+<div class="container">
+
+  <div class="alert alert-warning" role="alert" style="margin-top: 60px;">
+    If you cannot find an answer to your question, please contact us.
+  </div>
+
+  <div class="panel-group" id="accordion">
+    <div class="faqHeader">General questions</div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">How can I edit my profile?</a>
+        </h4>
+      </div>
+      <div id="collapseOne" class="panel-collapse collapse in">
+        <div class="panel-body">
+          We do not yet have the account profile edit feature deployed. Until we do, just contact us with your requested change and we will make the change manually.
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen">How do I cancel my account?</a>
+        </h4>
+      </div>
+      <div id="collapseTen" class="panel-collapse collapse">
+        <div class="panel-body">
+          You can contact us and let us know to cancel the account and we will do so.
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">Do you have native app verions of the app for iPhone, Android or other devices?</a>
+        </h4>
+      </div>
+      <div id="collapseEleven" class="panel-collapse collapse">
+        <div class="panel-body">
+          Not yet. We have native app versions under construction, but have worked hard to make the app work through web browsers and look nice on all devices. If you have a device where the app does not work or look nice, please send us a note.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
