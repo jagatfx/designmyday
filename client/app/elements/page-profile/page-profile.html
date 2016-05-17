@@ -33,6 +33,48 @@
       .profile-extras {
         margin-top: 15px;
       }
+      .feedback-text {
+        font-family: 'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+        font-size: 16px;
+      }
+      @media (max-width: 600px) {
+        .feedback-text {
+          font-size: 13px!important;
+        }
+      }
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+      }
+      paper-card {
+        --paper-card-header: {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        };
+      }
+      .activity-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 240px;
+        margin: 10px 5px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        elevation: 2;
+        min-height: 380px;
+      }
+      .card-content {
+        padding: 0;
+      }
+      .feedback-image {
+        width: 208px;
+        --iron-image-width: 100%;
+      }
     </style>
 
     <div class="page-container">
@@ -56,9 +98,39 @@
         <paper-tab>My Suggestions</paper-tab>
       </paper-tabs> -->
 
+        <div class="profile-extras">
+          <div hidden="[[_listEmpty(myFeedback.length)]]" class="centered-container">
+            <div class="tab-title">My Activity Testimonials</div>
+            <div class="centered-container horizontal wrap">
+              <template is="dom-repeat"
+                        items="{{myFeedback}}"
+                        as="feedback">
+                <paper-card id="card[[feedback._id]]" class="activity-card">
+                  <iron-image class="feedback-image" src="[[feedback.img]]"
+                              alt="[[feedback.activityVerb]] [[feedback.activity]]"
+                              preload>
+                  </iron-image>
+                  <div class="card-content">
+                    <p><span>[[feedback.activityVerb]]</span> [[feedback.activity]]<br />
+                    [[feedback.specificLocation]]</p>
+                  </div>
+                  <div class="feedback-text">
+                    <div>
+                      [[feedback.comment]]
+                    </div>
+                    <div>
+                      [[_getFeedbackChoice(feedback)]]
+                    </div>
+                  </div>
+                </paper-card>
+              </template>
+            </div>
+          </div>
+        </div>
+
       <!-- <iron-pages selected="{{selected}}"> -->
         <div class="profile-extras">
-          <div hidden="[[_activitiesEmpty(mySuggestions.length)]]" class="centered-container">
+          <div hidden="[[_listEmpty(mySuggestions.length)]]" class="centered-container">
             <div class="tab-title">My Activity Suggestions</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
@@ -80,11 +152,24 @@
                        value="{{mySuggestions}}">
     </iron-localstorage>
 
+    <iron-localstorage name="myfeedback-storage"
+                       value="{{myFeedback}}">
+    </iron-localstorage>
+
     <iron-ajax
       id="suggestionsAjax"
       url="/api/mysuggestions"
       method="get"
       last-response="{{mySuggestions}}"
+      on-error="_ajaxError"
+      verbose="true">
+    </iron-ajax>
+
+    <iron-ajax
+      id="feedbackAjax"
+      url="/api/feedbackactivities"
+      method="get"
+      last-response="{{myFeedback}}"
       on-error="_ajaxError"
       verbose="true">
     </iron-ajax>
@@ -115,15 +200,33 @@
       routeChanged: function (newval, oldval) {
         if (newval === 'profile') {
           this.$.suggestionsAjax.generateRequest();
+          this.$.feedbackAjax.generateRequest();
         }
       },
 
-      _activitiesEmpty: function(length) {
+      _listEmpty: function(length) {
         return !length;
       },
 
       _ajaxError: function() {
       },
+
+      _getFeedbackChoice: function(feedback) {
+        if (!feedback || !feedback.choice) {
+          return '';
+        } else if (feedback.choice === 'mworse') {
+          return 'I felt much worse after';
+        } else if (feedback.choice === 'worse') {
+          return 'I felt a bit worse after';
+        } else if (feedback.choice === 'same') {
+          return 'I felt the same after';
+        } else if (feedback.choice === 'better') {
+          return 'I felt a bit better after';
+        } else if (feedback.choice === 'mbetter') {
+          return 'I felt much better after';
+        }
+        return '';
+      }
 
     });
   })();

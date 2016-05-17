@@ -106,8 +106,7 @@ function filterUser(user) {
       votesReceived: user.votesReceived,
       favorites: user.favorites,
       completes: user.completes,
-      historicFeelings: user.historicFeelings,
-      feedbackReports: user.feedbackReports
+      historicFeelings: user.historicFeelings
     };
   } else {
     return user;
@@ -179,6 +178,41 @@ router.get('/deactivateuser/:username', isAdmin, function(req, res, next) {
         return res.json( {result: 'OK'} );
       }
     });
+  });
+});
+
+router.get('/feedbackactivities', loggedIn, function(req, res, next) {
+  var user = req.user;
+  if (!user.feedbackReports) {
+    return res.json([]);
+  }
+  Activity.find({
+    '_id': { $in: user.feedbackReports.map(function(feedback) { return feedback.activity; })}
+  }, function(err, activities) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: 'Error: getting user feedback activities'} );
+    }
+    // merge the feedbackReports array with the activity details
+    var activityMap = activities.reduce(function(map, activity) {
+        map[activity._id] = activity;
+        return map;
+    }, {});
+    user.feedbackReports.forEach(function(element, index) {
+      var fullActivity = activityMap[element.activity];
+      element.activityId = fullActivity._id;
+      element.activityVerb = fullActivity.activityVerb;
+      element.activity = fullActivity.activity;
+      element.specificLocation = fullActivity.specificLocation;
+      element.city = fullActivity.city;
+      element.country = fullActivity.country;
+      element.region = fullActivity.region;
+      element.description = fullActivity.description;
+      element.img = fullActivity.img;
+      element.link = fullActivity.link;
+      element.addedBy = fullActivity.addedBy;
+    });
+    return res.json(user.feedbackReports);
   });
 });
 
