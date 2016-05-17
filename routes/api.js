@@ -851,13 +851,56 @@ router.get('/other/profile/:othername', loggedIn, function(req, res) {
   });
 });
 
+router.get('/other/feedbackactivities/:othername', loggedIn, function(req, res, next) {
+  var othername = req.params.othername;
+  Account.findOne({username: othername})
+  .exec(function (err, other) {
+    if (err || !other) {
+      console.error(err);
+      return res.json( {result: 'Error: getting other'} );
+    }
+
+    if (!other.feedbackReports) {
+      return res.json([]);
+    }
+    Activity.find({
+      '_id': { $in: other.feedbackReports.map(function(feedback) { return feedback.activity; })}
+    }, function(err, activities) {
+      if (err) {
+        console.error(err);
+        return res.json( {result: 'Error: getting other feedback activities'} );
+      }
+      // merge the feedbackReports array with the activity details
+      var activityMap = activities.reduce(function(map, activity) {
+          map[activity._id] = activity;
+          return map;
+      }, {});
+      other.feedbackReports.forEach(function(element, index) {
+        var fullActivity = activityMap[element.activity];
+        element.activityId = fullActivity._id;
+        element.activityVerb = fullActivity.activityVerb;
+        element.activity = fullActivity.activity;
+        element.specificLocation = fullActivity.specificLocation;
+        element.city = fullActivity.city;
+        element.country = fullActivity.country;
+        element.region = fullActivity.region;
+        element.description = fullActivity.description;
+        element.img = fullActivity.img;
+        element.link = fullActivity.link;
+        element.addedBy = fullActivity.addedBy;
+      });
+      return res.json(other.feedbackReports);
+    });
+  });
+});
+
 router.get('/other/profileactivities/:othername', loggedIn, function(req, res) {
   var othername = req.params.othername;
   Account.findOne({username: othername})
   .exec(function (err, other) {
     if (err || !other) {
       console.error(err);
-      return res.json( {result: 'Error: getting other '+err} );
+      return res.json( {result: 'Error: getting other'} );
     }
 
     Activity.find({
@@ -865,7 +908,7 @@ router.get('/other/profileactivities/:othername', loggedIn, function(req, res) {
     }, function(err, activities) {
       if (err) {
         console.error(err);
-        return res.json( {result: 'Error: getting user activities'} );
+        return res.json( {result: 'Error: getting other activities'} );
       }
       return res.json(activities);
     });
@@ -878,7 +921,7 @@ router.get('/other/suggestions/:othername', loggedIn, function(req, res) {
   Activity.find({'addedBy': othername}, function(err, activities) {
     if (err) {
       console.error(err);
-      return res.json( {result: 'Error: getting mysuggestions '+err} );
+      return res.json( {result: 'Error: getting other suggestions'} );
     }
     return res.json(activities);
   });

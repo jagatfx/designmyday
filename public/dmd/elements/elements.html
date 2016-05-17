@@ -30023,8 +30023,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
+      .flexchild {
+        max-width: 500px;
+      }
       .slider-label {
         font-size: 10px;
+        min-width: 45px;
       }
       paper-tabs {
         background-color: var(--light-accent-color);
@@ -30040,6 +30044,51 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       }
       .tab-container {
         margin-top: 15px;
+      }
+      .profile-extras {
+        margin-top: 15px;
+      }
+      .feedback-text {
+        font-family: 'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+        font-size: 16px;
+      }
+      @media (max-width: 600px) {
+        .feedback-text {
+          font-size: 13px!important;
+        }
+      }
+      paper-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 2px;
+      }
+      paper-card {
+        --paper-card-header: {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        };
+      }
+      .activity-card {
+        display: inline-block;
+        background: white;
+        box-sizing: border-box;
+        width: 240px;
+        margin: 10px 5px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        elevation: 2;
+        min-height: 380px;
+      }
+      .card-content {
+        padding: 0;
+      }
+      .feedback-image {
+        width: 208px;
+        --iron-image-width: 100%;
       }
     </style>
     <div class="page-container">
@@ -30064,6 +30113,32 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></td></tr>
           <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></td></tr>
         </tbody></table>
+      </div>
+
+      <div class="profile-extras">
+        <div hidden="[[_listEmpty(otherFeedback.length)]]" class="centered-container">
+          <div class="tab-title">Activity Testimonials</div>
+          <div class="centered-container horizontal wrap">
+            <template is="dom-repeat" items="{{otherFeedback}}" as="feedback">
+              <paper-card id="card[[feedback._id]]" class="activity-card">
+                <iron-image class="feedback-image" src="[[feedback.img]]" alt="[[feedback.activityVerb]] [[feedback.activity]]" preload="">
+                </iron-image>
+                <div class="card-content">
+                  <p><span>[[feedback.activityVerb]]</span> [[feedback.activity]]<br>
+                  [[feedback.specificLocation]]</p>
+                </div>
+                <div class="feedback-text">
+                  <div>
+                    [[feedback.comment]]
+                  </div>
+                  <div>
+                    [[_getFeedbackChoice(feedback)]]
+                  </div>
+                </div>
+              </paper-card>
+            </template>
+          </div>
+        </div>
       </div>
 
       <paper-tabs class="tab-container" selected="{{selected}}">
@@ -30098,13 +30173,16 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       </iron-pages>
     </div>
 
-    <iron-ajax id="profileAjax" method="get" on-response="_profileLoaded" on-error="_ajaxError">
+    <iron-ajax id="profileAjax" method="get" last-response="{{other}}" on-error="_ajaxError">
     </iron-ajax>
 
-    <iron-ajax id="activitiesAjax" method="get" on-response="_profileActivitiesLoaded" on-error="_ajaxError">
+    <iron-ajax id="activitiesAjax" method="get" last-response="{{profileActivities}}" on-error="_ajaxError">
     </iron-ajax>
 
-    <iron-ajax id="suggestionsAjax" method="get" on-response="_suggestionsLoaded" on-error="_ajaxError" verbose="true">
+    <iron-ajax id="suggestionsAjax" method="get" last-response="{{suggestions}}" on-error="_ajaxError" verbose="true">
+    </iron-ajax>
+
+    <iron-ajax id="feedbackAjax" method="get" last-response="{{otherFeedback}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -30150,25 +30228,33 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         this.$.profileAjax.url = '/api/other/profile/'+this.othername;
         this.$.activitiesAjax.url = '/api/other/profileactivities/'+this.othername;
         this.$.suggestionsAjax.url = '/api/other/suggestions/'+this.othername;
+        this.$.feedbackAjax.url = '/api/other/feedbackactivities/'+this.othername;
         this.$.profileAjax.generateRequest();
         this.$.activitiesAjax.generateRequest();
         this.$.suggestionsAjax.generateRequest();
-      },
-
-      _profileLoaded: function(request) {
-        this.other = request.detail.response;
-      },
-
-      _profileActivitiesLoaded: function(request) {
-        this.profileActivities = request.detail.response;
-      },
-
-      _suggestionsLoaded: function(request) {
-        this.suggestions = request.detail.response;
+        this.$.feedbackAjax.generateRequest();
       },
 
       _ajaxError: function() {
       },
+
+      _getFeedbackChoice: function(feedback) {
+        if (!feedback || !feedback.choice) {
+          return '';
+        } else if (feedback.choice === 'mworse') {
+          return 'I felt much worse after';
+        } else if (feedback.choice === 'worse') {
+          return 'I felt a bit worse after';
+        } else if (feedback.choice === 'same') {
+          return 'I felt the same after';
+        } else if (feedback.choice === 'better') {
+          return 'I felt a bit better after';
+        } else if (feedback.choice === 'mbetter') {
+          return 'I felt much better after';
+        }
+        return '';
+      },
+
     });
   })();
   </script>
