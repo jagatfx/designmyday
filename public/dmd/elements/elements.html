@@ -24506,7 +24506,6 @@ if (!window.Promise) {
         this.$.feelingAjax.url = '/api/feeling/'+feeling;
         this.$.feelingAjax.generateRequest();
         this.user.lastFeeling = feeling;
-        console.log('lastFeeling:'+this.user.lastFeeling);
       },
 
       _feelingReqComplete: function() {
@@ -29226,36 +29225,40 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       },
 
       _toggleFavorite: function(e) {
-        // TODO: do view updates on ajax success, not here
-        if (this.favorite === 'favorite-yes') {
-          this.favorite = 'favorite-no';
-          this.$.favoriteAjax.method = 'delete';
-          this.$.favoriteAjax.generateRequest();
-        } else {
-          this.favorite = 'favorite-yes';
-          this.$.favoriteAjax.method = 'post';
-          this.$.favoriteAjax.generateRequest();
+        if (this.route && this.route !== 'other') {
+          // TODO: do view updates on ajax success, not here
+          if (this.favorite === 'favorite-yes') {
+            this.favorite = 'favorite-no';
+            this.$.favoriteAjax.method = 'delete';
+            this.$.favoriteAjax.generateRequest();
+          } else {
+            this.favorite = 'favorite-yes';
+            this.$.favoriteAjax.method = 'post';
+            this.$.favoriteAjax.generateRequest();
+          }
+          this.$.favorite.updateStyles();
         }
-        this.$.favorite.updateStyles();
       },
 
       _toggleDone: function(e) {
-        // TODO: do view updates on ajax success, not here
-        if (this.done === 'icons:cloud') {
-          this.done = 'icons:cloud-done';
-          this.$.completeAjax.method = 'post';
-          this.$.completeAjax.generateRequest();
-        } else {
-          this.done = 'icons:cloud';
-          this.$.completeAjax.method = 'delete';
-          this.$.completeAjax.generateRequest();
+        if (this.route && this.route !== 'other') {
+          // TODO: do view updates on ajax success, not here
+          if (this.done === 'icons:cloud') {
+            this.done = 'icons:cloud-done';
+            this.$.completeAjax.method = 'post';
+            this.$.completeAjax.generateRequest();
+          } else {
+            this.done = 'icons:cloud';
+            this.$.completeAjax.method = 'delete';
+            this.$.completeAjax.generateRequest();
+          }
+          if (this.doneClass === 'done-yes') {
+            this.doneClass = 'done-no';
+          } else {
+            this.doneClass = 'done-yes';
+          }
+          this.$.done.updateStyles();
         }
-        if (this.doneClass === 'done-yes') {
-          this.doneClass = 'done-no';
-        } else {
-          this.doneClass = 'done-yes';
-        }
-        this.$.done.updateStyles();
       },
 
       _getModalText() {
@@ -29963,7 +29966,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <div class="tab-title">Activity Suggestions</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{suggestions}}" as="activity">
-                <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
+                <activity-item activity="{{activity}}" route="{{route}}" user="{{other}}">
                 </activity-item>
               </template>
             </div>
@@ -29975,7 +29978,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
             <div class="tab-title">Selected Activities</div>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{profileActivities}}" as="activity">
-                <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}" tab="myactivities">
+                <activity-item activity="{{activity}}" route="{{route}}" user="{{other}}" tab="myactivities">
                 </activity-item>
               </template>
             </div>
@@ -30376,7 +30379,6 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       _routeChanged: function (newval, oldval) {
         if (this.route === 'calculating') {
           this.calcTimeout = setTimeout(function() {
-            console.log('wtf');
             document.querySelector('app-router').go('/myactivities');
           }, 3000);
         } else {

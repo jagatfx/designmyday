@@ -367,36 +367,40 @@
       },
 
       _toggleFavorite: function(e) {
-        // TODO: do view updates on ajax success, not here
-        if (this.favorite === 'favorite-yes') {
-          this.favorite = 'favorite-no';
-          this.$.favoriteAjax.method = 'delete';
-          this.$.favoriteAjax.generateRequest();
-        } else {
-          this.favorite = 'favorite-yes';
-          this.$.favoriteAjax.method = 'post';
-          this.$.favoriteAjax.generateRequest();
+        if (this.route && this.route !== 'other') {
+          // TODO: do view updates on ajax success, not here
+          if (this.favorite === 'favorite-yes') {
+            this.favorite = 'favorite-no';
+            this.$.favoriteAjax.method = 'delete';
+            this.$.favoriteAjax.generateRequest();
+          } else {
+            this.favorite = 'favorite-yes';
+            this.$.favoriteAjax.method = 'post';
+            this.$.favoriteAjax.generateRequest();
+          }
+          this.$.favorite.updateStyles();
         }
-        this.$.favorite.updateStyles();
       },
 
       _toggleDone: function(e) {
-        // TODO: do view updates on ajax success, not here
-        if (this.done === 'icons:cloud') {
-          this.done = 'icons:cloud-done';
-          this.$.completeAjax.method = 'post';
-          this.$.completeAjax.generateRequest();
-        } else {
-          this.done = 'icons:cloud';
-          this.$.completeAjax.method = 'delete';
-          this.$.completeAjax.generateRequest();
+        if (this.route && this.route !== 'other') {
+          // TODO: do view updates on ajax success, not here
+          if (this.done === 'icons:cloud') {
+            this.done = 'icons:cloud-done';
+            this.$.completeAjax.method = 'post';
+            this.$.completeAjax.generateRequest();
+          } else {
+            this.done = 'icons:cloud';
+            this.$.completeAjax.method = 'delete';
+            this.$.completeAjax.generateRequest();
+          }
+          if (this.doneClass === 'done-yes') {
+            this.doneClass = 'done-no';
+          } else {
+            this.doneClass = 'done-yes';
+          }
+          this.$.done.updateStyles();
         }
-        if (this.doneClass === 'done-yes') {
-          this.doneClass = 'done-no';
-        } else {
-          this.doneClass = 'done-yes';
-        }
-        this.$.done.updateStyles();
       },
 
       _getModalText() {
