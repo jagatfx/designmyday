@@ -22286,6 +22286,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           font-size: 13px!important;
         }
       }
+      .padded-top {
+        padding-top: 10px;
+      }
 
       .centered-container {
          @apply(--layout-center-justified);
@@ -24112,18 +24115,17 @@ if (!window.Promise) {
         margin-top: 10px;
         margin-bottom: 10px;
       }
-      .click-note {
-        padding-top: 10px;
-        /*color: #6c59b4;*/
-      }
     </style>
 
     <div class="centered-container">
       <div class="page-header">
         <div class="page-title">Vote</div>
       </div>
-      <div class="header-text click-note">
-        Vote by clicking an activity image below or <a href="#/addactivity">click here to suggest something new</a>.
+      <div class="header-text">
+        Help by voting for an idea of what to do today.
+      </div>
+      <div class="header-text padded-top">
+        Click an activity image below or <a href="#/addactivity">click here to suggest something new</a>.
       </div>
     </div>
 
@@ -24172,8 +24174,13 @@ if (!window.Promise) {
     </style>
 
     <div>
-      <div class="page-header">
-        <div class="page-title">How strong is your feeling?</div>
+      <div class="centered-container">
+        <div class="page-header">
+          <div class="page-title">How strong is your feeling?</div>
+        </div>
+        <div class="header-text">
+          Adjust the slider below.
+        </div>
       </div>
       <div class="range-select">
         <div class="slider-label">A LITTLE</div>
@@ -24468,8 +24475,13 @@ if (!window.Promise) {
     </style>
 
     <div>
-      <div class="page-header">
-        <div class="page-title">How are you feeling today?</div>
+      <div class="centered-container">
+        <div class="page-header">
+          <div class="page-title">How are you feeling today?</div>
+        </div>
+        <div class="header-text">
+          We are going to customize your activity recommendations based on how you are feeling.
+        </div>
       </div>
       <div class="feeling-select horizontal layout wrap">
         <paper-card class="feeling-card" image="/img/worried.gif" data-feeling="worried" on-tap="_doAjaxRequest"></paper-card>
@@ -25313,9 +25325,16 @@ if (!window.Promise) {
       }
     </style>
 
-    <div class="page-header">
-      <div class="page-title">Your Tribe Suggests</div>
-      <div class="centered-container header-text">your community says you'll feel a bit better by doing one of these activities -- click the image of the one you like best</div>
+    <div class="centered-container">
+      <div class="page-header">
+        <div class="page-title">Your Tribe Suggests</div>
+      </div>
+      <div class="header-text">
+        Your community says you'll feel a bit better by doing one of these activities.
+      </div>
+      <div class="header-text padded-top">
+        Click the image of the one you like best and we'll save to My Activities.
+      </div>
     </div>
     <activity-list route="{{route}}" activities="{{myactivities}}" user="{{user}}">
     </activity-list>
@@ -30240,17 +30259,23 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       .button-container {
         margin-top: 10px;
       }
+      .username {
+        font-family: Roboto,'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
     </style>
-      <div class="centered-container vertical header-text">
+      <div class="centered-container vertical">
         <div class="page-header">
-          <div class="page-title">Meet <span class="username">[[user.votee.username]]!</span></div>
+          <div class="page-title">Help Someone</div>
         </div>
-        <div>
-          Around [[user.votee.age]] years old, lives in [[user.votee.city]] and feeling
+        <div class="header-text">
+          Here is who we are helping and how they are feeling.
         </div>
         <feeling-block user="{{user.votee}}"></feeling-block>
-        <div>
-          Help give this person an idea of what to do today to escape a funk.
+        <div class="header-text padded-top">
+          Username: <span class="username">[[user.votee.username]]</span>
+        </div>
+        <div class="header-text padded-top">
+          Around [[user.votee.age]] years old, lives in [[user.votee.city]]
         </div>
       </div>
       <div class="centered-container button-container">

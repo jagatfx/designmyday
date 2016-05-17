@@ -10,17 +10,23 @@
       .button-container {
         margin-top: 10px;
       }
+      .username {
+        font-family: Roboto,'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
     </style>
-      <div class="centered-container vertical header-text">
+      <div class="centered-container vertical">
         <div class="page-header">
-          <div class="page-title">Meet <span class="username">[[user.votee.username]]!</span></div>
+          <div class="page-title">Help Someone</div>
         </div>
-        <div>
-          Around [[user.votee.age]] years old, lives in [[user.votee.city]] and feeling
+        <div class="header-text">
+          Here is who we are helping and how they are feeling.
         </div>
         <feeling-block user="{{user.votee}}"></feeling-block>
-        <div>
-          Help give this person an idea of what to do today to escape a funk.
+        <div class="header-text padded-top">
+          Username: <span class="username">[[user.votee.username]]</span>
+        </div>
+        <div class="header-text padded-top">
+          Around [[user.votee.age]] years old, lives in [[user.votee.city]]
         </div>
       </div>
       <div class="centered-container button-container">
