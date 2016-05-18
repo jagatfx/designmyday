@@ -181,6 +181,19 @@ router.get('/deactivateuser/:username', isAdmin, function(req, res, next) {
   });
 });
 
+router.get('/myvoters', loggedIn, function(req, res, next) {
+  var user = req.user;
+  Account.find({
+    '_id': { $in: user.voteReceiveSequence.map(function(vote) { return vote.voter; })}
+  }, function(err, accounts) {
+    if (err) {
+      console.error(err);
+      return res.json( {result: 'Error: getting user voters'} );
+    }
+    return res.json(accounts.map(function(account) { return account.username; }));
+  });
+});
+
 router.get('/feedbackactivities', loggedIn, function(req, res, next) {
   var user = req.user;
   if (!user.feedbackReports) {

@@ -1,0 +1,23 @@
+<% layout( 'layout' ) -%>
+<%- partial('nav') %>
+
+  <section>
+    <div class="container" style="min-height: 400px;">
+      <form class="cd-form" role="form" action="/login" method="post" accept-charset="utf-8">
+        <p class="fieldset">
+          <label class="image-replace cd-username" for="username">Username:</label>
+          <input type="text" name="username" class="full-width has-padding has-border" id="username" placeholder="username" autofocus />
+          <span class="cd-error-message">Error!</span>
+        </p>
+        <p class="fieldset">
+          <label class="image-replace cd-password" for="password">Password:</label>
+          <input type="password" name="password" class="full-width has-padding has-border" id="password" placeholder="password" />
+          <span class="cd-error-message">Error!</span>
+        </p>
+        <p class="fieldset">
+          <input type="submit" value="Sign In" class="full-width has-padding" />
+        </p>
+      </form>
+      <p class="cd-form-bottom-message"><a href="/forgot" style="color: #000;">Forgot your password?</a></p>
+    </div>
+  </section>

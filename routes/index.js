@@ -22,7 +22,7 @@ function loggedIn(req, res, next) {
   if (user && (user.role === 'admin' || user.role === 'beta')) {
     next();
   } else {
-    res.redirect('/');
+    res.redirect('/login');
   }
 }
 
@@ -46,10 +46,6 @@ function filterUsername(req, res, next) {
 }
 
 router.get('/', function (req, res) {
-  // var user = req.user;
-  // if (user && (user.role === 'admin' || user.role === 'beta')) {
-  //   return res.redirect('/dmd/#/vote');
-  // }
   res.render('index', { user : req.user });
 });
 
@@ -87,12 +83,12 @@ router.get('/signup', function(req, res) {
 });
 
 router.get('/team', function(req, res) {
-  res.render('team', { });
+  res.render('team', { user : req.user });
 });
 
-router.get('/news', function(req, res) {
-  res.render('news', { });
-});
+// router.get('/news', function(req, res) {
+//   res.render('news', { user : req.user });
+// });
 
 router.get('/tos', function(req, res) {
   res.render('tos', { user : req.user });
@@ -212,7 +208,13 @@ function assignVoteeUser(req, res) {
         if (countErr) {
           console.error(countErr);
         }
-        return res.redirect('/dmd/#/dashboard');
+        var redirectTo = req.session.redirectTo;
+        if (req.session.redirectTo) {
+          delete req.session.redirectTo;
+          return res.redirect(redirectTo);
+        } else {
+          return res.redirect('/dmd/#/dashboard');
+        }
       });
     } else {
       user._voteUser = selectedUser._id;
@@ -222,7 +224,13 @@ function assignVoteeUser(req, res) {
         } else {
           console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
         }
-        return res.redirect('/dmd/#/dashboard');
+        var redirectTo = req.session.redirectTo;
+        if (req.session.redirectTo) {
+          delete req.session.redirectTo;
+          return res.redirect(redirectTo);
+        } else {
+          return res.redirect('/dmd/#/dashboard');
+        }
       });
     }
   });
@@ -230,6 +238,32 @@ function assignVoteeUser(req, res) {
 
 router.get('/votee', loggedIn, function(req, res, next) {
   assignVoteeUser(req, res);
+});
+
+router.get('/login', function(req, res) {
+  if (req.user) {
+    // already logged in, redirect to app menu
+    return res.redirect('/dmd/#/dashboard');
+  }
+  return res.render('login-page');
+});
+
+router.get('/forgot', function(req, res) {
+  if (req.user) {
+    // already logged in, redirect to app menu
+    return res.redirect('/dmd/#/dashboard');
+  }
+  return res.render('forgot-page');
+});
+
+router.get('/feedback', function(req, res) {
+  if (req.user) {
+    // already logged in, redirect to app feedback
+    return res.redirect('/dmd/#'+req.originalUrl);
+  }
+  console.log(req.originalUrl);
+  req.session.redirectTo = req.originalUrl;
+  return res.render('login-page');
 });
 
 router.post('/login', filterUsername, function(req, res) {
