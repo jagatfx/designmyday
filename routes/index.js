@@ -271,12 +271,12 @@ router.post('/login', filterUsername, function(req, res) {
     if (err) {
       console.error(err);
       req.flash('error', err);
-      return res.redirect('/');
+      return res.redirect('/login');
     }
     if (!user) {
       console.error('/login no user redirect');
       req.flash('error', 'Problem with user or password');
-      return res.redirect('/');
+      return res.redirect('/login');
     } else if (user.role === 'deactivated') {
       req.flash('error', 'User has been deactivated. Contact us if you believe this is incorrect.');
       req.logout();
@@ -285,8 +285,8 @@ router.post('/login', filterUsername, function(req, res) {
     req.logIn(user, function(err) {
       if (err) {
         console.error(err);
-        req.flash('error', err);
-        return res.redirect('/');
+        req.flash('error', 'Problem logging in user');
+        return res.redirect('/login');
       }
       assignVoteeUser(req, res);
     });

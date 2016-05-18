@@ -23,10 +23,6 @@
     <activity-list route="{{route}}" activities="{{myactivities}}" user="{{user}}">
     </activity-list>
 
-    <iron-localstorage name="myactivities-storage"
-                       value="{{myactivities}}">
-    </iron-localstorage>
-
     <iron-ajax
       id="myactivitiesAjax"
       url="/api/myactivities"

@@ -82,6 +82,25 @@
         width: 100%;
       }
 
+      .none-msg {
+        min-height: 40px;
+        font-family: 'Roboto Slab';
+        font-size: 14px;
+        color: #BDBDBD;
+        cursor: default;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        font-style: italic;
+      }
+
+      @media (max-width: 600px) {
+        .none-msg {
+          font-size: 12px!important;
+        }
+      }
+
       paper-button.dmd-btn {
         --paper-button-ink-color: var(--primary-text-color);
         /* These could also be individually defined for each of the

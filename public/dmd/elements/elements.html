@@ -22335,6 +22335,25 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         width: 100%;
       }
 
+      .none-msg {
+        min-height: 40px;
+        font-family: 'Roboto Slab';
+        font-size: 14px;
+        color: #BDBDBD;
+        cursor: default;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        font-style: italic;
+      }
+
+      @media (max-width: 600px) {
+        .none-msg {
+          font-size: 12px!important;
+        }
+      }
+
       paper-button.dmd-btn {
         --paper-button-ink-color: var(--primary-text-color);
         /* These could also be individually defined for each of the
@@ -25161,6 +25180,13 @@ if (!window.Promise) {
       :host {
         display: block;
       }
+      a {
+        text-decoration: none;
+        color: var(--primary-color);
+      }
+      .user-link {
+        font-size: 14px;
+      }
       paper-tabs {
         background-color: var(--light-accent-color);
         color: #000;
@@ -25226,6 +25252,9 @@ if (!window.Promise) {
         width: 208px;
         --iron-image-width: 100%;
       }
+      .username, .yearborn, .city, .region, .country {
+        font-family: Roboto,'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
     </style>
 
     <div class="page-container">
@@ -25234,49 +25263,65 @@ if (!window.Promise) {
       </div>
       <div class="centered-container vertical">
         <feeling-block user="{{user}}"></feeling-block>
-        <table class="profile">
-          <tbody><tr><td><span class="caps">username:</span></td> <td><span class="username">[[user.username]]</span></td></tr>
-          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[user.yearborn]]</span></td></tr>
-          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[user.city]]</span></td></tr>
-          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[user.country]]</span></td></tr>
+        <table class="profile header-text">
+          <tbody><tr><td>Username:</td> <td><span class="username">[[user.username]]</span></td></tr>
+          <tr><td>Year born:</td> <td><span class="yearborn">[[user.yearborn]]</span></td></tr>
+          <tr><td>City:</td> <td><span class="city">[[user.city]]</span></td></tr>
+          <tr><td>Region:</td> <td><span class="region">[[user.region]]</span></td></tr>
+          <tr><td>Country:</td> <td><span class="country">[[user.country]]</span></td></tr>
         </tbody></table>
         <div class="cancel">
           To cancel your account <a href="/contact">send us a note</a>.
         </div>
       </div>
 
-
-
-        <div class="profile-extras">
-          <div hidden="[[_listEmpty(myFeedback.length)]]" class="centered-container">
-            <div class="tab-title">My Activity Testimonials</div>
-            <div class="centered-container horizontal wrap">
-              <template is="dom-repeat" items="{{myFeedback}}" as="feedback">
-                <paper-card id="card[[feedback._id]]" class="activity-card">
-                  <iron-image class="feedback-image" src="[[feedback.img]]" alt="[[feedback.activityVerb]] [[feedback.activity]]" preload="">
-                  </iron-image>
-                  <div class="card-content">
-                    <p><span>[[feedback.activityVerb]]</span> [[feedback.activity]]<br>
-                    [[feedback.specificLocation]]</p>
+      <div class="profile-extras">
+        <div class="centered-container">
+          <div class="tab-title">My Activity Testimonials</div>
+          <p class="none-msg" hidden="[[_activitiesEmpty(myFeedback.length)]]">You have not submitted any testimonials yet...</p>
+          <div class="centered-container horizontal wrap">
+            <template is="dom-repeat" items="{{myFeedback}}" as="feedback">
+              <paper-card id="card[[feedback._id]]" class="activity-card">
+                <iron-image class="feedback-image" src="[[feedback.img]]" alt="[[feedback.activityVerb]] [[feedback.activity]]" preload="">
+                </iron-image>
+                <div class="card-content">
+                  <p><span>[[feedback.activityVerb]]</span> [[feedback.activity]]<br>
+                  [[feedback.specificLocation]]</p>
+                </div>
+                <div class="feedback-text">
+                  <div>
+                    [[feedback.comment]]
                   </div>
-                  <div class="feedback-text">
-                    <div>
-                      [[feedback.comment]]
-                    </div>
-                    <div>
-                      [[_getFeedbackChoice(feedback)]]
-                    </div>
+                  <div>
+                    [[_getFeedbackChoice(feedback)]]
                   </div>
-                </paper-card>
-              </template>
-            </div>
+                </div>
+              </paper-card>
+            </template>
           </div>
         </div>
+      </div>
+
+      <div class="profile-extras">
+        <div hidden="[[_listEmpty(myVoters.length)]]" class="centered-container">
+          <div class="tab-title">Community Members That Helped Me</div>
+          <div class="centered-container wrap">
+            <template is="dom-repeat" items="{{myVoters}}" as="voter">
+              <div>
+                <a class="user-link" data-route="other" href="#/other?othername=[[voter]]">[[voter]]</a>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+
 
       
         <div class="profile-extras">
-          <div hidden="[[_listEmpty(mySuggestions.length)]]" class="centered-container">
+          <div class="centered-container">
             <div class="tab-title">My Activity Suggestions</div>
+            <p class="none-msg" hidden="[[_activitiesEmpty(mySuggestions.length)]]">You have not made any suggestions yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{mySuggestions}}" as="activity">
                 <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}">
@@ -25299,6 +25344,9 @@ if (!window.Promise) {
     </iron-ajax>
 
     <iron-ajax id="feedbackAjax" url="/api/feedbackactivities" method="get" last-response="{{myFeedback}}" on-error="_ajaxError" verbose="true">
+    </iron-ajax>
+
+    <iron-ajax id="votersAjax" url="/api/myvoters" method="get" last-response="{{myVoters}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
 
   </template>
@@ -25328,11 +25376,16 @@ if (!window.Promise) {
         if (newval === 'profile') {
           this.$.suggestionsAjax.generateRequest();
           this.$.feedbackAjax.generateRequest();
+          this.$.votersAjax.generateRequest();
         }
       },
 
       _listEmpty: function(length) {
         return !length;
+      },
+
+      _activitiesEmpty: function(length) {
+        return !!length;
       },
 
       _ajaxError: function() {
@@ -25430,9 +25483,6 @@ if (!window.Promise) {
     </div>
     <activity-list route="{{route}}" activities="{{myactivities}}" user="{{user}}">
     </activity-list>
-
-    <iron-localstorage name="myactivities-storage" value="{{myactivities}}">
-    </iron-localstorage>
 
     <iron-ajax id="myactivitiesAjax" url="/api/myactivities" handle-as="json" debounce-duration="300" last-response="{{myactivities}}" on-error="_ajaxError" verbose="true">
     </iron-ajax>
@@ -30090,6 +30140,9 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         width: 208px;
         --iron-image-width: 100%;
       }
+      .othername, .yearborn, .city, .region, .country {
+        font-family: Roboto,'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
     </style>
     <div class="page-container">
       <div class="page-header">
@@ -30107,11 +30160,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           </div>
           <div class="slider-label">A LOT</div>
         </div>
-        <table class="profile">
-          <tbody><tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
-          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></td></tr>
-          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></td></tr>
-          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></td></tr>
+        <table class="profile header-text">
+          <tbody><tr><td>Username:</td> <td><span class="othername">[[other.username]]</span></td></tr>
+          <tr><td>Year born:</td> <td><span class="yearborn">[[other.yearborn]]</span></td></tr>
+          <tr><td>City:</td> <td><span class="city">[[other.city]]</span></td></tr>
+          <tr><td>Region:</td> <td><span class="region">[[other.region]]</span></td></tr>
+          <tr><td>Country:</td> <td><span class="country">[[other.country]]</span></td></tr>
         </tbody></table>
       </div>
 
@@ -30150,6 +30204,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         <div>
           <div class="centered-container">
             <div class="tab-title">Activity Suggestions</div>
+            <p class="none-msg" hidden="[[_activitiesEmpty(suggestions.length)]]">No activity suggestions yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{suggestions}}" as="activity">
                 <activity-item activity="{{activity}}" route="{{route}}" user="{{other}}">
@@ -30162,6 +30217,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         <div>
           <div class="centered-container">
             <div class="tab-title">Selected Activities</div>
+            <p class="none-msg" hidden="[[_activitiesEmpty(profileActivities.length)]]">No selected activities yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat" items="{{profileActivities}}" as="activity">
                 <activity-item activity="{{activity}}" route="{{route}}" user="{{other}}" tab="myactivities">
@@ -30233,6 +30289,14 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         this.$.activitiesAjax.generateRequest();
         this.$.suggestionsAjax.generateRequest();
         this.$.feedbackAjax.generateRequest();
+      },
+
+      _listEmpty: function(length) {
+        return !length;
+      },
+
+      _activitiesEmpty: function(length) {
+        return !!length;
       },
 
       _ajaxError: function() {
@@ -30484,24 +30548,12 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       :host {
         display: block;
       }
-      .loading-msg {
-        min-height: 40px;
-        font-family: 'Roboto Slab';
-        font-size: 20px;
-        color: #BDBDBD;
-        cursor: default;
-        padding-left: 67px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
     </style>
     <div class="centered-container">
       <div class="page-header">
         <div class="page-title">My Selected Activities</div>
       </div>
-      <p class="loading-msg" hidden="[[_activitiesEmpty(profileActivities.length)]]">No activities selected yet...</p>
+      <p class="none-msg" hidden="[[_activitiesEmpty(profileActivities.length)]]">No activities selected yet...</p>
       <div class="centered-container horizontal wrap">
         <template is="dom-repeat" items="{{profileActivities}}" as="activity">
           <activity-item activity="{{activity}}" route="{{route}}" user="{{user}}" tab="myactivities">

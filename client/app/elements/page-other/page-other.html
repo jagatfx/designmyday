@@ -74,6 +74,9 @@
         width: 208px;
         --iron-image-width: 100%;
       }
+      .othername, .yearborn, .city, .region, .country {
+        font-family: Roboto,'Helvetica Neue',"PT Sans",Helvetica,Arial,sans-serif;
+      }
     </style>
     <div class="page-container">
       <div class="page-header">
@@ -96,11 +99,12 @@
           </div>
           <div class="slider-label">A LOT</div>
         </div>
-        <table class="profile">
-          <tr><td><span class="caps">username:</span></td> <td><span class="othername">[[other.username]]</span></td></tr>
-          <tr><td><span class="caps">year born:</span></td> <td><span class="yearborn">[[other.yearborn]]</span></div></td></tr>
-          <tr><td><span class="caps">city:</span></td> <td><span class="city caps">[[other.city]]</span></div></td></tr>
-          <tr><td><span class="caps">country:</span></td> <td><span class="country">[[other.country]]</span></div></td></tr>
+        <table class="profile header-text">
+          <tr><td>Username:</td> <td><span class="othername">[[other.username]]</span></td></tr>
+          <tr><td>Year born:</td> <td><span class="yearborn">[[other.yearborn]]</span></div></td></tr>
+          <tr><td>City:</td> <td><span class="city">[[other.city]]</span></div></td></tr>
+          <tr><td>Region:</td> <td><span class="region">[[other.region]]</span></div></td></tr>
+          <tr><td>Country:</td> <td><span class="country">[[other.country]]</span></div></td></tr>
         </table>
       </div>
 
@@ -143,6 +147,7 @@
         <div>
           <div class="centered-container">
             <div class="tab-title">Activity Suggestions</div>
+            <p class="none-msg" hidden="[[_activitiesEmpty(suggestions.length)]]">No activity suggestions yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
                         items="{{suggestions}}"
@@ -159,6 +164,7 @@
         <div>
           <div class="centered-container">
             <div class="tab-title">Selected Activities</div>
+            <p class="none-msg" hidden="[[_activitiesEmpty(profileActivities.length)]]">No selected activities yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
                         items="{{profileActivities}}"
@@ -253,6 +259,14 @@
         this.$.activitiesAjax.generateRequest();
         this.$.suggestionsAjax.generateRequest();
         this.$.feedbackAjax.generateRequest();
+      },
+
+      _listEmpty: function(length) {
+        return !length;
+      },
+
+      _activitiesEmpty: function(length) {
+        return !!length;
       },
 
       _ajaxError: function() {
