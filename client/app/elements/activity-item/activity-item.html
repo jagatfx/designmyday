@@ -116,7 +116,7 @@
       }
     </style>
 
-    <paper-card id="card[[activity._id]]" class="activity-card">
+    <paper-card id$="card[[activity._id]]" class="activity-card">
       <iron-image class="activity-image" src="[[activity.img]]"
                   on-tap="_doAjaxRequest"
                   alt="[[activity.activityVerb]] [[activity.activity]]"
@@ -127,7 +127,7 @@
         [[activity.specificLocation]]</p>
       </div>
       <div hidden$="[[_hideEdit(user, route)]]">
-        <a href="#/edit?activityid=[[activity._id]]">edit</a>
+        <a href$="#/edit?activityid=[[activity._id]]">edit</a>
       </div>
       <div class="card-actions horizontal justified">
         <span class="container">
@@ -156,10 +156,10 @@
           </a>
         </template>
       </div>
-      <paper-item class="vote-count centered-container" hidden="[[_hideVotes(route)]]">
+      <paper-item class="vote-count centered-container" hidden$="[[_hideVotes(route)]]">
         [[activity.score]] votes
       </paper-item>
-      <paper-item class="date-added centered-container" hidden="[[_hideDateAdded(route)]]">
+      <paper-item class="date-added centered-container" hidden$="[[_hideDateAdded(route)]]">
         Added {{dateAdded}}
       </paper-item>
     </paper-card>
@@ -180,7 +180,7 @@
           <template is="dom-if" if="{{activity.specificLocation}}">
             <paper-item class="centered-container">[[activity.specificLocation]]</paper-item>
           </template>
-          <paper-item class="centered-container added-by">Added By: <a class="add-link" data-route="other" href="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></paper-item>
+          <paper-item class="centered-container added-by">Added By: <a class="add-link" data-route="other" href$="#/other?othername=[[activity.addedBy]]">[[activity.addedBy]]</a></paper-item>
           <paper-item class="description centered-container">[[activity.description]]</paper-item>
           <paper-item class="centered-container">
             <template is="dom-if" if="{{activity.link}}">

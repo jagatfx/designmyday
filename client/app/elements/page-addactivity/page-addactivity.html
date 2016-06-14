@@ -9,7 +9,6 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../../node_modules/ajax-form/ajax-form.html">
 
 <dom-module id="page-addactivity">
   <template>
@@ -111,7 +110,9 @@
           type: Boolean,
           value: true,
           notify: true
-        }
+        },
+        user: Object,
+        expires: Boolean
       },
 
       _submitForm: function(event) {

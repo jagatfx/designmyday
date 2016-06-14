@@ -11,6 +11,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 // Include Gulp & tools we'll use
 var gulp = require('gulp');
+var gutil = require('gulp-util');
+var uglify = require('gulp-uglify');
+var ignore = require('gulp-ignore');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var runSequence = require('run-sequence');
@@ -77,7 +80,7 @@ var optimizeHtmlTask = function(src, dest) {
     // Concatenate and minify JavaScript
     .pipe($.if('*.js', $.uglify({
       preserveComments: 'some'
-    })))
+    }))).on('error', gutil.log)
     // Concatenate and minify styles
     // In case you are still using useref build blocks
     .pipe($.if('*.css', $.minifyCss()))

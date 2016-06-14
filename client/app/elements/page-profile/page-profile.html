@@ -108,7 +108,7 @@
       <div class="profile-extras">
         <div class="centered-container">
           <div class="tab-title">My Activity Testimonials</div>
-          <p class="none-msg" hidden="[[_activitiesEmpty(myFeedback.length)]]">You have not submitted any testimonials yet...</p>
+          <p class="none-msg" hidden$="[[_activitiesEmpty(myFeedback.length)]]">You have not submitted any testimonials yet...</p>
           <div class="centered-container horizontal wrap">
             <template is="dom-repeat"
                       items="{{myFeedback}}"
@@ -137,7 +137,7 @@
       </div>
 
       <div class="profile-extras">
-        <div hidden="[[_listEmpty(myVoters.length)]]" class="centered-container">
+        <div hidden$="[[_listEmpty(myVoters.length)]]" class="centered-container">
           <div class="tab-title">Community Members That Helped Me</div>
           <div class="centered-container wrap">
             <template is="dom-repeat"
@@ -159,7 +159,7 @@
         <div class="profile-extras">
           <div class="centered-container">
             <div class="tab-title">My Activity Suggestions</div>
-            <p class="none-msg" hidden="[[_activitiesEmpty(mySuggestions.length)]]">You have not made any suggestions yet...</p>
+            <p class="none-msg" hidden$="[[_activitiesEmpty(mySuggestions.length)]]">You have not made any suggestions yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
                         items="{{mySuggestions}}"
@@ -231,7 +231,8 @@
         selected: {
           type: Number,
           value: 0
-        }
+        },
+        myVoters: Array
       },
 
       routeChanged: function (newval, oldval) {

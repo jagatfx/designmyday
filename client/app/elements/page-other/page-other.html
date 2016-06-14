@@ -108,7 +108,7 @@
       </div>
 
       <div class="profile-extras">
-        <div hidden="[[_listEmpty(otherFeedback.length)]]" class="centered-container">
+        <div hidden$="[[_listEmpty(otherFeedback.length)]]" class="centered-container">
           <div class="tab-title">Activity Testimonials</div>
           <div class="centered-container horizontal wrap">
             <template is="dom-repeat"
@@ -146,7 +146,7 @@
         <div>
           <div class="centered-container">
             <div class="tab-title">Activity Suggestions</div>
-            <p class="none-msg" hidden="[[_activitiesEmpty(suggestions.length)]]">No activity suggestions yet...</p>
+            <p class="none-msg" hidden$="[[_activitiesEmpty(suggestions.length)]]">No activity suggestions yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
                         items="{{suggestions}}"
@@ -163,7 +163,7 @@
         <div>
           <div class="centered-container">
             <div class="tab-title">Selected Activities</div>
-            <p class="none-msg" hidden="[[_activitiesEmpty(profileActivities.length)]]">No selected activities yet...</p>
+            <p class="none-msg" hidden$="[[_activitiesEmpty(profileActivities.length)]]">No selected activities yet...</p>
             <div class="centered-container horizontal wrap">
               <template is="dom-repeat"
                         items="{{profileActivities}}"
@@ -235,7 +235,8 @@
         route: {
           type: String,
           value: 'other'
-        }
+        },
+        otherFeedback: Array
       },
 
       observers: [
