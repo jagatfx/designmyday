@@ -132,7 +132,7 @@ router.post('/register', filterUsername, function(req, res) {
   }
   if (req.body.password !== req.body.confirm) {
     console.error('/register Passwords do not match');
-    req.flash('error', '/register Passwords do not match');
+    req.flash('error', 'Problem registering account: Passwords do not match');
     return res.redirect('/');
   }
 
@@ -162,12 +162,12 @@ router.post('/register', filterUsername, function(req, res) {
           country = fields[3];
         } else {
           console.error('Invalid citycountry:'+citycountry);
-          req.flash('error', 'You must pick a valid city/country');
+          req.flash('error', 'Problem registering account: You must pick a valid city/country');
           return res.redirect('/');
         }
       } else {
         console.error('citycountry field was empty');
-        req.flash('error', 'You must pick a valid city/country');
+        req.flash('error', 'Problem registering account: You must pick a valid city/country');
         return res.redirect('/');
       }
 
