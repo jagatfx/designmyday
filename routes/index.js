@@ -120,16 +120,16 @@ router.get('/dmd', loggedIn, function(req, res, next) {
 
 router.post('/register', filterUsername, function(req, res) {
   console.log('got /register POST');
-  var code = req.body.code;
+  // var code = req.body.code;
   var email = req.body.email;
   var username = req.body.username;
 
-  if (!codeIsValid(code, email)) {
-    var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
-    console.error(err);
-    req.flash('error', 'Problem registering account: '+err);
-    return res.redirect('/');
-  }
+  // if (!codeIsValid(code, email)) {
+  //   var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
+  //   console.error(err);
+  //   req.flash('error', 'Problem registering account: '+err);
+  //   return res.redirect('/');
+  // }
   if (req.body.password !== req.body.confirm) {
     console.error('/register Passwords do not match');
     req.flash('error', 'Problem registering account: Passwords do not match');
