@@ -7,7 +7,7 @@ function sendWelcomeEmail(email, username, callback) {
         'Welcome! This is a confirmation that you successfully registered an account on Design My Day with email ' +
         email + ' and username ' +
         username + '\n\n' +
-        'Visit http://www.designmyday.co and sign in. Presently the app is in the beta testing stage. We would love your' +
+        'Visit http://www.designmyday.co and sign in. We would love your' +
         ' feedback and ideas. Use the website contact form or email info@designmyday.co with questions or comments.';
   // TODO: add html version
   var html = undefined;
