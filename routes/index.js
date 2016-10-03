@@ -471,9 +471,7 @@ function getRandomUser (excludeUser, callback) {
     Account.findOne({city: excludeUser.city, region: excludeUser.region,
     country: excludeUser.country, username: { '$ne': excludeUser.username }})
     .skip(random)
-    .exec(function (err, selectedAccount) {
-      callback(null, selectedAccount);
-    });
+    .exec(callback);
   });
 }
 
@@ -509,9 +507,7 @@ function getMostUnvotedUser (excludeUser, callback) {
       Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
         country: excludeUser.country, username: { '$ne': excludeUser.username }},
         "$orderby":{ "votesReceived": 1 }})
-      .exec(function (err, selectedAccount) {
-        callback(null, selectedAccount);
-      });
+      .exec(callback);
     }
   });
 }
