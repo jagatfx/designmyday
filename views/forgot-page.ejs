@@ -1,5 +1,10 @@
-<% layout( 'layout' ) -%>
-<%- partial('nav') %>
+<% if(!user) { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } else { %>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
+<% } %>
 
   <section>
     <div class="container" style="min-height: 400px;">

@@ -1,9 +1,9 @@
 <% if(!user) { %>
-<% layout( 'layout' ) -%>
-<%- partial('nav') %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
 <% } else { %>
-<% layout( 'login-layout' ) -%>
-<%- partial('login-nav') %>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
 <% } %>
 
 <div class="container">

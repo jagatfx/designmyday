@@ -1,27 +1,6 @@
 (function ($) {
   "use strict";
 
-  // Bootstrap JS
-  // @codekit-prepend "bootstrap/util.js";
-  // @codekit-prepend "bootstrap/carousel.js";
-  // @codekit-prepend "bootstrap/collapse.js";
-  // @codekit-prepend "bootstrap/dropdown.js";
-  // @codekit-prepend "bootstrap/modal.js";
-
-  // Waypoints
-  // @codekit-prepend "plugins/jquery.waypoints.js"
-
-  // Placeholders
-  // @codekit-prepend "plugins/jquery.placeholder.js";
-
-  // Video JS
-  // @codekit-prepend "plugins/video.js";
-
-  // Vimeo modal autoplay
-  // @codekit-prepend "plugins/jquery.vimeo.api.js";
-
-  // Donut Chart
-  // @codekit-prepend "plugins/chart.js";
 
   function onScrollAnimations() {
     $('.wp-1').waypoint(function() {
@@ -66,9 +45,6 @@
     });
   }
 
-  function inputPlaceholders() {
-    $('input, textarea').placeholder();
-  }
 
   function navMobileCollapse() {
     // avoid having both mobile navs opened at the same time
@@ -91,11 +67,12 @@
     });
   }
 
+
   function navSearch() {
     // hide first nav items when search is opened
     $('.nav-dropdown-search').on('show.bs.dropdown', function () {
       $(this).siblings().not('.navbar-nav .dropdown').addClass('sr-only');
-    })
+    });
     // cursor focus
     $('.nav-dropdown-search').on('shown.bs.dropdown', function () {
       $('.navbar-search-input').focus();
@@ -105,6 +82,7 @@
       $(this).siblings().removeClass('sr-only');
     });
   }
+
 
   function htmlVideo() {
     videojs("demo_video", {
@@ -128,6 +106,7 @@
     });
   }
 
+
   function scrollToTop() {
     $('.scroll-top').on( 'click', function() {
       $('html, body').animate({
@@ -137,40 +116,6 @@
     });
   }
 
-  function donutChart() {
-    var doughnutData = [
-      {
-        value: 324,
-        color:"#5e98e3",
-        highlight: "#424753",
-        label: "Completed"
-      },
-      {
-        value: 34,
-        color: "#59d0bd",
-        highlight: "#424753",
-        label: "In backlog"
-      },
-      {
-        value: 20,
-        color: "#e8e9ec",
-        highlight: "#424753",
-        label: "Without ticket"
-      }
-    ];
-    window.onload = function(){
-      var c = document.getElementById("chart-area");
-      if (c != null) {
-        var ctx = c.getContext("2d");
-        window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {
-          responsive : true,
-          percentageInnerCutout : 80
-        });
-      } else {
-        return false
-      }
-    };
-  }
 
   function videoModal() {
 
@@ -202,16 +147,16 @@
     });
   }
 
+
   function init() {
     onScrollAnimations();
-    inputPlaceholders();
     navMobileCollapse();
     navSearch();
-    htmlVideo();
+    // htmlVideo();
     scrollToTop();
-    donutChart();
-    videoModal();
+    // videoModal();
   }
+
 
   init();
 

@@ -1,0 +1,38 @@
+<% if(!user) { %>
+  <% layout( 'layout' ) -%>
+  <%- partial('nav') %>
+<% } else { %>
+  <% layout( 'login-layout' ) -%>
+  <%- partial('login-nav') %>
+<% } %>
+
+    <section class="section-news">
+      <div class="container">
+        <div class="bg-inverse">
+          <div class="row">
+            <div class="col-md-6 p-r-0">
+              <figure class="has-light-mask m-b-0 image-effect">
+                <img src="/img/in-mountains.jpg" alt="In the mountains" class="img-fluid">
+              </figure>
+            </div>
+            <div class="col-md-6 p-l-0">
+              <article class="center-block">
+                <h5>Hike through the mountains</h5>
+              </article>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-md-push-6 p-l-0">
+              <figure class="has-light-mask m-b-0 image-effect">
+                <img src="/img/under-tree.jpg" alt="Under tree" class="img-fluid">
+              </figure>
+            </div>
+            <div class="col-md-6 col-md-pull-6 p-r-0">
+              <article class="center-block">
+                <h5>Walk around an old tree</h5>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>

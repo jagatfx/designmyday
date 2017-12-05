@@ -1,6 +1,6 @@
 {
   "name": "designmyday",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "",
   "main": "index.js",
@@ -31,6 +31,8 @@
     "express-flash": "0.0.2",
     "express-session": "^1.12.1",
     "foreman": "^1.4.1",
+    "kerberos": "0.0.23",
+    "mongodb-core": "^2.1.17",
     "mongoose": "^4.2.7",
     "morgan": "^1.6.1",
     "multer": "^1.1.0",
@@ -43,5 +45,12 @@
   },
   "engines": {
     "node": "4.2.1"
+  },
+  "devDependencies": {
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-notify": "^3.0.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.1"
   }
 }

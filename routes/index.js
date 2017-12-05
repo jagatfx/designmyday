@@ -63,24 +63,26 @@ function codeIsValid(code, email) {
   return false;
 }
 
-router.get('/signup', function(req, res) {
-  var code = req.query.code;
-  var email = req.query.email;
+// Disable webapp routes pending new version
 
-  Account.findOne({ email: email }, function(err, user) {
-    if (user) {
-      req.flash('error', 'An account with the email address '+email+' already exists.');
-      return res.redirect('/');
-    }
+// router.get('/signup', function(req, res) {
+//   var code = req.query.code;
+//   var email = req.query.email;
 
-    res.render('register-page', {
-      user: {},
-      code: code,
-      email: email,
-      valid: codeIsValid(code, email)
-    });
-  });
-});
+//   Account.findOne({ email: email }, function(err, user) {
+//     if (user) {
+//       req.flash('error', 'An account with the email address '+email+' already exists.');
+//       return res.redirect('/');
+//     }
+
+//     res.render('register-page', {
+//       user: {},
+//       code: code,
+//       email: email,
+//       valid: codeIsValid(code, email)
+//     });
+//   });
+// });
 
 router.get('/team', function(req, res) {
   res.render('team', { user : req.user });
@@ -98,106 +100,110 @@ router.get('/privacy', function(req, res) {
   res.render('privacy', { user : req.user });
 });
 
-router.get('/dcma', function(req, res) {
-  res.render('dcma', { user : req.user });
-});
+// router.get('/dcma', function(req, res) {
+//   res.render('dcma', { user : req.user });
+// });
 
 router.get('/contact', function(req, res) {
   res.render('contact', { user : req.user });
 });
 
-router.get('/faq', function(req, res) {
-  res.render('faq', { user : req.user });
+// router.get('/faq', function(req, res) {
+//   res.render('faq', { user : req.user });
+// });
+
+router.get('/ideas', function(req, res) {
+  res.render('ideas', { user : req.user });
 });
 
-router.get('/postsubmit', function(req, res) {
-  res.render('postsubmit', { user : req.user });
-});
+// router.get('/postsubmit', function(req, res) {
+//   res.render('postsubmit', { user : req.user });
+// });
 
-router.get('/dmd', loggedIn, function(req, res, next) {
-  next();
-});
+// router.get('/dmd', loggedIn, function(req, res, next) {
+//   next();
+// });
 
-router.post('/register', filterUsername, function(req, res) {
-  console.log('got /register POST');
-  // var code = req.body.code;
-  var email = req.body.email;
-  var username = req.body.username;
+// router.post('/register', filterUsername, function(req, res) {
+//   console.log('got /register POST');
+//   // var code = req.body.code;
+//   var email = req.body.email;
+//   var username = req.body.username;
 
-  // if (!codeIsValid(code, email)) {
-  //   var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
-  //   console.error(err);
-  //   req.flash('error', 'Problem registering account: '+err);
-  //   return res.redirect('/');
-  // }
-  if (req.body.password !== req.body.confirm) {
-    console.error('/register Passwords do not match');
-    req.flash('error', 'Problem registering account: Passwords do not match');
-    return res.redirect('/');
-  }
+//   // if (!codeIsValid(code, email)) {
+//   //   var err = 'Invalid beta invitation code provided for email:'+email+' code:'+code;
+//   //   console.error(err);
+//   //   req.flash('error', 'Problem registering account: '+err);
+//   //   return res.redirect('/');
+//   // }
+//   if (req.body.password !== req.body.confirm) {
+//     console.error('/register Passwords do not match');
+//     req.flash('error', 'Problem registering account: Passwords do not match');
+//     return res.redirect('/');
+//   }
 
-  Account.findOne({ email: email }, function(err, user) {
-    if (user) {
-      req.flash('error', 'An account with the email address '+email+' already exists.');
-      return res.redirect('/');
-    }
+//   Account.findOne({ email: email }, function(err, user) {
+//     if (user) {
+//       req.flash('error', 'An account with the email address '+email+' already exists.');
+//       return res.redirect('/');
+//     }
 
-    Account.findOne({ username: username }, function(err, user) {
-      if (user) {
-        req.flash('error', 'An account with the username '+username+' already exists.');
-        return res.redirect('/');
-      }
+//     Account.findOne({ username: username }, function(err, user) {
+//       if (user) {
+//         req.flash('error', 'An account with the username '+username+' already exists.');
+//         return res.redirect('/');
+//       }
 
-      var citycountry = req.body.citycountry;
-      var city;
-      var region;
-      var country;
+//       var citycountry = req.body.citycountry;
+//       var city;
+//       var region;
+//       var country;
 
-      var regex = /([^,]+), ([^,]+), (.+)/;
-      if (citycountry) {
-        var fields = regex.exec(citycountry);
-        if (fields && fields.length === 4) {
-          city = fields[1];
-          region = fields[2];
-          country = fields[3];
-        } else {
-          console.error('Invalid citycountry:'+citycountry);
-          req.flash('error', 'Problem registering account: You must pick a valid city/country');
-          return res.redirect('/');
-        }
-      } else {
-        console.error('citycountry field was empty');
-        req.flash('error', 'Problem registering account: You must pick a valid city/country');
-        return res.redirect('/');
-      }
+//       var regex = /([^,]+), ([^,]+), (.+)/;
+//       if (citycountry) {
+//         var fields = regex.exec(citycountry);
+//         if (fields && fields.length === 4) {
+//           city = fields[1];
+//           region = fields[2];
+//           country = fields[3];
+//         } else {
+//           console.error('Invalid citycountry:'+citycountry);
+//           req.flash('error', 'Problem registering account: You must pick a valid city/country');
+//           return res.redirect('/');
+//         }
+//       } else {
+//         console.error('citycountry field was empty');
+//         req.flash('error', 'Problem registering account: You must pick a valid city/country');
+//         return res.redirect('/');
+//       }
 
-      Account.register(new Account({
-        username : username,
-        email: email,
-        city: city,
-        region: region,
-        country: country,
-        yearborn: req.body.yearborn
-      }), req.body.password, function(err, account) {
-        if (err) {
-          console.error(err);
-          req.flash('error', 'Problem registering account');
-          return res.redirect('/');
-        }
+//       Account.register(new Account({
+//         username : username,
+//         email: email,
+//         city: city,
+//         region: region,
+//         country: country,
+//         yearborn: req.body.yearborn
+//       }), req.body.password, function(err, account) {
+//         if (err) {
+//           console.error(err);
+//           req.flash('error', 'Problem registering account');
+//           return res.redirect('/');
+//         }
 
-        passport.authenticate('local')(req, res, function () {
-          dmdMail.sendWelcomeEmail(email, username, function(err, response) {
-            if (err) {
-              console.error('Error sending welcome email:'+err);
-              // just ignore emailing error and keep going
-            }
-            assignVoteeUser(req, res);
-          });
-        });
-      });
-    });
-  });
-});
+//         passport.authenticate('local')(req, res, function () {
+//           dmdMail.sendWelcomeEmail(email, username, function(err, response) {
+//             if (err) {
+//               console.error('Error sending welcome email:'+err);
+//               // just ignore emailing error and keep going
+//             }
+//             assignVoteeUser(req, res);
+//           });
+//         });
+//       });
+//     });
+//   });
+// });
 
 function assignVoteeUser(req, res) {
   var user = req.user;
@@ -236,225 +242,225 @@ function assignVoteeUser(req, res) {
   });
 }
 
-router.get('/votee', loggedIn, function(req, res, next) {
-  assignVoteeUser(req, res);
-});
+// router.get('/votee', loggedIn, function(req, res, next) {
+//   assignVoteeUser(req, res);
+// });
 
-router.get('/login', function(req, res) {
-  if (req.user) {
-    // already logged in, redirect to app menu
-    return res.redirect('/dmd/#/dashboard');
-  }
-  return res.render('login-page');
-});
+// router.get('/login', function(req, res) {
+//   if (req.user) {
+//     // already logged in, redirect to app menu
+//     return res.redirect('/dmd/#/dashboard');
+//   }
+//   return res.render('login-page');
+// });
 
-router.get('/forgot', function(req, res) {
-  if (req.user) {
-    // already logged in, redirect to app menu
-    return res.redirect('/dmd/#/dashboard');
-  }
-  return res.render('forgot-page');
-});
+// router.get('/forgot', function(req, res) {
+//   if (req.user) {
+//     // already logged in, redirect to app menu
+//     return res.redirect('/dmd/#/dashboard');
+//   }
+//   return res.render('forgot-page');
+// });
 
-router.get('/feedback', function(req, res) {
-  if (req.user) {
-    // already logged in, redirect to app feedback
-    return res.redirect('/dmd/#'+req.originalUrl);
-  }
-  console.log(req.originalUrl);
-  req.session.redirectTo = req.originalUrl;
-  return res.render('login-page');
-});
+// router.get('/feedback', function(req, res) {
+//   if (req.user) {
+//     // already logged in, redirect to app feedback
+//     return res.redirect('/dmd/#'+req.originalUrl);
+//   }
+//   console.log(req.originalUrl);
+//   req.session.redirectTo = req.originalUrl;
+//   return res.render('login-page');
+// });
 
-router.post('/login', filterUsername, function(req, res) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) {
-      console.error(err);
-      req.flash('error', err);
-      return res.redirect('/login');
-    }
-    if (!user) {
-      console.error('/login no user redirect');
-      req.flash('error', 'Problem with user or password');
-      return res.redirect('/login');
-    } else if (user.role === 'deactivated') {
-      req.flash('error', 'User has been deactivated. Contact us if you believe this is incorrect.');
-      req.logout();
-      return res.redirect('/');
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        console.error(err);
-        req.flash('error', 'Problem logging in user');
-        return res.redirect('/login');
-      }
-      assignVoteeUser(req, res);
-    });
-  })(req, res);
-});
+// router.post('/login', filterUsername, function(req, res) {
+//   passport.authenticate('local', function(err, user, info) {
+//     if (err) {
+//       console.error(err);
+//       req.flash('error', err);
+//       return res.redirect('/login');
+//     }
+//     if (!user) {
+//       console.error('/login no user redirect');
+//       req.flash('error', 'Problem with user or password');
+//       return res.redirect('/login');
+//     } else if (user.role === 'deactivated') {
+//       req.flash('error', 'User has been deactivated. Contact us if you believe this is incorrect.');
+//       req.logout();
+//       return res.redirect('/');
+//     }
+//     req.logIn(user, function(err) {
+//       if (err) {
+//         console.error(err);
+//         req.flash('error', 'Problem logging in user');
+//         return res.redirect('/login');
+//       }
+//       assignVoteeUser(req, res);
+//     });
+//   })(req, res);
+// });
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
-});
+// router.get('/logout', function(req, res) {
+//   req.logout();
+//   res.redirect('/');
+// });
 
-router.post('/forgot', function(req, res, next) {
-  console.log('got /forgot POST with email:'+req.body.email);
-  async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
-        var token = buf.toString('hex');
-        done(err, token);
-      });
-    },
-    function(token, done) {
-      Account.findOne({ email: req.body.email }, function(err, user) {
-        if (!user) {
-          req.flash('error', 'No account with email address '+req.body.email+' exists.');
-          return res.redirect('/');
-        }
+// router.post('/forgot', function(req, res, next) {
+//   console.log('got /forgot POST with email:'+req.body.email);
+//   async.waterfall([
+//     function(done) {
+//       crypto.randomBytes(20, function(err, buf) {
+//         var token = buf.toString('hex');
+//         done(err, token);
+//       });
+//     },
+//     function(token, done) {
+//       Account.findOne({ email: req.body.email }, function(err, user) {
+//         if (!user) {
+//           req.flash('error', 'No account with email address '+req.body.email+' exists.');
+//           return res.redirect('/');
+//         }
 
-        user.resetPasswordToken = token;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+//         user.resetPasswordToken = token;
+//         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-        user.save(function(err) {
-          done(err, token, user);
-        });
-      });
-    },
-    function(token, user, done) {
-      var options = {
-        service: process.env.MAIL_SERVICE,
-        auth: {
-            user: process.env.MAIL_USERNAME,
-            pass: process.env.MAIL_PASSWORD
-        }
-      };
-      var transporter = nodemailer.createTransport(smtpTransport(options));
-      var mailOptions = {
-        to: user.email,
-        from: 'passwordreset@designmyday.co',
-        subject: 'Design My Day - Password Reset',
-        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      transporter.sendMail(mailOptions, function(err, response) {
-        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
-      });
-    }
-  ], function(err) {
-    if (err) {
-      console.error('/forgot error: '+err);
-      return next(err);
-    }
-    res.redirect('/');
-  });
-});
+//         user.save(function(err) {
+//           done(err, token, user);
+//         });
+//       });
+//     },
+//     function(token, user, done) {
+//       var options = {
+//         service: process.env.MAIL_SERVICE,
+//         auth: {
+//             user: process.env.MAIL_USERNAME,
+//             pass: process.env.MAIL_PASSWORD
+//         }
+//       };
+//       var transporter = nodemailer.createTransport(smtpTransport(options));
+//       var mailOptions = {
+//         to: user.email,
+//         from: 'passwordreset@designmyday.co',
+//         subject: 'Design My Day - Password Reset',
+//         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+//           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+//           'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+//           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+//       };
+//       transporter.sendMail(mailOptions, function(err, response) {
+//         req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+//         done(err, 'done');
+//       });
+//     }
+//   ], function(err) {
+//     if (err) {
+//       console.error('/forgot error: '+err);
+//       return next(err);
+//     }
+//     res.redirect('/');
+//   });
+// });
 
-router.get('/reset/:token', function(req, res) {
-  Account.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-    if (!user) {
-      req.flash('error', 'Password reset token is invalid or has expired.');
-      return res.redirect('/');
-    }
-    res.render('reset', {
-      user: req.user
-    });
-  });
-});
+// router.get('/reset/:token', function(req, res) {
+//   Account.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+//     if (!user) {
+//       req.flash('error', 'Password reset token is invalid or has expired.');
+//       return res.redirect('/');
+//     }
+//     res.render('reset', {
+//       user: req.user
+//     });
+//   });
+// });
 
-router.post('/reset/:token', function(req, res) {
-  async.waterfall([
-    function(done) {
-      Account.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-        if (!user) {
-          req.flash('error', 'Password reset token is invalid or has expired.');
-          return res.redirect('/');
-        }
-        var password = req.body.password;
-        var confirm = req.body.confirm;
-        if (password !== confirm) {
-          console.error('Requested passwords do not match.');
-          req.flash('error', 'Requested passwords do not match.');
-          return res.redirect('/');
-        }
-        user.setPassword(password, function(err, user, passwordErr) {
-          if (err || !user) {
-            req.flash('error', 'Invalid password requested.');
-            return res.redirect('/');
-          }
-          user.resetPasswordToken = undefined;
-          user.resetPasswordExpires = undefined;
+// router.post('/reset/:token', function(req, res) {
+//   async.waterfall([
+//     function(done) {
+//       Account.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+//         if (!user) {
+//           req.flash('error', 'Password reset token is invalid or has expired.');
+//           return res.redirect('/');
+//         }
+//         var password = req.body.password;
+//         var confirm = req.body.confirm;
+//         if (password !== confirm) {
+//           console.error('Requested passwords do not match.');
+//           req.flash('error', 'Requested passwords do not match.');
+//           return res.redirect('/');
+//         }
+//         user.setPassword(password, function(err, user, passwordErr) {
+//           if (err || !user) {
+//             req.flash('error', 'Invalid password requested.');
+//             return res.redirect('/');
+//           }
+//           user.resetPasswordToken = undefined;
+//           user.resetPasswordExpires = undefined;
 
-          user.save(function(err) {
-            if (err) {
-              console.error('/reset save error:'+err);
-              req.flash('error', 'Error saving new password.');
-              return res.redirect('/');
-            }
-            req.logIn(user, function(err) {
-              done(err, user);
-            });
-          });
-        });
-      });
-    },
-    function(user, done) {
-      var options = {
-        service: process.env.MAIL_SERVICE,
-        auth: {
-            user: process.env.MAIL_USERNAME,
-            pass: process.env.MAIL_PASSWORD
-        }
-      };
-      var transporter = nodemailer.createTransport(smtpTransport(options));
-      var mailOptions = {
-        to: user.email,
-        from: 'passwordreset@designmyday.co',
-        subject: 'Design My Day - Your password has been changed',
-        text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account with email ' + user.email + ' has just been changed.\n'
-      };
-      transporter.sendMail(mailOptions, function(err, response) {
-        done(err);
-      });
-    }
-  ], function(err) {
-    if (err) {
-      console.error('/reset error:'+err);
-      return res.redirect('/');
-    }
-    res.redirect('/dmd/#/vote');
-  });
-});
+//           user.save(function(err) {
+//             if (err) {
+//               console.error('/reset save error:'+err);
+//               req.flash('error', 'Error saving new password.');
+//               return res.redirect('/');
+//             }
+//             req.logIn(user, function(err) {
+//               done(err, user);
+//             });
+//           });
+//         });
+//       });
+//     },
+//     function(user, done) {
+//       var options = {
+//         service: process.env.MAIL_SERVICE,
+//         auth: {
+//             user: process.env.MAIL_USERNAME,
+//             pass: process.env.MAIL_PASSWORD
+//         }
+//       };
+//       var transporter = nodemailer.createTransport(smtpTransport(options));
+//       var mailOptions = {
+//         to: user.email,
+//         from: 'passwordreset@designmyday.co',
+//         subject: 'Design My Day - Your password has been changed',
+//         text: 'Hello,\n\n' +
+//           'This is a confirmation that the password for your account with email ' + user.email + ' has just been changed.\n'
+//       };
+//       transporter.sendMail(mailOptions, function(err, response) {
+//         done(err);
+//       });
+//     }
+//   ], function(err) {
+//     if (err) {
+//       console.error('/reset error:'+err);
+//       return res.redirect('/');
+//     }
+//     res.redirect('/dmd/#/vote');
+//   });
+// });
 
-router.get('/sign_s3', function(req, res){
-  aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-  var s3 = new aws.S3();
-  var s3_params = {
-    Bucket: S3_BUCKET,
-    Key: req.query.file_name,
-    Expires: 60,
-    ContentType: req.query.file_type,
-    ACL: 'public-read'
-  };
-  s3.getSignedUrl('putObject', s3_params, function(err, data){
-    if(err){
-      console.error(err);
-    }
-    else{
-      var return_data = {
-        signed_request: data,
-        url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
-      };
-      res.write(JSON.stringify(return_data));
-      res.end();
-    }
-  });
-});
+// router.get('/sign_s3', function(req, res){
+//   aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+//   var s3 = new aws.S3();
+//   var s3_params = {
+//     Bucket: S3_BUCKET,
+//     Key: req.query.file_name,
+//     Expires: 60,
+//     ContentType: req.query.file_type,
+//     ACL: 'public-read'
+//   };
+//   s3.getSignedUrl('putObject', s3_params, function(err, data){
+//     if(err){
+//       console.error(err);
+//     }
+//     else{
+//       var return_data = {
+//         signed_request: data,
+//         url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
+//       };
+//       res.write(JSON.stringify(return_data));
+//       res.end();
+//     }
+//   });
+// });
 
 /////////////////
 

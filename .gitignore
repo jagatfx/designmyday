@@ -6,4 +6,6 @@ npm-debug.log
 Gemfile.lock
 .tmp
 .publish/
-public/.sass-cache
+.sass-cache
+dmd
+
