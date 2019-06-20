@@ -1,67 +1,67 @@
 var express       = require('express');
 var router        = express.Router();
-var passport      = require('passport');
-var async         = require('async');
-var crypto        = require('crypto');
-var nodemailer    = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var aws           = require('aws-sdk');
-var crypto        = require('crypto');
-var dmdMail       = require('../services/mail');
+// var passport      = require('passport');
+// var async         = require('async');
+// var crypto        = require('crypto');
+// var nodemailer    = require('nodemailer');
+// var smtpTransport = require('nodemailer-smtp-transport');
+// var aws           = require('aws-sdk');
+// var crypto        = require('crypto');
+// var dmdMail       = require('../services/mail');
 
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
-var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
-var S3_BUCKET      = process.env.S3_BUCKET;
+// var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
+// var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+// var S3_BUCKET      = process.env.S3_BUCKET;
 
-var PREFINERY_DECODER_KEY = process.env.PREFINERY_DECODER_KEY;
+// var PREFINERY_DECODER_KEY = process.env.PREFINERY_DECODER_KEY;
 
-var Account  = require('../models/account');
+// var Account  = require('../models/account');
 
-function loggedIn(req, res, next) {
-  var user = req.user;
-  if (user && (user.role === 'admin' || user.role === 'beta')) {
-    next();
-  } else {
-    res.redirect('/login');
-  }
-}
+// function loggedIn(req, res, next) {
+//   var user = req.user;
+//   if (user && (user.role === 'admin' || user.role === 'beta')) {
+//     next();
+//   } else {
+//     res.redirect('/login');
+//   }
+// }
 
-function isAdmin(req, res, next) {
-  var user = req.user;
-  if (user && user.role === 'admin') {
-    next();
-  } else {
-    res.redirect('/');
-  }
-}
+// function isAdmin(req, res, next) {
+//   var user = req.user;
+//   if (user && user.role === 'admin') {
+//     next();
+//   } else {
+//     res.redirect('/');
+//   }
+// }
 
-function filterUsername(req, res, next) {
-  if (req.user) {
-    req.user.username = req.user.username.replace(/\s/g, '').toLowerCase();
-  }
-  if (req.body.username) {
-    req.body.username = req.body.username.replace(/\s/g, '').toLowerCase();
-  }
-  next();
-}
+// function filterUsername(req, res, next) {
+//   if (req.user) {
+//     req.user.username = req.user.username.replace(/\s/g, '').toLowerCase();
+//   }
+//   if (req.body.username) {
+//     req.body.username = req.body.username.replace(/\s/g, '').toLowerCase();
+//   }
+//   next();
+// }
 
 router.get('/', function (req, res) {
-  res.render('index', { user : req.user });
+  res.render('index', { user : req.user, messages: {} });
 });
 
-function sha1(code) {
-  return crypto.createHash('sha1').update(code).digest('hex');
-}
+// function sha1(code) {
+//   return crypto.createHash('sha1').update(code).digest('hex');
+// }
 
-function codeIsValid(code, email) {
-  var invitationCode = sha1(PREFINERY_DECODER_KEY+email);
-  invitationCode = invitationCode.slice(0, 10);
-  if (invitationCode === code) {
-    // valid code provided
-    return true;
-  }
-  return false;
-}
+// function codeIsValid(code, email) {
+//   var invitationCode = sha1(PREFINERY_DECODER_KEY+email);
+//   invitationCode = invitationCode.slice(0, 10);
+//   if (invitationCode === code) {
+//     // valid code provided
+//     return true;
+//   }
+//   return false;
+// }
 
 // Disable webapp routes pending new version
 
@@ -85,7 +85,7 @@ function codeIsValid(code, email) {
 // });
 
 router.get('/team', function(req, res) {
-  res.render('team', { user : req.user });
+  res.render('team', { user : req.user, messages: {} });
 });
 
 // router.get('/news', function(req, res) {
@@ -93,11 +93,11 @@ router.get('/team', function(req, res) {
 // });
 
 router.get('/tos', function(req, res) {
-  res.render('tos', { user : req.user });
+  res.render('tos', { user : req.user, messages: {} });
 });
 
 router.get('/privacy', function(req, res) {
-  res.render('privacy', { user : req.user });
+  res.render('privacy', { user : req.user, messages: {} });
 });
 
 // router.get('/dcma', function(req, res) {
@@ -105,7 +105,7 @@ router.get('/privacy', function(req, res) {
 // });
 
 router.get('/contact', function(req, res) {
-  res.render('contact', { user : req.user });
+  res.render('contact', { user : req.user, messages: {} });
 });
 
 // router.get('/faq', function(req, res) {
@@ -113,7 +113,7 @@ router.get('/contact', function(req, res) {
 // });
 
 router.get('/ideas', function(req, res) {
-  res.render('ideas', { user : req.user });
+  res.render('ideas', { user : req.user, messages: {} });
 });
 
 // router.get('/postsubmit', function(req, res) {
@@ -205,42 +205,42 @@ router.get('/ideas', function(req, res) {
 //   });
 // });
 
-function assignVoteeUser(req, res) {
-  var user = req.user;
-  getMostUnvotedUser(user, function(err, selectedUser) {
-    if (err) {
-      console.error(err);
-      Account.count({city: user.city, region: user.region, country: user.country}, function(countErr, count) {
-        if (countErr) {
-          console.error(countErr);
-        }
-        var redirectTo = req.session.redirectTo;
-        if (req.session.redirectTo) {
-          delete req.session.redirectTo;
-          return res.redirect(redirectTo);
-        } else {
-          return res.redirect('/dmd/#/dashboard');
-        }
-      });
-    } else {
-      user._voteUser = selectedUser._id;
-      user.save( function ( err, user, count ) {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
-        }
-        var redirectTo = req.session.redirectTo;
-        if (req.session.redirectTo) {
-          delete req.session.redirectTo;
-          return res.redirect(redirectTo);
-        } else {
-          return res.redirect('/dmd/#/dashboard');
-        }
-      });
-    }
-  });
-}
+// function assignVoteeUser(req, res) {
+//   var user = req.user;
+//   getMostUnvotedUser(user, function(err, selectedUser) {
+//     if (err) {
+//       console.error(err);
+//       Account.count({city: user.city, region: user.region, country: user.country}, function(countErr, count) {
+//         if (countErr) {
+//           console.error(countErr);
+//         }
+//         var redirectTo = req.session.redirectTo;
+//         if (req.session.redirectTo) {
+//           delete req.session.redirectTo;
+//           return res.redirect(redirectTo);
+//         } else {
+//           return res.redirect('/dmd/#/dashboard');
+//         }
+//       });
+//     } else {
+//       user._voteUser = selectedUser._id;
+//       user.save( function ( err, user, count ) {
+//         if (err) {
+//           console.error(err);
+//         } else {
+//           console.log('saved user: '+user.username+' with voteUser:'+user._voteUser);
+//         }
+//         var redirectTo = req.session.redirectTo;
+//         if (req.session.redirectTo) {
+//           delete req.session.redirectTo;
+//           return res.redirect(redirectTo);
+//         } else {
+//           return res.redirect('/dmd/#/dashboard');
+//         }
+//       });
+//     }
+//   });
+// }
 
 // router.get('/votee', loggedIn, function(req, res, next) {
 //   assignVoteeUser(req, res);
@@ -464,58 +464,58 @@ function assignVoteeUser(req, res) {
 
 /////////////////
 
-// TODO: move to more appropriate place
-function getRandomUser (excludeUser, callback) {
-  Account.count({city: excludeUser.city, region: excludeUser.region,
-    country: excludeUser.country, username: { '$ne': excludeUser.username }})
-  .exec(function(err, count) {
-    if (count === 0) {
-      return callback("ERROR: no users from the voter's city");
-    }
-    var random = Math.floor(Math.random() * count);
+// // TODO: move to more appropriate place
+// function getRandomUser (excludeUser, callback) {
+//   Account.count({city: excludeUser.city, region: excludeUser.region,
+//     country: excludeUser.country, username: { '$ne': excludeUser.username }})
+//   .exec(function(err, count) {
+//     if (count === 0) {
+//       return callback("ERROR: no users from the voter's city");
+//     }
+//     var random = Math.floor(Math.random() * count);
 
-    Account.findOne({city: excludeUser.city, region: excludeUser.region,
-    country: excludeUser.country, username: { '$ne': excludeUser.username }})
-    .skip(random)
-    .exec(callback);
-  });
-}
+//     Account.findOne({city: excludeUser.city, region: excludeUser.region,
+//     country: excludeUser.country, username: { '$ne': excludeUser.username }})
+//     .skip(random)
+//     .exec(callback);
+//   });
+// }
 
-// TODO: think about keeping track of who voted for today and exclude those users as well
-function getMostUnvotedUser (excludeUser, callback) {
-  Account.count({city: excludeUser.city, region: excludeUser.region,
-      country: excludeUser.country, username: { '$ne': excludeUser.username }})
-  .exec(function(err, count) {
-    if (count === 0) {
-      console.log('no users from the voter city, creating one');
-      // return callback("Error: no users from the voter city");
-      var pass = (excludeUser.city).replace(/\s/g, '')+'1!';
-      Account.register(new Account({
-        username: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, ''),
-        email: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, '')+'@designmyday.co',
-        city: excludeUser.city,
-        region: excludeUser.region,
-        country: excludeUser.country,
-        yearborn: 1981
-      }), pass, function(err, account) {
-        console.log('account:'+account);
-        if (err) {
-          console.error(err);
-          return callback(err);
-        }
-        if (account._id) {
-          return callback(null, account);
-        } else {
-          return callback('Error creating first city account');
-        }
-      });
-    } else {
-      Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
-        country: excludeUser.country, username: { '$ne': excludeUser.username }},
-        "$orderby":{ "votesReceived": 1 }})
-      .exec(callback);
-    }
-  });
-}
+// // TODO: think about keeping track of who voted for today and exclude those users as well
+// function getMostUnvotedUser (excludeUser, callback) {
+//   Account.count({city: excludeUser.city, region: excludeUser.region,
+//       country: excludeUser.country, username: { '$ne': excludeUser.username }})
+//   .exec(function(err, count) {
+//     if (count === 0) {
+//       console.log('no users from the voter city, creating one');
+//       // return callback("Error: no users from the voter city");
+//       var pass = (excludeUser.city).replace(/\s/g, '')+'1!';
+//       Account.register(new Account({
+//         username: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, ''),
+//         email: (excludeUser.city+excludeUser.region+excludeUser.country).replace(/\s/g, '')+'@designmyday.co',
+//         city: excludeUser.city,
+//         region: excludeUser.region,
+//         country: excludeUser.country,
+//         yearborn: 1981
+//       }), pass, function(err, account) {
+//         console.log('account:'+account);
+//         if (err) {
+//           console.error(err);
+//           return callback(err);
+//         }
+//         if (account._id) {
+//           return callback(null, account);
+//         } else {
+//           return callback('Error creating first city account');
+//         }
+//       });
+//     } else {
+//       Account.findOne({ "$query":{city: excludeUser.city, region: excludeUser.region,
+//         country: excludeUser.country, username: { '$ne': excludeUser.username }},
+//         "$orderby":{ "votesReceived": 1 }})
+//       .exec(callback);
+//     }
+//   });
+// }
 
 module.exports = router;
