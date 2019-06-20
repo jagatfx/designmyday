@@ -43,7 +43,7 @@
     "serve-favicon": "^2.3.0"
   },
   "engines": {
-    "node": "4.2.1"
+    "node": "10.x"
   },
   "devDependencies": {
     "gulp-autoprefixer": "^4.0.0",

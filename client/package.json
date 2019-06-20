@@ -40,7 +40,7 @@
     "start": "gulp serve"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": "10.x"
   },
   "dependencies": {
     "ajax-form": "^2.1.3"
